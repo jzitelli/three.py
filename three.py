@@ -1,14 +1,8 @@
 """Define three.js objects from Python with this module.
 
-These Python classes can be serialized to JSON which can be loaded by three.js loaders
-(more or less - see the corresponding three.py.js, which does some pre- and post-processing
-for certain cases)
-
-The interface follows the following conventions:
-
+These Python classes support JSON serializions which can be loaded by THREE.ObjectLoader.
 """
 
-import sys
 import json
 import uuid
 from collections import defaultdict
@@ -16,12 +10,32 @@ import numpy as np
 
 DEG2RAD = np.pi / 180
 
-FrontSide, BackSide, DoubleSide = 0, 1, 2
-FlatShading, SmoothShading = 1, 2
-NoColors, FaceColors, VertexColors = 0, 1, 2
-UVMapping, CubeReflectionMapping, CubeRefractionMapping = 300, 301, 302
-RepeatWrapping, ClampToEdgeWrapping, MirroredRepeatWrapping = 1000, 1001, 1002
-NearestFilter, NearestMipMapNearestFilter, NearestMipMapLinearFilter, LinearFilter, LinearMipMapNearestFilter, LinearMipMapLinearFilter = 1003, 1004, 1005, 1006, 1007, 1008
+
+FrontSide  = 0
+BackSide   = 1
+DoubleSide = 2
+
+FlatShading   = 1
+SmoothShading = 2
+
+NoColors     = 0
+FaceColors   = 1
+VertexColors = 2
+
+UVMapping             = 300
+CubeReflectionMapping = 301
+CubeRefractionMapping = 302
+
+RepeatWrapping         = 1000
+ClampToEdgeWrapping    = 1001
+MirroredRepeatWrapping = 1002
+
+NearestFilter              = 1003
+NearestMipMapNearestFilter = 1004
+NearestMipMapLinearFilter  = 1005
+LinearFilter               = 1006
+LinearMipMapNearestFilter  = 1007
+LinearMipMapLinearFilter   = 1008
 
 
 # TODO: JSON encoder for Three objects
@@ -70,8 +84,7 @@ class Object3D(Three):
         for c in self.children:
             if hasattr(c, 'geometry'):
                 geometries[c.geometry.uuid] = c.geometry
-            else:
-                c.find_geometries(geometries)
+            c.find_geometries(geometries)
         return geometries
     def find_materials(self, materials=None):
         if materials is None:
@@ -79,8 +92,7 @@ class Object3D(Three):
         for c in self.children:
             if hasattr(c, 'material'):
                 materials[c.material.uuid] = c.material
-            else:
-                c.find_materials(materials)
+            c.find_materials(materials)
         return materials
     def find_textures(self):
         textures = {}
@@ -100,6 +112,7 @@ class Object3D(Three):
         return images
     def json(self):
         d = Three.json(self)
+        # TODO: fix
         # d['position'] = list(self.position)
         # d['rotation'] = list(self.rotation)
         # d['scale'] = list(self.scale)
@@ -139,10 +152,10 @@ class Object3D(Three):
         if images is None:
             images = self.find_images()
         return {'object': self.json(),
-            "geometries": [g.json() for g in geometries.values()],
-            "materials": [m.json() for m in materials.values()],
-            "textures": [t.json() for t in textures.values()],
-            "images": [i.json() for i in images.values()]}
+                "geometries": [g.json() for g in geometries.values()],
+                "materials": [m.json() for m in materials.values()],
+                "textures": [t.json() for t in textures.values()],
+                "images": [i.json() for i in images.values()]}
 
 
 class Scene(Object3D):
@@ -164,10 +177,6 @@ class Mesh(Object3D):
             d.update({"material": str(self.material.uuid),
                       "geometry": str(self.geometry.uuid)})
         return d
-
-
-class Points(Object3D):
-    pass
 
 
 class Light(Object3D):
@@ -206,13 +215,8 @@ class SpotLight(Light):
         self.target = target
 
 
-class HemisphereLight(Light):
-    # TODO
-    pass
-
-
 class PerspectiveCamera(Object3D):
-    def __init__(self, fov=50, aspect=1, near=0.1, far=2000, **kwargs):
+    def __init__(self, fov=50, aspect=1, near=0.1, far=1000, **kwargs):
         Object3D.__init__(self, name=name, **kwargs)
         self.fov = fov
         self.aspect = aspect
@@ -236,23 +240,7 @@ class Material(Three):
         return d
 
 
-class LineBasicMaterial(Material):
-    pass
-
-
-class LineDashedMaterial(Material):
-    pass
-
-
 class MeshBasicMaterial(Material):
-    pass
-
-
-class MeshDepthMaterial(Material):
-    pass
-
-
-class MeshFaceMaterial(Material):
     pass
 
 
@@ -260,15 +248,7 @@ class MeshLambertMaterial(Material):
     pass
 
 
-class MeshNormalMaterial(Material):
-    pass
-
-
 class MeshPhongMaterial(Material):
-    pass
-
-
-class PointsMaterial(Material):
     pass
 
 
@@ -280,15 +260,7 @@ class ShaderMaterial(Material):
         self.uniforms = uniforms
 
 
-class RawShaderMaterial(Material):
-    pass
-
-
-class SpriteCanvasMaterial(Material):
-    pass
-
-
-class SpriteMaterial(Material):
+class RawShaderMaterial(ShaderMaterial):
     pass
 
 
@@ -334,9 +306,6 @@ class Geometry(Three):
         d = Three.json(self)
         d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
         return d
-    def as_buffer_geometry(self):
-        # TODO
-        return BufferGeometry(name=self.name, vertices=self.vertices, indices=self.indices, normals=self.normals, uvs=self.uvs)
 
 
 class BoxGeometry(Geometry):
@@ -365,6 +334,50 @@ class CylinderGeometry(Geometry):
         self.thetaLength = thetaLength
 
 
+class DodecahedronGeometry(Geometry):
+    def __init__(self, radius=1, detail=0, **kwargs):
+        Geometry.__init__(self)
+        self.radius = radius
+        self.detail = detail
+
+
+class TorusGeometry(Three):
+    def __init__(self, name=None, radius=100, tube=40, radialSegments=8, tubularSegments=6, arc=2*np.pi):
+        Three.__init__(self, name)
+        self.radius = radius
+        self.tube = tube
+        self.radialSegments = radialSegments
+        self.tubularSegments = tubularSegments
+        self.arc = arc
+
+
+class TextGeometry(Three):
+    def __init__(self, name=None, text=None, parameters=None):
+        Three.__init__(self, name)
+        self.text = text
+        self.parameters = parameters
+    def json(self):
+        d = Three.json(self)
+        d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
+        return d
+
+
+class OctahedronGeometry(Three):
+    def __init__(self, name=None, radius=1, detail=0):
+        Three.__init__(self, name)
+        self.radius = radius
+        self.detail = detail
+
+
+class PolyhedronGeometry(Three):
+    def __init__(self, name=None, vertices=None, faces=None, radius=None, detail=0):
+        Three.__init__(self, name)
+        self.vertices = vertices
+        self.faces = faces
+        self.radius = radius
+        self.detail = detail
+
+
 class BufferGeometry(Three):
     def __init__(self, name=None, vertices=None, indices=None, normals=None, uvs=None):
         Three.__init__(self, name)
@@ -385,7 +398,7 @@ class BufferGeometry(Three):
                     }
                   }})
         if self.indices:
-            d['data']['attributes']['index'] = {
+            d['data']['index'] = {
                 "itemSize": 1,
                 "type": "Uint32Array",
                 "array": np.array(self.indices).ravel().tolist()
@@ -405,54 +418,56 @@ class BufferGeometry(Three):
         return d
 
 
-class DodecahedronGeometry(Geometry):
-    def __init__(self, radius=1, detail=0, **kwargs):
-        Geometry.__init__(self)
-        self.radius = radius
-        self.detail = detail
-
-
 def _tri_faces(rect_face):
     "Return indices for two triangles comprising the rectangle"
     return [[rect_face[0], rect_face[1], rect_face[2]], [rect_face[0], rect_face[2], rect_face[3]]]
 
 
 class QuadBufferGeometry(BufferGeometry):
-    """Defines two triangles representing a quadrilateral (assuming they are coplanar)
-    """
-    def __init__(self, width=None, height=None, depth=None, uvs=None, **kwargs):
-        vertices = [[-0.5, 0, -0.5], [-0.5, 0, 0.5], [0.5, 0, 0.5], [0.5, 0, -0.5]]
+    """Defines two triangles representing a quadrilateral (assuming they are coplanar).
+    The indices are (0,1,2), (0,2,3)"""
+    def __init__(self, vertices, uvs=None, **kwargs):
         BufferGeometry.__init__(self, vertices=vertices, uvs=uvs, indices=_tri_faces([0,1,2,3]), **kwargs)
 
 
 class BoxBufferGeometry(BufferGeometry):
-    def __init__(self, vertices, inward_normals=False, **kwargs):
+    def __init__(self, vertices, **kwargs):
         rects = [[0,1,2,3], # bottom
-            [4,7,6,5], # top
-            [0,4,5,1], # back
-            [2,1,5,6], # right
-            [3,2,6,7], # front
-            [0,3,7,4]] # left
-        if inward_normals:
-            rects = [r[::-1] for r in rects]
+                 [4,7,6,5], # top
+                 [0,4,5,1], # back
+                 [2,1,5,6], # right
+                 [3,2,6,7], # front
+                 [0,3,7,4]] # left
         BufferGeometry.__init__(self, vertices=vertices,
             indices=[_tri_faces(rect) for rect in rects],
             **kwargs)
 
 
+class PrismBufferGeometry(BufferGeometry):
+    """Vertex enumeration:
+    0,1,2 - bottom triangle
+    3,4,5 - top triangle
+    The prism has edges (0,3), (1,4), (2,5)
+    """
+    def __init__(self, vertices, **kwargs):
+        indices = [[0,1,2], [3,4,5][::-1]]
+        for rect in [[0,1,4,3], [1,2,5,4], [2,0,3,5]]:
+            indices += _tri_faces(rect[::-1])
+        BufferGeometry.__init__(self, vertices=vertices,
+                                indices=indices, **kwargs)
+
+
 class TetrahedronBufferGeometry(BufferGeometry):
     def __init__(self, vertices, **kwargs):
         indices = [[0,1,2],
-            [0,3,1],
-            [0,2,3],
-            [3,2,1]]
+                   [0,3,1],
+                   [0,2,3],
+                   [3,2,1]]
         BufferGeometry.__init__(self, vertices=vertices, indices=indices, **kwargs)
 
 
 class PlaneBufferGeometry(Three):
-    """Specify depth (and neglect width or height) to define plane which extends along Z axis
-    """
-    def __init__(self, name=None, width=1, height=1, widthSegments=1, heightSegments=1, depth=None):
+    def __init__(self, name=None, width=1, height=1, widthSegments=1, heightSegments=1):
         Three.__init__(self, name)
         self.width = width
         self.height = height
@@ -465,7 +480,7 @@ class PlaneBufferGeometry(Three):
 
 
 class SphereBufferGeometry(Three):
-    def __init__(self, name=None, radius=50, widthSegments=8, heightSegments=6, phiStart=0, phiLength=2*np.pi, thetaStart=0, thetaLength=2*np.pi):
+    def __init__(self, name=None, radius=50, widthSegments=8, heightSegments=6, phiStart=None, phiLength=None, thetaStart=None, thetaLength=None):
         Three.__init__(self, name)
         self.radius = radius
         self.widthSegments = widthSegments
@@ -480,33 +495,8 @@ class SphereBufferGeometry(Three):
         return d
 
 
-class TorusGeometry(Three):
-    def __init__(self, name=None, radius=100, tube=40, radialSegments=8, tubularSegments=6, arc=2*np.pi):
-        Three.__init__(self, name)
-        self.radius = radius
-        self.tube = tube
-        self.radialSegments = radialSegments
-        self.tubularSegments = tubularSegments
-        self.arc = arc
-    def json(self):
-        d = Three.json(self)
-        d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
-        return d
-
-
-class TextGeometry(Three):
-    def __init__(self, name=None, text=None, parameters=None):
-        Three.__init__(self, name)
-        self.text = text
-        self.parameters = parameters
-    def json(self):
-        d = Three.json(self)
-        d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
-        return d
-
-
 class CircleBufferGeometry(Three):
-    def __init__(self, name=None, radius=50, segments=8, thetaStart=0, thetaLength=2*np.pi):
+    def __init__(self, name=None, radius=50, segments=8, thetaStart=None, thetaLength=None):
         Three.__init__(self, name)
         self.radius = radius
         self.segments = segments
@@ -516,31 +506,3 @@ class CircleBufferGeometry(Three):
         d = Three.json(self)
         d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
         return d
-
-
-class OctahedronGeometry(Three):
-    def __init__(self, name=None, radius=1, detail=0):
-        Three.__init__(self, name)
-        self.radius = radius
-        self.detail = detail
-    def json(self):
-        d = Three.json(self)
-        d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
-        return d
-
-
-class PolyhedronGeometry(Three):
-    def __init__(self, name=None, vertices=None, faces=None, radius=None, detail=0):
-        Three.__init__(self, name)
-        self.vertices = vertices
-        self.faces = faces
-        self.radius = radius
-        self.detail = detail
-    def json(self):
-        d = Three.json(self)
-        d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
-        return d
-
-
-class Line(Object3D):
-    pass
