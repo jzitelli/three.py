@@ -1,6 +1,6 @@
 """Define three.js objects from Python with this module.
 
-These Python classes support JSON serializions which can be loaded by THREE.ObjectLoader.
+These Python classes can be serialized and loaded (w/ some massaging, see three.py.js) by THREE.ObjectLoader.
 """
 
 import json
@@ -9,7 +9,6 @@ from collections import defaultdict
 import numpy as np
 
 DEG2RAD = np.pi / 180
-
 
 FrontSide  = 0
 BackSide   = 1
@@ -64,18 +63,14 @@ class Object3D(Three):
     def __init__(self, name=None, position=(0,0,0), rotation=(0,0,0), scale=(1,1,1), visible=None, castShadow=None, receiveShadow=None, userData=None, **kwargs):
         # TODO: use kwargs, don't convert to ndarray?
         Three.__init__(self, name)
-        self.position = position #np.array(position)
-        self.rotation = rotation #np.array(rotation)
-        self.scale = scale #np.array(scale)
+        self.position = np.array(position, dtype=np.float64)
+        self.rotation = np.array(rotation, dtype=np.float64)
+        self.scale = np.array(scale, dtype=np.float64)
         self.children = []
-        if visible is not None:
-            self.visible = visible
-        if castShadow is not None:
-            self.castShadow = castShadow
-        if receiveShadow is not None:
-            self.receiveShadow = receiveShadow
-        if userData is not None:
-            self.userData = userData
+        self.visible = visible
+        self.castShadow = castShadow
+        self.receiveShadow = receiveShadow
+        self.userData = userData
     def add(self, *objs):
         self.children += objs
     def find_geometries(self, geometries=None):
@@ -102,6 +97,7 @@ class Object3D(Three):
                 textures[mat.map.uuid] = mat.map
             if hasattr(mat, 'bumpMap'):
                 textures[mat.bumpMap.uuid] = mat.bumpMap
+            # TODO
         return textures
     def find_images(self):
         images = {}
@@ -112,35 +108,13 @@ class Object3D(Three):
         return images
     def json(self):
         d = Three.json(self)
-        # TODO: fix
-        # d['position'] = list(self.position)
-        # d['rotation'] = list(self.rotation)
-        # d['scale'] = list(self.scale)
-        # d['children'] = [c.json() for c in self.children]
-        # d.update({k: v for k, v in self.__dict__.items()
-        #           if v is not None and k not in d})
-        S = np.diag(list(self.scale) + [1])
-        I = np.eye(4)
-        T = I.copy()
-        T[:3,-1] = self.position
-        # TODO: never checked this rigorously:
-        Rx = I.copy()
-        s, c = np.sin(self.rotation[0]), np.cos(self.rotation[0])
-        Rx[1,1] = c; Rx[1,2] = -s
-        Rx[2,1] = s; Rx[2,2] = c
-        Ry = I.copy()
-        s, c = np.sin(self.rotation[1]), np.cos(self.rotation[1])
-        Ry[0,0] = c;  Ry[0,2] = s
-        Ry[2,0] = -s; Ry[2,2] = c
-        Rz = I.copy()
-        s, c = np.sin(self.rotation[2]), np.cos(self.rotation[2])
-        Rz[0,0] = c; Rz[0,1] = -s
-        Rz[1,0] = s; Rz[1,1] = c
-        matrix = T.dot(Rz).dot(Ry).dot(Rx).dot(S)
-        d.update({"matrix": matrix.T.ravel().tolist(),
-                  'children': [c.json() for c in self.children]})
+        # TODO: ? 
+        d['position'] = list(self.position.ravel())
+        d['rotation'] = list(self.rotation.ravel())
+        d['scale'] = list(self.scale.ravel())
+        d['children'] = [c.json() for c in self.children]
         d.update({k: v for k, v in self.__dict__.items()
-                  if v is not None and k not in ['position', 'rotation', 'scale'] + list(d.keys())})
+                  if v is not None and k not in d})
         return d
     def export(self, geometries=None, materials=None, textures=None, images=None):
         if geometries is None:
@@ -180,14 +154,16 @@ class Mesh(Object3D):
 
 
 class Light(Object3D):
-    def __init__(self, color=0xffffff, intensity=None, distance=None, shadowCameraNear=None, shadowCameraFar=None, shadowCameraFov=None, **kwargs):
+    def __init__(self, color=0xffffff, intensity=None, distance=None,
+                 shadowCameraNear=None, shadowCameraFar=None, shadowCameraFov=None,
+                 **kwargs):
         Object3D.__init__(self, **kwargs)
         self.color = color
         self.intensity = intensity
-        self.distance = distance
+        self.distance  = distance
         self.shadowCameraNear = shadowCameraNear
-        self.shadowCameraFar = shadowCameraFar
-        self.shadowCameraFov = shadowCameraFov
+        self.shadowCameraFar  = shadowCameraFar
+        self.shadowCameraFov  = shadowCameraFov
 
 
 class AmbientLight(Light):
@@ -217,7 +193,7 @@ class SpotLight(Light):
 
 class PerspectiveCamera(Object3D):
     def __init__(self, fov=50, aspect=1, near=0.1, far=1000, **kwargs):
-        Object3D.__init__(self, name=name, **kwargs)
+        Object3D.__init__(self, **kwargs)
         self.fov = fov
         self.aspect = aspect
         self.near = near
@@ -265,7 +241,9 @@ class RawShaderMaterial(ShaderMaterial):
 
 
 class Texture(Three):
-    def __init__(self, name=None, minFilter=LinearMipMapLinearFilter, magFilter=LinearFilter, mapping=UVMapping, anisotropy=1, image=None, wrap=None, repeat=None):
+    def __init__(self, name=None, minFilter=LinearMipMapLinearFilter, magFilter=LinearFilter,
+                 mapping=UVMapping, anisotropy=1,
+                 image=None, wrap=None, repeat=None):
         Three.__init__(self, name)
         self.minFilter = minFilter
         self.magFilter = magFilter
@@ -291,8 +269,7 @@ class Image(Three):
         self.url = url
     def json(self):
         d = Three.json(self)
-        if self.url:
-            d['url'] = self.url
+        d['url'] = self.url
         return d
 
 
@@ -322,7 +299,7 @@ class BoxGeometry(Geometry):
 class CylinderGeometry(Geometry):
     def __init__(self, radiusTop=20, radiusBottom=20, height=100,
                  radialSegments=8, heightSegments=1,
-                 openEnded=False, thetaStart=0, thetaLength=2*np.pi, **kwargs):
+                 openEnded=False, thetaStart=None, thetaLength=None, **kwargs):
         Three.__init__(self)
         self.radiusTop = radiusTop
         self.radiusBottom = radiusBottom
@@ -349,17 +326,6 @@ class TorusGeometry(Three):
         self.radialSegments = radialSegments
         self.tubularSegments = tubularSegments
         self.arc = arc
-
-
-class TextGeometry(Three):
-    def __init__(self, name=None, text=None, parameters=None):
-        Three.__init__(self, name)
-        self.text = text
-        self.parameters = parameters
-    def json(self):
-        d = Three.json(self)
-        d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
-        return d
 
 
 class OctahedronGeometry(Three):
@@ -418,19 +384,25 @@ class BufferGeometry(Three):
         return d
 
 
-def _tri_faces(rect_face):
+def _tri_faces(rect_face, flip_normals=False):
     "Return indices for two triangles comprising the rectangle"
-    return [[rect_face[0], rect_face[1], rect_face[2]], [rect_face[0], rect_face[2], rect_face[3]]]
+    faces = [[rect_face[0], rect_face[1], rect_face[2]], [rect_face[0], rect_face[2], rect_face[3]]]
+    if flip_normals:
+        faces[0] = faces[0][::-1]
+        faces[1] = faces[1][::-1]
+    return faces
 
 
 class QuadBufferGeometry(BufferGeometry):
     """Defines two triangles representing a quadrilateral (assuming they are coplanar).
-    The indices are (0,1,2), (0,2,3)"""
+    """
     def __init__(self, vertices, uvs=None, **kwargs):
         BufferGeometry.__init__(self, vertices=vertices, uvs=uvs, indices=_tri_faces([0,1,2,3]), **kwargs)
 
 
-class BoxBufferGeometry(BufferGeometry):
+class HexaBufferGeometry(BufferGeometry):
+    """Hexahedron w/ conventional (to me) vertex enumeration
+    """
     def __init__(self, vertices, **kwargs):
         rects = [[0,1,2,3], # bottom
                  [4,7,6,5], # top
@@ -450,9 +422,9 @@ class PrismBufferGeometry(BufferGeometry):
     The prism has edges (0,3), (1,4), (2,5)
     """
     def __init__(self, vertices, **kwargs):
-        indices = [[0,1,2], [3,4,5][::-1]]
+        indices = [[0,1,2][::-1], [3,4,5]]
         for rect in [[0,1,4,3], [1,2,5,4], [2,0,3,5]]:
-            indices += _tri_faces(rect[::-1])
+            indices += _tri_faces(rect)
         BufferGeometry.__init__(self, vertices=vertices,
                                 indices=indices, **kwargs)
 
@@ -506,3 +478,27 @@ class CircleBufferGeometry(Three):
         d = Three.json(self)
         d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
         return d
+
+
+class TextGeometry(Three):
+    def __init__(self, name=None, text=None, parameters=None):
+        Three.__init__(self, name)
+        self.text = text
+        self.parameters = parameters
+    def json(self):
+        d = Three.json(self)
+        d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
+        return d
+
+
+def text_geom_alphabet(**kwargs):
+    """Constructs a dict mapping string character -> TextGeometry
+    """
+    alphas  = "abcdefghijklmnopqrstuvwxyz"
+    alphas += alphas.upper()
+    digits  = '0123456789'
+    symbols = r""",./;'[]\-=<>?:"{}|_+`~!@#$%^&*()"""
+    characters = alphas + digits + symbols
+    geometries = {c: TextGeometry(name="%s TextGeometry" % c, text=c, parameters=kwargs)
+                  for c in characters}
+    return geometries
