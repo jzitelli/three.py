@@ -1,31 +1,44 @@
-"""Flask application enabling server-side execution of Python code entered in
-Primrose editors.
+"""REST thingys to help accomplish:
 
-This script may be executed from the Primrose root directory to host a local
-server (with a subset of the functionality available from the Tornado server [see start.py]) ::
-
-    $ python pyserver/flask_app.py
-
-The server can then be accessed locally at 127.0.0.1:5000."""
+1. extracting three.js shader library into a file
+2. testing
+3. ?
+"""
 
 import os
-import sys
 import json
-from copy import deepcopy
 import logging
 _logger = logging.getLogger(__name__)
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Markup
 
 STATIC_FOLDER = os.getcwd()
 app = Flask(__name__,
             static_folder=STATIC_FOLDER,
             static_url_path='')
+app.debug = True
+
+import sys
+sys.path.append(os.getcwd())
+import three
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    scene = three.Scene()
+    boxMesh = three.Mesh(geometry=three.BoxGeometry(width=1, height=1, depth=1),
+                         material=three.MeshBasicMaterial(color=0xff0000),
+                         position=[1, 0, -4])
+    scene.add(boxMesh)
+    sphereMesh = three.Mesh(geometry=three.SphereBufferGeometry(radius=0.5),
+                            material=three.MeshBasicMaterial(color=0x00ff00),
+                            position=[0, 1, -4])
+    scene.add(sphereMesh)
+    return render_template('index.html',
+                           json_config=Markup("""<script>
+var JSON_SCENE = %s;
+</script>""" % json.dumps(scene.export(), indent=2)),
+                           threejs_lib='lib/three-r73.js')
 
 
 @app.route("/read")
@@ -41,9 +54,12 @@ def read():
     return jsonify(response)
 
 
+WRITE_FOLDER = os.path.join(os.getcwd(), 'write')
+if not os.path.exists(WRITE_FOLDER):
+    raise Exception('create the write folder %s' % WRITE_FOLDER)
 @app.route("/write", methods=['POST'])
 def write():
-    filename = os.path.join(os.getcwd(), 'writes', os.path.split(request.args['file'])[1])
+    filename = os.path.join(WRITE_FOLDER, os.path.split(request.args['file'])[1])
     try:
         if request.json is not None:
             with open(filename, 'w') as f:

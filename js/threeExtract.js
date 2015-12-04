@@ -1,0 +1,3 @@
+function extractShaderLib() {
+    "use strict";
+}
