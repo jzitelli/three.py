@@ -14,7 +14,11 @@ THREE.py = ( function () {
         return isLoaded_;
     }
 
-    function parse(json) {
+    function parse(json, texturePath) {
+        if (texturePath) {
+            objectLoader.setTexturePath(texturePath);
+        }
+        // TODO: convert all to BufferGeometry?
         function onLoad(obj) {
             obj.traverse( function (node) {
                 if (node instanceof THREE.Mesh) {
@@ -23,9 +27,11 @@ THREE.py = ( function () {
                     if (node.userData && node.userData.visible === false) {
                         node.visible = false;
                     }
-                    if (node.material.shading === THREE.SmoothShading)
+                    if (!(node.geometry instanceof THREE.SphereBufferGeometry)) {
+                        // makes seams appear on spherebuffergeometries due to doubled vertices at phi=0=2*pi
                         node.geometry.computeVertexNormals();
-                    else if (node.material.shading === THREE.FlatShading)
+                    }
+                    if (node.material.shading === THREE.FlatShading)
                         node.geometry.computeFaceNormals();
                 }
             } );
@@ -66,15 +72,11 @@ THREE.py = ( function () {
                 geometries[geom.uuid] = geometry;
             }
         } );
-
         var images = objectLoader.parseImages(json.images, function () {
             onLoad(object);
         });
-
         var textures = objectLoader.parseTextures(json.textures, images);
-
         var materials = objectLoader.parseMaterials(json.materials, textures);
-
         var object = objectLoader.parseObject(json.object, geometries, materials);
         if (json.images === undefined || json.images.length === 0) {
             onLoad(object);
@@ -82,10 +84,7 @@ THREE.py = ( function () {
         return object;
     }
 
-    function load(url, onLoad) {
-
-    }
-
+    var position = new THREE.Vector3();
     function CANNONize(obj, world) {
         obj.traverse(function(node) {
             if (node.userData && node.userData.cannonData) {
@@ -100,7 +99,7 @@ THREE.py = ( function () {
                 }
             }
         });
-        var position = new THREE.Vector3();
+
         function makeCANNON(node, cannonData) {
             var body;
             var bodies;
@@ -109,22 +108,23 @@ THREE.py = ( function () {
             }
             if (node instanceof THREE.Mesh) {
                 position.copy(node.position);
-                body = new CANNON.Body({
-                    mass: cannonData.mass,
-                    position: node.localToWorld(position),
-                    quaternion: node.quaternion
-                });
-                if (cannonData.material) {
-                    // TODO
+                var params = {mass: cannonData.mass,
+                              position: node.localToWorld(position),
+                              quaternion: node.quaternion};
+                if (cannonData.linearDamping !== undefined) {
+                    params.linearDamping = cannonData.linearDamping;
                 }
+                if (cannonData.angularDamping !== undefined) {
+                    params.angularDamping = cannonData.angularDamping;
+                }
+                body = new CANNON.Body(params);
                 body.mesh = node;
-                for (var i = 0; i < cannonData.shapes.length; i++) {
-                    var shapeType = cannonData.shapes[i];
+                cannonData.shapes.forEach(function(e) {
                     var shape,
                         position,
                         quaternion,
                         array;
-                    switch (shapeType) {
+                    switch (e) {
                         case 'Plane':
                             shape = new CANNON.Plane();
                             quaternion = new CANNON.Quaternion();
@@ -166,12 +166,32 @@ THREE.py = ( function () {
                                 node.geometry.parameters.height,
                                 node.geometry.parameters.radialSegments);
                             break;
+                        // case 'Trimesh':
+                        //     var vertices;
+                        //     var indices;
+                        //     if (node.geometry instanceof THREE.BufferGeometry) {
+                        //         vertices = node.geometry.getAttribute('position').array;
+                        //         indices = node.geometry.getAttribute('index').array;
+                        //     } else {
+                        //         vertices = [];
+                        //         for (var iv = 0; iv < node.geometry.vertices.length; iv++) {
+                        //             var vert = node.geometry.vertices[iv];
+                        //             vertices.push(vert.x, vert.y, vert.z);
+                        //         }
+                        //         indices = [];
+                        //         for (var iface = 0; iface < node.geometry.faces.length; iface++) {
+                        //             var face = node.geometry.faces[iface];
+                        //             indices.push(face.a, face.b, face.c);
+                        //         }
+                        //     }
+                        //     shape = new CANNON.Trimesh(vertices, indices);
+                        //     break;
                         default:
-                            console.log("unknown shape type: " + shapeType);
+                            console.log("unknown shape type: " + e);
                             break;
                     }
                     body.addShape(shape, position, quaternion);
-                }
+                });
                 node.body = body;
                 return body;
             } else if (node instanceof THREE.Object3D) {
@@ -186,7 +206,6 @@ THREE.py = ( function () {
 
     return {
         parse: parse,
-        load: load,
         CANNONize: CANNONize,
         isLoaded: isLoaded
     };
