@@ -30,14 +30,20 @@ def index():
                          material=three.MeshBasicMaterial(color=0xff0000),
                          position=[1, 0, -4])
     scene.add(boxMesh)
-    sphereMesh = three.Mesh(geometry=three.SphereBufferGeometry(radius=0.5),
+    sphereMesh = three.Mesh(geometry=three.SphereBufferGeometry(radius=0.5,
+                                                                widthSegments=11,
+                                                                heightSegments=9),
                             material=three.MeshBasicMaterial(color=0x00ff00),
                             position=[0, 1, -4])
     scene.add(sphereMesh)
+    textGeomMesh = three.Mesh(geometry=three.TextGeometry(text='three.py', size=0.25, height=0.25/16),
+                              material=three.MeshBasicMaterial(color=0x0000ff),
+                              position=[-1, 0, -4])
+    scene.add(textGeomMesh)
     return render_template('index.html',
-                           json_config=Markup("""<script>
-var JSON_SCENE = %s;
-</script>""" % json.dumps(scene.export(), indent=2)),
+                           json_config=Markup("""<script> var
+                           JSON_SCENE = %s; </script>""" %
+                                              json.dumps(scene.export(), indent=2)),
                            threejs_lib='lib/three-r73.js')
 
 
@@ -54,24 +60,31 @@ def read():
     return jsonify(response)
 
 
-WRITE_FOLDER = os.path.join(os.getcwd(), 'write')
-if not os.path.exists(WRITE_FOLDER):
-    raise Exception('create the write folder %s' % WRITE_FOLDER)
-@app.route("/write", methods=['POST'])
-def write():
-    filename = os.path.join(WRITE_FOLDER, os.path.split(request.args['file'])[1])
-    try:
-        if request.json is not None:
-            with open(filename, 'w') as f:
-                f.write(json.dumps(request.json))
-        else:
-            with open(filename, 'w') as f:
-                f.write(request.form['text'])
-        response = {'filename': filename}
-    except Exception as err:
-        response = {'error': str(err)}
-    return jsonify(response)
-
+if '--no-write' not in sys.argv:
+    WRITE_FOLDER = os.path.join(os.getcwd(), 'write')
+    if not os.path.exists(WRITE_FOLDER):
+        raise Exception('create the write folder %s or run with --no-write to disable writing' % WRITE_FOLDER)
+    @app.route("/write", methods=['POST'])
+    def write():
+        filename = os.path.join(WRITE_FOLDER, os.path.split(request.args['file'])[1])
+        try:
+            if request.json is not None:
+                with open(filename, 'w') as f:
+                    f.write(json.dumps(request.json))
+            else:
+                with open(filename, 'w') as f:
+                    f.write(request.form['text'])
+            response = {'filename': filename}
+        except Exception as err:
+            response = {'error': str(err)}
+        return jsonify(response)
+else:
+    @app.route('/write', methods=['POST'])
+    def write():
+        filename = os.path.join(WRITE_FOLDER, os.path.split(request.args['file'])[1])
+        return jsonify({'filename': filename,
+                        'writeDisabled': True})
+    
 
 @app.route('/log', methods=['POST'])
 def log():
@@ -83,6 +96,12 @@ def log():
     return jsonify(response)
 
 
+@app.route('/nothing')
+def nothing():
+    return render_template('index.html')
+
+
+    
 def main():
     _logger.info("app.config:\n%s" % '\n'.join(['%s: %s' % (k, str(v))
                                                 for k, v in sorted(app.config.items(),

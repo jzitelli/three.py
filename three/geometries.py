@@ -72,11 +72,13 @@ class PolyhedronGeometry(Three):
 
 
 class TextGeometry(Three):
-    def __init__(self, name=None, text=None, parameters=None):
+    def __init__(self, name=None, text=None, **parameters):
         Three.__init__(self, name)
         self.text = text
         self.parameters = parameters
     def json(self):
         d = Three.json(self)
-        d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
+        d['text'] = self.text
+        d['parameters'] = self.parameters
+        #d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
         return d
