@@ -75,6 +75,7 @@ if '--no-write' not in sys.argv:
                 with open(filename, 'w') as f:
                     f.write(request.form['text'])
             response = {'filename': filename}
+            _logger.info('wrote %s' % filename)
         except Exception as err:
             response = {'error': str(err)}
         return jsonify(response)
@@ -112,5 +113,5 @@ def main():
 
 if __name__ == "__main__":
     logging.basicConfig(level=(logging.DEBUG if app.debug else logging.INFO),
-                        format="%(asctime)s %(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")
+                        format="%(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")
     main()

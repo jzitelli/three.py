@@ -15,7 +15,7 @@
     <style>
       body {
         margin: 0;
-        overflow: hidden;      
+        overflow: hidden;
       }
       canvas {
         width: 100%;
@@ -31,11 +31,7 @@
 
   <body onload="onLoad()">
 
-{% if threejs_lib %}
-    <script src="{{ threejs_lib }}"></script>
-{% else %}
-    <script src="lib/three-r73.js"></script>
-{% endif %}
+    <script src="{{ threejs_lib if threejs_lib else 'lib/three-r73.js' }}"></script>
 
     <!-- TODO: these are not needed for three.js releases up to r71 (?) -->
     <script src="lib/TextGeometry.js"></script>

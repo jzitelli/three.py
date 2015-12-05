@@ -69,3 +69,5 @@ from .lights import *
 from .materials import *
 from .geometries import *
 from .buffer_geometries import *
+
+from . import shaderlib

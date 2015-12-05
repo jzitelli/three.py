@@ -19,12 +19,6 @@ var renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-function onLoad() {
-    "use strict";
-    renderer.render(scene, camera);
-}
-
-
 window.addEventListener('resize', function () {
     "use strict";
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -32,3 +26,12 @@ window.addEventListener('resize', function () {
     camera.updateProjectionMatrix();
     renderer.render(scene, camera);
 });
+
+
+function onLoad() {
+    "use strict";
+    pyserver.log('three.js version = ' + THREE.version);
+
+    renderer.render(scene, camera);
+    extractShaderLib();
+}

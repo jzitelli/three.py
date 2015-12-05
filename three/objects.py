@@ -2,11 +2,10 @@ from . import *
 
 class Object3D(Three):
     def __init__(self, name=None, position=(0,0,0), rotation=(0,0,0), scale=(1,1,1), visible=None, castShadow=None, receiveShadow=None, userData=None, **kwargs):
-        # TODO: use kwargs, don't convert to ndarray?
         Three.__init__(self, name)
         self.position = np.array(position, dtype=np.float64)
         self.rotation = np.array(rotation, dtype=np.float64)
-        self.scale = np.array(scale, dtype=np.float64)
+        self.scale =    np.array(scale,    dtype=np.float64)
         self.children = []
         if visible is not None:
             self.visible = visible
@@ -104,3 +103,17 @@ class PerspectiveCamera(Object3D):
         self.aspect = aspect
         self.near = near
         self.far = far
+    def js(self):
+        return """THREE.py.PerspectiveCamera = ( function (THREE) {
+
+    window.addEventListener('resize', function () {
+        window.camera.aspect = window.innerWidth / window.innerHeight;
+        window.camera.updateProjectionMatrix();
+    });
+
+    return THREE.PerspectiveCamera;
+
+} )();
+
+window.camera = window.camera || new THREE.py.PerspectiveCamera();
+"""
