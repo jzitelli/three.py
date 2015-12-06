@@ -2,6 +2,8 @@ three/ShaderLib.json
 three/UniformsLib.json
 three/ShaderChunk.json
 
+*~
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
