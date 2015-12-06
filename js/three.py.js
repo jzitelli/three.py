@@ -14,6 +14,10 @@ THREE.py = ( function () {
         return isLoaded_;
     }
 
+    function load(url, onLoad) {
+        // TODO:
+    }
+
     function parse(json, texturePath) {
         if (texturePath) {
             objectLoader.setTexturePath(texturePath);
