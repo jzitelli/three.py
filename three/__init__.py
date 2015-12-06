@@ -8,6 +8,7 @@ import uuid
 from collections import defaultdict
 import numpy as np
 
+THREE_VERSION = 'r73'
 
 FrontSide  = 0
 BackSide   = 1
