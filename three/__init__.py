@@ -71,4 +71,6 @@ from .materials import *
 from .geometries import *
 from .buffer_geometries import *
 
-from . import shaderlib
+from .shaderlib import ShaderLib as shaderlib
+
+from . import menus
