@@ -30,7 +30,7 @@ window.addEventListener('resize', function () {
 
 function onLoad() {
     "use strict";
-    pyserver.log('three.js version = ' + THREE.version);
+    pyserver.log('THREE.REVISION = ' + THREE.REVISION);
 
     renderer.render(scene, camera);
     extractShaderLib();
