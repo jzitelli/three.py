@@ -90,6 +90,7 @@ THREE.py = ( function () {
 
     var position = new THREE.Vector3();
     function CANNONize(obj, world) {
+        obj.updateMatrixWorld();
         obj.traverse(function(node) {
             if (node.userData && node.userData.cannonData) {
                 var body = makeCANNON(node, node.userData.cannonData);
@@ -113,7 +114,7 @@ THREE.py = ( function () {
             if (node instanceof THREE.Mesh) {
                 position.copy(node.position);
                 var params = {mass: cannonData.mass,
-                              position: node.localToWorld(position),
+                              position: node.parent.localToWorld(position),
                               quaternion: node.quaternion};
                 if (cannonData.linearDamping !== undefined) {
                     params.linearDamping = cannonData.linearDamping;
