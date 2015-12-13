@@ -20,10 +20,12 @@ THREE.py = ( function () {
 
 
     var TextGeomMesher = ( function () {
+
         var alphas = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         var digits = "0123456789";
         var symbols = ",./;'[]\\-=<>?:\"{}|_+~!@#$%^&*()";
         var chars = alphas + digits + symbols;
+
         function TextGeomMesher(material, parameters) {
             this.material = material || new THREE.MeshBasicMaterial({color: 0xff2201});
             this.geometries = {};
@@ -70,8 +72,8 @@ THREE.py = ( function () {
                     var child = mesh.children[i];
                     child.position.y = (mesh.children.length - i) * 1.6*parameters.size;
                 }
+                return mesh;
             }.bind(this);
-
         }
 
         return TextGeomMesher;
@@ -125,7 +127,7 @@ THREE.py = ( function () {
 
         // filter out geometries that ObjectLoader doesn't handle:
         var geometries = objectLoader.parseGeometries(json.geometries.filter(function (geom) {
-            return geom.type != "TextGeometry";
+            return geom.type !== "TextGeometry";
         }));
         // construct and insert geometries that ObjectLoader doesn't handle
         json.geometries.forEach( function (geom) {
@@ -141,6 +143,15 @@ THREE.py = ( function () {
         });
         var textures = objectLoader.parseTextures(json.textures, images);
         var materials = objectLoader.parseMaterials(json.materials, textures);
+
+        function parseObject(json, geometries, materials) {
+            var object;
+            if (json.type === 'TextObject3D') {
+                object = new THREE.Object3D();
+
+            }
+        }
+
         var object = objectLoader.parseObject(json.object, geometries, materials);
         if (json.images === undefined || json.images.length === 0) {
             onLoad(object);
@@ -186,8 +197,8 @@ THREE.py = ( function () {
                 body.mesh = node;
                 cannonData.shapes.forEach(function(e) {
                     var shape,
-                        position,
                         quaternion,
+                        position,
                         array;
                     switch (e) {
                         case 'Plane':
@@ -231,26 +242,49 @@ THREE.py = ( function () {
                                 node.geometry.parameters.height,
                                 node.geometry.parameters.radialSegments);
                             break;
-                        // case 'Trimesh':
-                        //     var vertices;
-                        //     var indices;
-                        //     if (node.geometry instanceof THREE.BufferGeometry) {
-                        //         vertices = node.geometry.getAttribute('position').array;
-                        //         indices = node.geometry.getAttribute('index').array;
-                        //     } else {
-                        //         vertices = [];
-                        //         for (var iv = 0; iv < node.geometry.vertices.length; iv++) {
-                        //             var vert = node.geometry.vertices[iv];
-                        //             vertices.push(vert.x, vert.y, vert.z);
-                        //         }
-                        //         indices = [];
-                        //         for (var iface = 0; iface < node.geometry.faces.length; iface++) {
-                        //             var face = node.geometry.faces[iface];
-                        //             indices.push(face.a, face.b, face.c);
-                        //         }
-                        //     }
-                        //     shape = new CANNON.Trimesh(vertices, indices);
-                        //     break;
+                        case 'Heightfield':
+                            array = node.geometry.getAttribute('position').array;
+                            if (node.geometry.type !== 'PlaneBufferGeometry') {
+                                pyserver.log('uh oh!');
+                            }
+                            var gridX1 = node.geometry.parameters.widthSegments + 1;
+                            var gridY1 = node.geometry.parameters.heightSegments + 1;
+                            var dx = node.geometry.parameters.width / node.geometry.parameters.widthSegments;
+                            var data = [];
+                            for (var ix = 0; ix < gridX1; ++ix) {
+                                data.push(new Float32Array(gridY1));
+                                for (var iy = 0; iy < gridY1; ++iy) {
+                                    data[ix][iy] = array[3 * (gridX1 * (gridY1 - iy - 1) + ix) + 2];
+                                }
+                            }
+                            shape = new CANNON.Heightfield(data, {
+                                elementSize: dx
+                            });
+                            // center to match THREE.PlaneBufferGeometry:
+                            position = new CANNON.Vec3();
+                            position.x = -node.geometry.parameters.width / 2;
+                            position.y = -node.geometry.parameters.height / 2;
+                            break;
+                        case 'Trimesh':
+                            var vertices;
+                            var indices;
+                            if (node.geometry instanceof THREE.BufferGeometry) {
+                                vertices = node.geometry.getAttribute('position').array;
+                                indices = node.geometry.index.array;
+                            } else {
+                                vertices = [];
+                                for (var iv = 0; iv < node.geometry.vertices.length; iv++) {
+                                    var vert = node.geometry.vertices[iv];
+                                    vertices.push(vert.x, vert.y, vert.z);
+                                }
+                                indices = [];
+                                for (var iface = 0; iface < node.geometry.faces.length; iface++) {
+                                    var face = node.geometry.faces[iface];
+                                    indices.push(face.a, face.b, face.c);
+                                }
+                            }
+                            shape = new CANNON.Trimesh(vertices, indices);
+                            break;
                         default:
                             console.log("unknown shape type: " + e);
                             break;
@@ -270,9 +304,10 @@ THREE.py = ( function () {
     }
 
     return {
-        parse: parse,
-        CANNONize: CANNONize,
-        isLoaded: isLoaded
+        load:           load,
+        parse:          parse,
+        CANNONize:      CANNONize,
+        isLoaded:       isLoaded,
+        TextGeomMesher: TextGeomMesher
     };
-
 } )();

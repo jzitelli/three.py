@@ -29,9 +29,9 @@ def index_scene(url_prefix=""):
     return scene
 
 
-def config_scene(url_prefix="../"):
+def config_scene(url_prefix="../", **config):
     scene = Scene()
-    textGeomMesh = Mesh(geometry=TextGeometry(text='three.py', size=0.25, height=0.25/16),
+    textGeomMesh = Mesh(geometry=TextGeometry(text='three.py config', size=0.25, height=0.25/16),
                         material=MeshBasicMaterial(color=0x0000ff),
                         position=[-1, 0, -4])
     scene.add(textGeomMesh)
