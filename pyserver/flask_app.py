@@ -20,6 +20,7 @@ app.debug = True
 
 import sys
 sys.path.append(os.getcwd())
+import pyserver
 from pyserver import scenes
 
 
