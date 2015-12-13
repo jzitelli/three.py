@@ -1,45 +1,9 @@
 import unittest
-
+import json
 from needle.cases import NeedleTestCase
 import numpy as np
 
-import os
-import sys
-sys.path.append(os.path.join(os.path.split(__file__)[0], os.path.pardir))
-import pyserver
-from pyserver.flask_app import app as flask_app, Markup
-from flask import render_template_string
-from pyserver import three
-from three import *
-
-
-class CANNONTest(NeedleTestCase):
-    def setUp(self):
-        flask_app.debug = True
-        flask_app.config['TESTING'] = True
-        self.app = flask_app.test_client()
-    def test_screenshot(self):
-        self.driver.get('127.0.0.1:5000/test/cannon')
-        self.assertScreenshot('canvas', 'screenshot')
-
-
-def scene():
-    s = Scene()
-    s.add(Mesh(geometry=SphereBufferGeometry(radius=0.25),
-               material=MeshBasicMaterial(color=0xff0000),
-               cannonData={'mass': 1, 'shapes': ['Sphere']},
-               position=[0, 2, -4]))
-    s.add(Mesh(geometry=BoxGeometry(width=1, height=1, depth=1),
-               material=MeshBasicMaterial(color=0x00ff00),
-               cannonData={'mass': 1, 'shapes': ['Box']},
-               position=[-2, 3, -4]))
-    s.add(Mesh(geometry=PlaneBufferGeometry(width=8, height=8),
-               material=MeshBasicMaterial(color=0x222222),
-               position=[0, -2, 0],
-               rotation=[-np.pi/2, 0, 0],
-               cannonData={'mass': 0, 'shapes': ['Plane']}))
-    return s
-
+from flask import render_template_string, Markup
 
 def test_cannon():
     return render_template_string(r"""
@@ -98,6 +62,43 @@ def test_cannon():
 """, json_config=Markup(r"""<script>
 var JSON_SCENE = %s;
 </script>""" % json.dumps(scene().export())))
+
+
+import os
+import sys
+sys.path.append(os.path.join(os.path.split(__file__)[0], os.path.pardir))
+import pyserver
+from pyserver.flask_app import app as flask_app
+from pyserver import three
+from three import *
+
+
+class CANNONTest(NeedleTestCase):
+    def setUp(self):
+        flask_app.debug = True
+        flask_app.config['TESTING'] = True
+        self.app = flask_app.test_client()
+    def test_screenshot(self):
+        self.driver.get('127.0.0.1:5000/test/cannon')
+        self.assertScreenshot('canvas', 'cannon_screenshot')
+
+
+def scene():
+    s = Scene()
+    s.add(Mesh(geometry=SphereBufferGeometry(radius=0.25),
+               material=MeshBasicMaterial(color=0xff0000),
+               cannonData={'mass': 1, 'shapes': ['Sphere']},
+               position=[0, 2, -4]))
+    s.add(Mesh(geometry=BoxGeometry(width=1, height=1, depth=1),
+               material=MeshBasicMaterial(color=0x00ff00),
+               cannonData={'mass': 1, 'shapes': ['Box']},
+               position=[-2, 3, -4]))
+    s.add(Mesh(geometry=PlaneBufferGeometry(width=8, height=8),
+               material=MeshBasicMaterial(color=0x222222),
+               position=[0, -2, 0],
+               rotation=[-np.pi/2, 0, 0],
+               cannonData={'mass': 0, 'shapes': ['Plane']}))
+    return s
 
 
 if __name__ == "__main__":
