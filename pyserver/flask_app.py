@@ -10,7 +10,7 @@ import json
 import logging
 _logger = logging.getLogger(__name__)
 
-from flask import Flask, render_template, request, jsonify, Markup
+from flask import Flask, render_template, render_template_string, request, jsonify, Markup
 
 STATIC_FOLDER = os.getcwd()
 app = Flask(__name__,
