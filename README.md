@@ -13,6 +13,31 @@ TODO
 
 
 
+## Tests
+
+### Client screenshot test
+
+First, start a local server:
+
+```bash
+.../three.py & python pyserver/flask_app.py
+```
+
+When the server is running:
+
+```bash
+.../three.py/test $ nosetests test_js.py
+```
+
+
+
 ## Acknowledgements
 
-TODO
+JavaScript libraries:
+  - [three.js](http://threejs.org)
+  - [Cannon.js](http://www.cannonjs.org)
+
+Python packages:
+  - [Flask](http://flask.pocoo.org/)
+  - [NumPy](http://www.numpy.org)
+  - [SciPy](http://www.scipy.org)
