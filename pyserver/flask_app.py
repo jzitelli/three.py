@@ -20,28 +20,22 @@ app.debug = True
 
 import sys
 sys.path.append(os.getcwd())
-import three
+from pyserver import scenes
 
 
 @app.route('/')
 def index():
-    scene = three.Scene()
+    scene = scenes.index_scene()
+    return render_template('index.html',
+                           json_config=Markup("""<script>
+var JSON_SCENE = %s;
+</script>""" % json.dumps(scene.export(), indent=2)),
+                           threejs_lib='lib/three-r73.js')
 
-    boxMesh = three.Mesh(geometry=three.BoxGeometry(width=1, height=1, depth=1),
-                         material=three.MeshBasicMaterial(color=0xff0000),
-                         position=[1, 0, -4])
-    scene.add(boxMesh)
 
-    sphereMesh = three.Mesh(geometry=three.SphereBufferGeometry(radius=0.5, widthSegments=11, heightSegments=9),
-                            material=three.MeshBasicMaterial(color=0x00ff00),
-                            position=[0, 1, -4])
-    scene.add(sphereMesh)
-
-    textGeomMesh = three.Mesh(geometry=three.TextGeometry(text='three.py', size=0.25, height=0.25/16),
-                              material=three.MeshBasicMaterial(color=0x0000ff),
-                              position=[-1, 0, -4])
-    scene.add(textGeomMesh)
-
+@app.route('/config')
+def config_page():
+    scene = scenes.config_scene(url_prefix='../')
     return render_template('index.html',
                            json_config=Markup("""<script>
 var JSON_SCENE = %s;
@@ -87,7 +81,7 @@ except Exception as err:
         filename = os.path.join(WRITE_FOLDER, os.path.split(request.args['file'])[1])
         return jsonify({'filename': filename,
                         'writeDisabled': True})
-    
+
 
 @app.route('/log', methods=['POST'])
 def log():
