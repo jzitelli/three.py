@@ -20,13 +20,13 @@ TODO
 First, start a local server:
 
 ```bash
-.../three.py & python pyserver/flask_app.py
+.../three.py $ python ./pyserver/flask_app.py
 ```
 
 When the server is running:
 
 ```bash
-.../three.py/test $ nosetests test_js.py
+.../three.py/test $ nosetests ./test_js.py
 ```
 
 

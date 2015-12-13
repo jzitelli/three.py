@@ -17,9 +17,10 @@ app = Flask(__name__,
             static_folder=STATIC_FOLDER,
             static_url_path='')
 app.debug = True
+app.config['TESTING'] = True
 
 import sys
-sys.path.append(os.getcwd())
+sys.path.insert(0, os.path.join(os.path.split(__file__)[0], os.pardir))
 import pyserver
 from pyserver import scenes
 
@@ -100,6 +101,16 @@ def main():
                                                                    key=lambda i: i[0])]))
     _logger.info("STARTING FLASK APP!!!!!!!!!!!!!")
     app.run(host='0.0.0.0')
+
+
+
+test_cannon = None
+if app.config.get('TESTING'):
+    sys.path.insert(0, os.path.join(os.path.split(__file__)[0], os.path.pardir, 'test'))
+    import test_cannon as testcan
+    test_cannon = testcan.test_cannon
+if test_cannon is not None:
+    test_cannon = app.route('/test/cannon')(test_cannon)
 
 
 if __name__ == "__main__":

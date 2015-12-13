@@ -1,11 +1,12 @@
+from copy import deepcopy
 from . import *
 
 class Object3D(Three):
-    def __init__(self, name=None, position=(0,0,0), rotation=(0,0,0), scale=(1,1,1), visible=None, castShadow=None, receiveShadow=None, userData=None, **kwargs):
+    def __init__(self, name=None, position=(0,0,0), rotation=(0,0,0), scale=(1,1,1), visible=None, castShadow=None, receiveShadow=None, userData=None, cannonData=None, **kwargs):
         Three.__init__(self, name)
         self.position = np.array(position, dtype=np.float64)
         self.rotation = np.array(rotation, dtype=np.float64)
-        self.scale =    np.array(scale,    dtype=np.float64)
+        self.scale    = np.array(scale,    dtype=np.float64)
         self.children = []
         if visible is not None:
             self.visible = visible
@@ -14,7 +15,12 @@ class Object3D(Three):
         if receiveShadow is not None:
             self.receiveShadow = receiveShadow
         if userData is not None:
+            userData = deepcopy(userData)
+            if cannonData is not None:
+                userData['cannonData']
             self.userData = userData
+        elif cannonData is not None:
+            self.userData = {'cannonData': cannonData}
     def add(self, *objs):
         self.children += objs
     def find_geometries(self, geometries=None):
