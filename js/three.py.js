@@ -159,7 +159,6 @@ THREE.py = ( function () {
         return object;
     }
 
-    var position = new THREE.Vector3();
     function CANNONize(obj, world) {
         obj.updateMatrixWorld();
         obj.traverse(function(node) {
@@ -182,6 +181,7 @@ THREE.py = ( function () {
             if (node.body) {
                 return node.body;
             }
+            var position = new THREE.Vector3();
             if (node instanceof THREE.Mesh) {
                 position.copy(node.position);
                 var params = {mass: cannonData.mass,
@@ -203,8 +203,8 @@ THREE.py = ( function () {
                     switch (e) {
                         case 'Plane':
                             shape = new CANNON.Plane();
-                            quaternion = new CANNON.Quaternion();
-                            quaternion.setFromEuler(-Math.PI / 2, 0, 0, 'XYZ');
+                            // quaternion = new CANNON.Quaternion();
+                            // quaternion.setFromEuler(-Math.PI / 2, 0, 0, 'XYZ');
                             break;
                         case 'Box':
                             var halfExtents = new CANNON.Vec3();

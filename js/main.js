@@ -21,6 +21,8 @@ window.addEventListener('resize', function () {
 
 
 var world = new CANNON.World();
+world.gravity.set(0, -9.8, 0 );
+
 
 function onLoad() {
     "use strict";
@@ -61,7 +63,17 @@ var animate = ( function () {
     function animate(t) {
         var dt = 0.001 * (t - lt);
         requestAnimationFrame(animate);
-        world.step(dt, 75, 10);
+        world.step(dt, 1/75, 10);
+        for (var i = 0; i < world.bodies.length; i++) {
+            var body = world.bodies[i];
+            if (body.mass > 0) {
+                var mesh = body.mesh;
+                if (mesh) {
+                    mesh.position.copy(body.position);
+                    mesh.quaternion.copy(body.quaternion);
+                }
+            }
+        }
         renderer.render(scene, camera);
         lt = t;
     }

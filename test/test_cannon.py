@@ -6,18 +6,18 @@ import numpy as np
 def test_cannon():
     scene = Scene()
     scene.add(Mesh(geometry=SphereBufferGeometry(radius=0.25),
-               material=MeshBasicMaterial(color=0xff0000),
-               cannonData={'mass': 1, 'shapes': ['Sphere']},
-               position=[0, 2, -4]))
+                   material=MeshBasicMaterial(color=0xff0000),
+                   cannonData={'mass': 1, 'shapes': ['Sphere']},
+                   position=[0, 2, -4]))
     scene.add(Mesh(geometry=BoxGeometry(width=1, height=1, depth=1),
-               material=MeshBasicMaterial(color=0x00ff00),
-               cannonData={'mass': 1, 'shapes': ['Box']},
-               position=[-2, 3, -4]))
+                   material=MeshBasicMaterial(color=0x00ff00),
+                   cannonData={'mass': 1, 'shapes': ['Box']},
+                   position=[-2, 3, -4]))
     scene.add(Mesh(geometry=PlaneBufferGeometry(width=8, height=8),
-               material=MeshBasicMaterial(color=0x222222),
-               position=[0, -2, 0],
-               rotation=[-np.pi/2, 0, 0],
-               cannonData={'mass': 0, 'shapes': ['Plane']}))
+                   material=MeshBasicMaterial(color=0x5555ff),
+                   position=[0, -2, -4],
+                   rotation=[-np.pi/2, 0, 0],
+                   cannonData={'mass': 0, 'shapes': ['Plane']}))
     return render_template_string(r"""
 <!DOCTYPE html>
 <html lang="en">
