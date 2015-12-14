@@ -10,7 +10,7 @@ SHADERLIB_PATH = os.path.join(os.path.split(__file__)[0], 'ShaderLib.json')
 try:
     with open(SHADERLIB_PATH) as f:
         ShaderLib = json.loads(f.read())
-    _logger.info('available shaders:\n' + '  \n'.join(ShaderLib.keys()))
+    # _logger.info('available shaders:\n' + '  \n'.join(ShaderLib.keys()))
 except Exception as err:
     ShaderLib = None
-    _logger.warning("%s could not be loaded: %s" % (SHADERLIB_PATH, err))
+    # _logger.warning("%s could not be loaded: %s" % (SHADERLIB_PATH, err))

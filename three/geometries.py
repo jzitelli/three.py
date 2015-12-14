@@ -26,7 +26,7 @@ class BoxGeometry(Geometry):
 class CylinderGeometry(Geometry):
     def __init__(self, radiusTop=20, radiusBottom=20, height=100,
                  radialSegments=8, heightSegments=1,
-                 openEnded=False, thetaStart=0, thetaLength=2*np.pi, **kwargs):
+                 openEnded=False, thetaStart=None, thetaLength=None, **kwargs):
         Three.__init__(self)
         self.radiusTop = radiusTop
         self.radiusBottom = radiusBottom

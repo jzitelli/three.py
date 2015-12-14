@@ -13,6 +13,10 @@ def test_cannon():
                    material=MeshBasicMaterial(color=0x00ff00),
                    cannonData={'mass': 1, 'shapes': ['Box']},
                    position=[-2, 3, -4]))
+    scene.add(Mesh(geometry=CylinderGeometry(topRadius=0.25, bottomRadius=0.25, height=1),
+                   material=MeshBasicMaterial(color=0x0000ff),
+                   position=[2, 6, -4],
+                   cannonData={'mass': 1, 'shapes': ['Cylinder']}))
     scene.add(Mesh(geometry=PlaneBufferGeometry(width=8, height=8),
                    material=MeshBasicMaterial(color=0x5555ff),
                    position=[0, -2, -4],
