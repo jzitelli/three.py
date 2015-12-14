@@ -99,7 +99,17 @@ def main():
     _logger.info("app.config:\n%s" % '\n'.join(['%s: %s' % (k, str(v))
                                                 for k, v in sorted(app.config.items(),
                                                                    key=lambda i: i[0])]))
-    _logger.info("STARTING FLASK APP!!!!!!!!!!!!!")
+    _logger.info(r"""
+            ------
+        T H R E E . PY
+   **************************
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+STARTING FLASK APP!!!!!!!!!!!!!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  **************************
+        T H R E E . PY
+            ------
+""")
     app.run(host='0.0.0.0')
 
 

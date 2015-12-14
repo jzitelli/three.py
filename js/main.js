@@ -63,7 +63,7 @@ var animate = ( function () {
     function animate(t) {
         var dt = 0.001 * (t - lt);
         requestAnimationFrame(animate);
-        world.step(dt, 1/75, 10);
+        world.step(1/75, dt, 10);
         for (var i = 0; i < world.bodies.length; i++) {
             var body = world.bodies[i];
             if (body.mass > 0) {
