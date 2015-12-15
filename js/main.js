@@ -11,12 +11,19 @@ var renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+var controls;
+if (THREE.py.config.controls) {
+    controls = new THREE[THREE.py.config.controls](camera, renderer.domElement);
+    if (THREE.py.config.controls === 'FirstPersonControls') {
+        controls.lon = -90;
+    }
+}
+
 window.addEventListener('resize', function () {
     "use strict";
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.render(scene, camera);
 });
 
 
@@ -64,6 +71,9 @@ var animate = ( function () {
         var dt = 0.001 * (t - lt);
         requestAnimationFrame(animate);
         world.step(1/75, dt, 10);
+        if (controls) {
+            controls.update(dt);
+        }
         for (var i = 0; i < world.bodies.length; i++) {
             var body = world.bodies[i];
             if (body.mass > 0) {

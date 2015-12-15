@@ -285,6 +285,10 @@ THREE.py = ( function () {
                             }
                             shape = new CANNON.Trimesh(vertices, indices);
                             break;
+                        case 'Ellipsoid':
+                            // TODO
+                            console.log('TODO');
+                            break;
                         default:
                             console.log("unknown shape type: " + e);
                             break;
@@ -308,6 +312,7 @@ THREE.py = ( function () {
         parse:          parse,
         CANNONize:      CANNONize,
         isLoaded:       isLoaded,
-        TextGeomMesher: TextGeomMesher
+        TextGeomMesher: TextGeomMesher,
+        config:         window.THREE_PY_CONFIG || {}
     };
 } )();
