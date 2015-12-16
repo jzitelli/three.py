@@ -32,6 +32,12 @@ def test_cannon():
                    position=[0, -2, -4],
                    rotation=[-np.pi/2, 0, 0],
                    cannonData={'mass': 0, 'shapes': ['Plane']}))
+    # TODO:
+    # scene.add(Mesh(geometry=HeightfieldBufferGeometry(image=url_prefix+"images/terrain128.png",
+    #                                                   height=4),
+    #                material=MeshLambertMaterial(color=0x118822),
+    #                rotation=[-np.pi/2, 0, 0],
+    #                cannonData={'mass': 0, 'shapes': ['Heightfield']}))
     return render_template_string(test_html_string,
                                   json_config=Markup(r"""<script>
 var THREE_PY_CONFIG = %s;
