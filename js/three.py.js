@@ -84,14 +84,6 @@ THREE.py = ( function () {
         var textures = objectLoader.parseTextures(json.textures, images);
         var materials = objectLoader.parseMaterials(json.materials, textures);
 
-        function parseObject(json, geometries, materials) {
-            var object;
-            if (json.type === 'TextObject3D') {
-                object = new THREE.Object3D();
-
-            }
-        }
-
         var object = objectLoader.parseObject(json.object, geometries, materials);
         if (json.images === undefined || json.images.length === 0) {
             onLoad(object);
@@ -121,11 +113,9 @@ THREE.py = ( function () {
             if (node.body) {
                 return node.body;
             }
-            var position = new THREE.Vector3();
             if (node instanceof THREE.Mesh) {
-                position.copy(node.position);
                 var params = {mass: cannonData.mass,
-                              position: node.parent.localToWorld(position),
+                              position: node.position,
                               quaternion: node.quaternion};
                 if (cannonData.linearDamping !== undefined) {
                     params.linearDamping = cannonData.linearDamping;
@@ -143,8 +133,6 @@ THREE.py = ( function () {
                     switch (e) {
                         case 'Plane':
                             shape = new CANNON.Plane();
-                            // quaternion = new CANNON.Quaternion();
-                            // quaternion.setFromEuler(-Math.PI / 2, 0, 0, 'XYZ');
                             break;
                         case 'Box':
                             var halfExtents = new CANNON.Vec3();
