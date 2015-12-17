@@ -169,6 +169,8 @@ THREE.py = ( function () {
                                 node.geometry.parameters.radiusBottom,
                                 node.geometry.parameters.height,
                                 node.geometry.parameters.radialSegments);
+                            var quaternion = new CANNON.Quaternion();
+                            quaternion.setFromEuler(-Math.PI/2, 0, 0, 'XYZ');
                             break;
                         case 'Heightfield':
                             // TODO: use new CANNON routine
