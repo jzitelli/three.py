@@ -19,67 +19,6 @@ THREE.py = ( function () {
     }
 
 
-    var TextGeomMesher = ( function () {
-
-        var alphas = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        var digits = "0123456789";
-        var symbols = ",./;'[]\\-=<>?:\"{}|_+~!@#$%^&*()";
-        var chars = alphas + digits + symbols;
-
-        function TextGeomMesher(material, parameters) {
-            this.material = material || new THREE.MeshBasicMaterial({color: 0xff2201});
-            this.geometries = {};
-            this.meshes = {};
-            parameters = parameters || {size: 0.2, height: 0, font: 'anonymous pro', curveSegments: 2};
-            for (var i = 0; i < chars.length; i++) {
-                var c = chars[i];
-                var geom = new THREE.TextGeometry(c, parameters);
-                var bufferGeom = new THREE.BufferGeometry();
-                bufferGeom.fromGeometry(geom);
-                geom.dispose();
-                this.geometries[c] = bufferGeom;
-                this.meshes[c] = new THREE.Mesh(geom, this.material);
-            }
-            var lineMeshBuffer = {};
-            this.makeMesh = function (text, material) {
-                material = material || this.material;
-                var mesh = new THREE.Object3D();
-                var lines = text.split(/\n/);
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i];
-                    var lineMesh = lineMeshBuffer[line];
-                    if (lineMesh) {
-                        var clone = lineMesh.clone();
-                        clone.position.y = 0;
-                        mesh.add(clone);
-                    }
-                    else {
-                        lineMesh = new THREE.Object3D();
-                        mesh.add(lineMesh);
-                        lineMeshBuffer[line] = lineMesh;
-                        for (var j = 0; j < line.length; j++) {
-                            var c = line[j];
-                            if (c !== ' ') {
-                                var letterMesh = this.meshes[c].clone();
-                                letterMesh.position.x = 0.8*textGeomParams.size * j;
-                                lineMesh.add(letterMesh);
-                            }
-                        }
-                    }
-                }
-                // scroll lines:
-                for (i = 0; i < mesh.children.length; i++) {
-                    var child = mesh.children[i];
-                    child.position.y = (mesh.children.length - i) * 1.6*parameters.size;
-                }
-                return mesh;
-            }.bind(this);
-        }
-
-        return TextGeomMesher;
-    } )();
-
-
     function parse(json, texturePath) {
         if (texturePath) {
             objectLoader.setTexturePath(texturePath);
@@ -101,6 +40,7 @@ THREE.py = ( function () {
                         node.geometry.computeFaceNormals();
                 }
             } );
+            loadHeightfields(obj);
         }
         if (json.materials) {
             json.materials.forEach( function (mat) {
@@ -243,9 +183,10 @@ THREE.py = ( function () {
                                 node.geometry.parameters.radialSegments);
                             break;
                         case 'Heightfield':
+                            // TODO: use new CANNON routine
                             array = node.geometry.getAttribute('position').array;
                             if (node.geometry.type !== 'PlaneBufferGeometry') {
-                                pyserver.log('uh oh!');
+                                alert('uh oh!');
                             }
                             var gridX1 = node.geometry.parameters.widthSegments + 1;
                             var gridY1 = node.geometry.parameters.heightSegments + 1;
@@ -306,6 +247,111 @@ THREE.py = ( function () {
             }
         }
     }
+
+    var TextGeomMesher = ( function () {
+
+        var alphas = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        var digits = "0123456789";
+        var symbols = ",./;'[]\\-=<>?:\"{}|_+~!@#$%^&*()";
+        var chars = alphas + digits + symbols;
+
+        function TextGeomMesher(material, parameters) {
+            this.material = material || new THREE.MeshBasicMaterial({color: 0xff2201});
+            this.geometries = {};
+            this.meshes = {};
+            parameters = parameters || {size: 0.2, height: 0, font: 'anonymous pro', curveSegments: 2};
+            for (var i = 0; i < chars.length; i++) {
+                var c = chars[i];
+                var geom = new THREE.TextGeometry(c, parameters);
+                var bufferGeom = new THREE.BufferGeometry();
+                bufferGeom.fromGeometry(geom);
+                geom.dispose();
+                this.geometries[c] = bufferGeom;
+                this.meshes[c] = new THREE.Mesh(geom, this.material);
+            }
+            var lineMeshBuffer = {};
+            this.makeMesh = function (text, material) {
+                material = material || this.material;
+                var mesh = new THREE.Object3D();
+                var lines = text.split(/\n/);
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i];
+                    var lineMesh = lineMeshBuffer[line];
+                    if (lineMesh) {
+                        var clone = lineMesh.clone();
+                        clone.position.y = 0;
+                        mesh.add(clone);
+                    }
+                    else {
+                        lineMesh = new THREE.Object3D();
+                        mesh.add(lineMesh);
+                        lineMeshBuffer[line] = lineMesh;
+                        for (var j = 0; j < line.length; j++) {
+                            var c = line[j];
+                            if (c !== ' ') {
+                                var letterMesh = this.meshes[c].clone();
+                                letterMesh.position.x = 0.8*textGeomParams.size * j;
+                                lineMesh.add(letterMesh);
+                            }
+                        }
+                    }
+                }
+                // scroll lines:
+                for (i = 0; i < mesh.children.length; i++) {
+                    var child = mesh.children[i];
+                    child.position.y = (mesh.children.length - i) * 1.6*parameters.size;
+                }
+                return mesh;
+            }.bind(this);
+        }
+
+        return TextGeomMesher;
+    } )();
+
+
+    function loadHeightfields(obj) {
+        function getPixel(imagedata, x, y) {
+            var position = (x + imagedata.width * y) * 4,
+                data = imagedata.data;
+            return {
+                r: data[position],
+                g: data[position + 1],
+                b: data[position + 2],
+                a: data[position + 3]
+            };
+        }
+        obj.traverse( function (node) {
+            if (node.userData && node.userData.heightfield) {
+                console.log(node);
+                isLoaded_ = false;
+                imageLoader.load(node.userData.heightfield, function(image) {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    var context = canvas.getContext('2d');
+                    context.drawImage(image, 0, 0);
+                    var imageData = context.getImageData(0, 0, image.width, image.height);
+                    var attribute = node.geometry.getAttribute('position');
+                    var gridX1 = node.geometry.parameters.widthSegments + 1;
+                    var gridY1 = node.geometry.parameters.heightSegments + 1;
+                    var i = 0;
+                    for (var iy = 0; iy < gridY1; ++iy) {
+                        for (var ix = 0; ix < gridX1; ++ix) {
+                            var pixel = getPixel(imageData, ix, iy);
+                            attribute.setZ(i++, 0.01 * (pixel.r + pixel.g + pixel.b));
+                        }
+                    }
+                    attribute.needsUpdate = true;
+                    node.geometry.computeFaceNormals();
+                    node.geometry.computeVertexNormals();
+                    node.geometry.normalsNeedUpdate = true;
+                    node.geometry.computeBoundingSphere();
+                    node.geometry.computeBoundingBox();
+                });
+            }
+        });
+    }
+
 
     return {
         load:           load,

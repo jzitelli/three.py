@@ -114,13 +114,12 @@ STARTING FLASK APP!!!!!!!!!!!!!
 
 
 
-test_cannon = None
 if app.config.get('TESTING'):
     sys.path.insert(0, os.path.join(os.path.split(__file__)[0], os.path.pardir, 'test'))
-    import test_cannon as testcan
-    test_cannon = testcan.test_cannon
-if test_cannon is not None:
+    from test_cannon import test_cannon
     test_cannon = app.route('/test/cannon')(test_cannon)
+    from test_heightfield import test_heightfield
+    test_heightfield = app.route('/test/heightfield')(test_heightfield)
 
 
 if __name__ == "__main__":

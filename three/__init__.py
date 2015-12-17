@@ -73,4 +73,4 @@ from .buffer_geometries import *
 
 from .shaderlib import ShaderLib as shaderlib
 
-from . import extras
+from .extras import *
