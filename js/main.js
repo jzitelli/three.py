@@ -19,9 +19,12 @@ if (THREE.py.config.controls) {
     }
 }
 
+var vrControls = new THREE.VRControls(camera);
+var vrEffect = new THREE.VREffect(renderer);
+
 window.addEventListener('resize', function () {
     "use strict";
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    vrEffect.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 });
@@ -30,10 +33,17 @@ window.addEventListener('resize', function () {
 var world = new CANNON.World();
 world.gravity.set(0, -9.8, 0 );
 
+var vrManager = new WebVRManager(renderer, vrEffect, {
+    hideButton: false
+});
+
+var stats;
 
 function onLoad() {
     "use strict";
     pyserver.log('THREE.REVISION = ' + THREE.REVISION);
+
+    stats = new Stats();
 
     if (window.extractShaderLib) {
         extractShaderLib();
@@ -50,8 +60,17 @@ function onLoad() {
         textMesh.position.set(-3, 2, -6);
     }
 
+    stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
+    // align top-left
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0px';
+    stats.domElement.style.top = '0px';
+    document.body.appendChild( stats.domElement );
+    console.log(stats.domElement);
+
     function waitForResources(t) {
         if (THREE.py.isLoaded()) {
+            vrEffect.setSize(window.innerWidth, window.innerHeight);
             THREE.py.CANNONize(scene, world);
             requestAnimationFrame(animate);
         } else {
@@ -66,6 +85,8 @@ var animate = ( function () {
     "use strict";
     var lt = 0;
     function animate(t) {
+        stats.begin();
+
         var dt = 0.001 * (t - lt);
         requestAnimationFrame(animate);
         world.step(1/75, dt, 10);
@@ -82,8 +103,11 @@ var animate = ( function () {
                 }
             }
         }
-        renderer.render(scene, camera);
+        vrControls.update();
+        vrManager.render(scene, camera);
         lt = t;
+
+        stats.end();
     }
     return animate;
 } )();
