@@ -16,16 +16,18 @@ with open(os.path.join(os.path.split(__file__)[0], 'test.html')) as f:
 
 def test_cannon():
     scene = Scene()
+    scene.add(PointLight(color=0xffffff, intensity=1, distance=100,
+                         position=[-2, 20, 4]))
     scene.add(Mesh(geometry=SphereBufferGeometry(radius=0.25),
-                   material=MeshBasicMaterial(color=0xff0000),
+                   material=MeshLambertMaterial(color=0xff0000, shading=FlatShading),
                    cannonData={'mass': 1, 'shapes': ['Sphere']},
                    position=[0, 2, -4]))
     scene.add(Mesh(geometry=BoxGeometry(width=1, height=1, depth=1),
-                   material=MeshBasicMaterial(color=0x00ff00),
+                   material=MeshLambertMaterial(color=0x00ff00, shading=FlatShading),
                    cannonData={'mass': 1, 'shapes': ['Box']},
                    position=[-2, 3, -4]))
     scene.add(Mesh(geometry=CylinderGeometry(radiusTop=0.5, radiusBottom=0.5, height=1, radialSegments=8),
-                   material=MeshBasicMaterial(color=0x0000ff),
+                   material=MeshLambertMaterial(color=0x0000ff, shading=FlatShading),
                    position=[2, 4, -6],
                    cannonData={'mass': 1, 'shapes': ['Cylinder']}))
     scene.add(Mesh(geometry=PlaneBufferGeometry(width=8, height=8),

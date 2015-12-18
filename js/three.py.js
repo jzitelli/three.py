@@ -33,7 +33,7 @@ THREE.py = ( function () {
                     }
                     if (!(node.geometry instanceof THREE.SphereBufferGeometry)) {
                         // makes seams appear on spherebuffergeometries due to doubled vertices at phi=0=2*pi
-                        node.geometry.computeVertexNormals();
+                        //node.geometry.computeVertexNormals();
                     }
                     if (node.material.shading === THREE.FlatShading)
                         node.geometry.computeFaceNormals();
@@ -80,9 +80,7 @@ THREE.py = ( function () {
                 geometries[geom.uuid] = geometry;
             }
         } );
-        var images = objectLoader.parseImages(json.images, function () {
-            onLoad_(object);
-        });
+        var images = objectLoader.parseImages(json.images, onLoad_);
         var textures = objectLoader.parseTextures(json.textures, images);
         var materials = objectLoader.parseMaterials(json.materials, textures);
 

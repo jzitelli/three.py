@@ -1,5 +1,7 @@
 var scene;
 
+var avatar = new THREE.Object3D();
+
 var camera;
 if (window.JSON_CAMERA !== undefined) {
     camera = THREE.py.parse(JSON_CAMERA);
@@ -7,13 +9,15 @@ if (window.JSON_CAMERA !== undefined) {
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 }
 
+avatar.add(camera);
+
 var renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 var controls;
 if (THREE.py.config.controls) {
-    controls = new THREE[THREE.py.config.controls](camera, renderer.domElement);
+    controls = new THREE[THREE.py.config.controls](avatar, renderer.domElement);
     if (THREE.py.config.controls === 'FirstPersonControls') {
         controls.lon = -90;
     }
@@ -21,7 +25,9 @@ if (THREE.py.config.controls) {
 
 var vrControls = new THREE.VRControls(camera);
 var vrEffect = new THREE.VREffect(renderer);
-
+var vrManager = new WebVRManager(renderer, vrEffect, {
+    hideButton: false
+});
 window.addEventListener('resize', function () {
     "use strict";
     vrEffect.setSize(window.innerWidth, window.innerHeight);
@@ -33,11 +39,11 @@ window.addEventListener('resize', function () {
 var world = new CANNON.World();
 world.gravity.set(0, -9.8, 0 );
 
-var vrManager = new WebVRManager(renderer, vrEffect, {
-    hideButton: false
-});
 
 var stats;
+
+var leapController,
+    animateLeap;
 
 function onLoad() {
     "use strict";
@@ -60,6 +66,8 @@ function onLoad() {
         textMesh.position.set(-3, 2, -6);
     }
 
+    scene.add(avatar);
+
     stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
     // align top-left
     stats.domElement.style.position = 'absolute';
@@ -67,6 +75,11 @@ function onLoad() {
     stats.domElement.style.top = '0px';
     document.body.appendChild( stats.domElement );
     console.log(stats.domElement);
+
+    var toolOptions = {};
+    var toolStuff = addTool(avatar, world, toolOptions);
+    leapController = toolStuff.leapController;
+    animateLeap    = toolStuff.animateLeap;
 
     function waitForResources(t) {
         if (THREE.py.isLoaded()) {
@@ -84,6 +97,7 @@ function onLoad() {
 var animate = ( function () {
     "use strict";
     var lt = 0;
+    var lastFrameID;
     function animate(t) {
         stats.begin();
 
@@ -105,6 +119,11 @@ var animate = ( function () {
         }
         vrControls.update();
         vrManager.render(scene, camera);
+        var frame = leapController.frame();
+        if (frame.valid && frame.id !== lastFrameID) {
+            animateLeap(frame, dt);
+            lastFrameID = frame.id;
+        }
         lt = t;
 
         stats.end();
