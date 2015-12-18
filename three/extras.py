@@ -13,6 +13,13 @@ class TextGeomObject3D(Object3D):
         return d
 
 
+# class HeightfieldBufferGeometry(Three):
+#     def __init__(self, heightfield=None, size=1, **kwargs):
+#         Three.__init__(self, **kwargs)
+#         self.heightfield = heightfield
+#         self.size = size
+
+
 class HeightfieldMesh(Mesh):
     def __init__(self, url_prefix="", heightfield=None, **kwargs):
         image = ndimage.imread(heightfield)
@@ -20,7 +27,7 @@ class HeightfieldMesh(Mesh):
         geometry = PlaneBufferGeometry(widthSegments=image.shape[0]-1, heightSegments=image.shape[1]-1,
                                        width=width, height=height)
         Mesh.__init__(self, geometry=geometry, **kwargs)
-        if not hasattr(self, 'userData'):            
+        if not hasattr(self, 'userData'):
             self.userData = {}
         self.userData['heightfield'] = url_prefix + heightfield
     def json(self):

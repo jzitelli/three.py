@@ -18,12 +18,15 @@ THREE.py = ( function () {
         // TODO:
     }
 
+    function setOnLoad(onLoad) {
+        manager.onLoad = onLoad;
+    }
 
     function parse(json, texturePath) {
         if (texturePath) {
             objectLoader.setTexturePath(texturePath);
         }
-        // TODO: convert all to BufferGeometry?
+
         function onLoad(obj) {
             obj.traverse( function (node) {
                 if (node instanceof THREE.Mesh) {
@@ -42,6 +45,7 @@ THREE.py = ( function () {
             } );
             loadHeightfields(obj);
         }
+
         if (json.materials) {
             json.materials.forEach( function (mat) {
                 if (mat.type.endsWith("ShaderMaterial") && mat.uniforms) {
@@ -67,7 +71,7 @@ THREE.py = ( function () {
 
         // filter out geometries that ObjectLoader doesn't handle:
         var geometries = objectLoader.parseGeometries(json.geometries.filter(function (geom) {
-            return geom.type !== "TextGeometry";
+            return geom.type !== "TextGeometry" && geom.type !== 'HeightfieldBufferGeometry';
         }));
         // construct and insert geometries that ObjectLoader doesn't handle
         json.geometries.forEach( function (geom) {
@@ -173,7 +177,6 @@ THREE.py = ( function () {
                             quaternion.setFromEuler(-Math.PI/2, 0, 0, 'XYZ');
                             break;
                         case 'Heightfield':
-                            // TODO: use new CANNON routine
                             array = node.geometry.getAttribute('position').array;
                             if (node.geometry.type !== 'PlaneBufferGeometry') {
                                 alert('uh oh!');
@@ -312,7 +315,6 @@ THREE.py = ( function () {
         }
         obj.traverse( function (node) {
             if (node.userData && node.userData.heightfield) {
-                console.log(node);
                 isLoaded_ = false;
                 imageLoader.load(node.userData.heightfield, function(image) {
                     var canvas = document.createElement('canvas');
@@ -348,6 +350,7 @@ THREE.py = ( function () {
         parse:          parse,
         CANNONize:      CANNONize,
         isLoaded:       isLoaded,
+        setOnLoad:      setOnLoad,
         TextGeomMesher: TextGeomMesher,
         config:         window.THREE_PY_CONFIG || {}
     };

@@ -50,16 +50,11 @@ function onLoad() {
         textMesh.position.set(-3, 2, -6);
     }
 
-    THREE.py.CANNONize(scene, world);
-    // world.addEventListener("postStep", function () {
-    //     this.position.copy(this.body.position);
-    //     var ballNum = this.body.ballNum;
-    //     var stripeMesh = ballStripeMeshes[ballNum];
-    //     if (stripeMesh !== undefined) {
-    //         stripeMesh.quaternion.copy(this.body.quaternion);
-    //     }
-    // }.bind(mesh));
+    THREE.py.setOnLoad(function () {
+        THREE.py.CANNONize(scene, world);
+    });
 
+    THREE.py.CANNONize(scene, world);
     requestAnimationFrame(animate);
 }
 

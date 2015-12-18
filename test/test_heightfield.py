@@ -21,8 +21,14 @@ def test_heightfield():
                               heightfield="images/terrain128.png",
                               material=MeshLambertMaterial(color=0xff0000),
                               rotation=[-np.pi/2, 0, 0],
-                              position=[0, -32, -64],
-                              scale=[0.4, 0.4, 1]))
+                              position=[0, -8, -32],
+                              minHeight=0,
+                              maxHeight=10,
+                              cannonData={'mass': 0, 'shapes': ['Heightfield']}))
+    scene.add(Mesh(geometry=SphereBufferGeometry(radius=1),
+                   material=MeshLambertMaterial(color=0xff0000, shading=FlatShading),
+                   position=[0, 0, -32],
+                   cannonData={'mass': 1, 'shapes': ['Sphere']}))
     return render_template_string(test_html_string,
                                   json_config=Markup(r"""<script>
 var THREE_PY_CONFIG = %s;
