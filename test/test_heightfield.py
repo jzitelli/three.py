@@ -1,11 +1,14 @@
 import unittest
-
+import json
+import numpy as np
 from needle.cases import NeedleTestCase
 
 import os.path
 import sys
 sys.path.append(os.path.join(os.path.split(__file__)[0], os.path.pardir))
 
+from flask import render_template_string
+from pyserver.flask_app import app, request, Markup
 from three import *
 
 
@@ -13,6 +16,7 @@ with open(os.path.join(os.path.split(__file__)[0], 'test.html')) as f:
     test_html_string = f.read()
 
 
+@app.route('/test/heightfield')
 def test_heightfield():
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=800,
@@ -36,17 +40,13 @@ var JSON_SCENE = %s;
                 json.dumps(scene.export(), indent=2))))
 
 
-import pyserver
-from pyserver.flask_app import Markup, render_template_string, app as flask_app, request
-
-
 class HeightfieldTest(NeedleTestCase):
     def setUp(self):
-        flask_app.debug = True
-        flask_app.config['TESTING'] = True
+        app.debug = True
+        app.config['TESTING'] = True
         self.app = flask_app.test_client()
     def test_screenshot(self):
-        self.driver.get('127.0.0.1:5000/test/heightfield')
+        self.driver.get('/test/heightfield')
         self.assertScreenshot('canvas', 'heightfield_screenshot')
 
 

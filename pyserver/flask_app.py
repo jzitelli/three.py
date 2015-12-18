@@ -10,19 +10,15 @@ import json
 import logging
 _logger = logging.getLogger(__name__)
 
-from flask import Flask, render_template, render_template_string, request, jsonify, Markup
+from flask import Flask, render_template, request, jsonify, Markup
 
-STATIC_FOLDER = os.getcwd()
+STATIC_FOLDER = os.path.join(os.path.split(__file__)[0], os.path.pardir)
 app = Flask(__name__,
             static_folder=STATIC_FOLDER,
             static_url_path='')
 app.debug = True
-app.config['TESTING'] = True
 
-import sys
-sys.path.insert(0, os.path.join(os.path.split(__file__)[0], os.pardir))
-import pyserver
-from pyserver import scenes
+import scenes
 
 
 @app.route('/')
@@ -112,15 +108,6 @@ STARTING FLASK APP!!!!!!!!!!!!!
             ------
 """)
     app.run(host='0.0.0.0')
-
-
-
-if app.config.get('TESTING'):
-    sys.path.insert(0, os.path.join(os.path.split(__file__)[0], os.path.pardir, 'test'))
-    from test_cannon import test_cannon
-    test_cannon = app.route('/test/cannon')(test_cannon)
-    from test_heightfield import test_heightfield
-    test_heightfield = app.route('/test/heightfield')(test_heightfield)
 
 
 if __name__ == "__main__":
