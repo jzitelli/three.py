@@ -59,14 +59,3 @@ class Texture(Three):
                 d['image'] = str(self.image.uuid)
         d.update({k: v for k, v in self.__dict__.items() if v is not None and k not in d})
         return d
-
-
-class Image(Three):
-    def __init__(self, name=None, url=None):
-        Three.__init__(self, name)
-        self.url = url
-    def json(self):
-        d = Three.json(self)
-        if self.url:
-            d['url'] = self.url
-        return d

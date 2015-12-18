@@ -8,8 +8,6 @@ import uuid
 from collections import defaultdict
 import numpy as np
 
-THREE_VERSION = 'r73'
-
 FrontSide  = 0
 BackSide   = 1
 DoubleSide = 2
@@ -59,12 +57,17 @@ class Three(object):
                     "name": self.name}
 
 
-# from . import objects
-# from . import lights
-# from . import materials
-# from . import geometries
-# from . import buffer_geometries
+class Image(Three):
+    def __init__(self, name=None, url=None):
+        Three.__init__(self, name)
+        self.url = url
+    def json(self):
+        d = Three.json(self)
+        if self.url:
+            d['url'] = self.url
+        return d
 
+# from . import objects
 from .objects import *
 from .lights import *
 from .materials import *
@@ -73,4 +76,5 @@ from .buffer_geometries import *
 
 from .shaderlib import ShaderLib as shaderlib
 
-from .extras import *
+from .text import *
+from .heightfields import *

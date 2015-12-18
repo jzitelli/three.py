@@ -21,9 +21,7 @@ def test_heightfield():
                               heightfield="images/terrain128.png",
                               material=MeshLambertMaterial(color=0xff0000),
                               rotation=[-np.pi/2, 0, 0],
-                              position=[0, -8, -32],
-                              minHeight=0,
-                              maxHeight=10,
+                              position=[0, -16, -32],
                               cannonData={'mass': 0, 'shapes': ['Heightfield']}))
     scene.add(Mesh(geometry=SphereBufferGeometry(radius=1),
                    material=MeshLambertMaterial(color=0xff0000, shading=FlatShading),

@@ -32,7 +32,7 @@ def index():
                            json_config=Markup("""<script>
 var JSON_SCENE = %s;
 </script>""" % json.dumps(scene.export(), indent=2)),
-                           threejs_lib='lib/three-r73.js')
+                           threejs_lib='lib/three.js')
 
 
 @app.route('/config')
@@ -58,7 +58,8 @@ def read():
     return jsonify(response)
 
 
-WRITE_FOLDER = os.path.join(os.getcwd(), 'write')
+# WRITE_FOLDER = os.path.join(os.getcwd(), 'write')
+WRITE_FOLDER = os.path.join(os.path.split(__file__)[0], os.pardir, 'three')
 try:
     if not os.path.exists(WRITE_FOLDER):
         raise Exception('write is disabled, you need to create the write folder %s' % WRITE_FOLDER)

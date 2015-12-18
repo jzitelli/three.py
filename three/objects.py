@@ -26,17 +26,17 @@ class Object3D(Three):
     def find_geometries(self, geometries=None):
         if geometries is None:
             geometries = {}
+        if hasattr(self, 'geometry'):
+            geometries[self.geometry.uuid] = self.geometry
         for c in self.children:
-            if hasattr(c, 'geometry'):
-                geometries[c.geometry.uuid] = c.geometry
             c.find_geometries(geometries)
         return geometries
     def find_materials(self, materials=None):
         if materials is None:
             materials = {}
+        if hasattr(self, 'material'):
+            materials[self.material.uuid] = self.material
         for c in self.children:
-            if hasattr(c, 'material'):
-                materials[c.material.uuid] = c.material
             c.find_materials(materials)
         return materials
     def find_textures(self):
@@ -48,12 +48,15 @@ class Object3D(Three):
             if hasattr(mat, 'bumpMap'):
                 textures[mat.bumpMap.uuid] = mat.bumpMap
         return textures
-    def find_images(self):
-        images = {}
-        textures = self.find_textures()
-        for tex in textures.values():
-            if hasattr(tex, 'image'):
-                images[tex.image.uuid] = tex.image
+    def find_images(self, images=None):
+        if images is None:
+            images = {}
+            textures = self.find_textures()
+            for tex in textures.values():
+                if hasattr(tex, 'image'):
+                    images[tex.image.uuid] = tex.image
+        for c in self.children:
+            c.find_images(images=images)
         return images
     def json(self):
         d = Three.json(self)

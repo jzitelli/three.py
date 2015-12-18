@@ -50,12 +50,15 @@ function onLoad() {
         textMesh.position.set(-3, 2, -6);
     }
 
-    THREE.py.setOnLoad(function () {
-        THREE.py.CANNONize(scene, world);
-    });
-
-    THREE.py.CANNONize(scene, world);
-    requestAnimationFrame(animate);
+    function waitForResources(t) {
+        if (THREE.py.isLoaded()) {
+            THREE.py.CANNONize(scene, world);
+            requestAnimationFrame(animate);
+        } else {
+            requestAnimationFrame(waitForResources);
+        }
+    }
+    requestAnimationFrame(waitForResources);
 }
 
 

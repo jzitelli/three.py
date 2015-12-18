@@ -18,16 +18,12 @@ THREE.py = ( function () {
         // TODO:
     }
 
-    function setOnLoad(onLoad) {
-        manager.onLoad = onLoad;
-    }
-
-    function parse(json, texturePath) {
+    function parse(json, texturePath, onLoad) {
         if (texturePath) {
             objectLoader.setTexturePath(texturePath);
         }
 
-        function onLoad(obj) {
+        function onLoad_(obj) {
             obj.traverse( function (node) {
                 if (node instanceof THREE.Mesh) {
                     node.geometry.computeBoundingSphere();
@@ -43,7 +39,9 @@ THREE.py = ( function () {
                         node.geometry.computeFaceNormals();
                 }
             } );
-            loadHeightfields(obj);
+            if (onLoad) {
+                onLoad(obj);
+            }
         }
 
         if (json.materials) {
@@ -83,15 +81,62 @@ THREE.py = ( function () {
             }
         } );
         var images = objectLoader.parseImages(json.images, function () {
-            onLoad(object);
+            onLoad_(object);
         });
         var textures = objectLoader.parseTextures(json.textures, images);
         var materials = objectLoader.parseMaterials(json.materials, textures);
 
         var object = objectLoader.parseObject(json.object, geometries, materials);
+
+        loadHeightfields(object);
+
         if (json.images === undefined || json.images.length === 0) {
-            onLoad(object);
+            onLoad_(object);
         }
+
+        function loadHeightfields(obj) {
+            function getPixel(imagedata, x, y) {
+                var position = (x + imagedata.width * y) * 4,
+                    data = imagedata.data;
+                return {
+                    r: data[position],
+                    g: data[position + 1],
+                    b: data[position + 2],
+                    a: data[position + 3]
+                };
+            }
+            obj.traverse( function (node) {
+                if (node.userData && node.userData.heightfield) {
+                    isLoaded_ = false;
+                    imageLoader.load(node.userData.heightfield, function(image) {
+                        var canvas = document.createElement('canvas');
+                        canvas.width = image.width;
+                        canvas.height = image.height;
+                        var context = canvas.getContext('2d');
+                        context.drawImage(image, 0, 0);
+                        var imageData = context.getImageData(0, 0, image.width, image.height);
+                        var attribute = node.geometry.getAttribute('position');
+                        var gridX1 = node.geometry.parameters.widthSegments + 1;
+                        var gridY1 = node.geometry.parameters.heightSegments + 1;
+                        var i = 0;
+                        for (var iy = 0; iy < gridY1; ++iy) {
+                            for (var ix = 0; ix < gridX1; ++ix) {
+                                var pixel = getPixel(imageData, ix, iy);
+                                attribute.setZ(i++, 0.01 * (pixel.r + pixel.g + pixel.b));
+                            }
+                        }
+                        attribute.needsUpdate = true;
+                        node.geometry.computeFaceNormals();
+                        node.geometry.computeVertexNormals();
+                        node.geometry.normalsNeedUpdate = true;
+                        node.geometry.computeBoundingSphere();
+                        node.geometry.computeBoundingBox();
+                        isLoaded_ = true;
+                    });
+                }
+            });
+        }
+
         return object;
     }
 
@@ -302,55 +347,11 @@ THREE.py = ( function () {
     } )();
 
 
-    function loadHeightfields(obj) {
-        function getPixel(imagedata, x, y) {
-            var position = (x + imagedata.width * y) * 4,
-                data = imagedata.data;
-            return {
-                r: data[position],
-                g: data[position + 1],
-                b: data[position + 2],
-                a: data[position + 3]
-            };
-        }
-        obj.traverse( function (node) {
-            if (node.userData && node.userData.heightfield) {
-                isLoaded_ = false;
-                imageLoader.load(node.userData.heightfield, function(image) {
-                    var canvas = document.createElement('canvas');
-                    canvas.width = image.width;
-                    canvas.height = image.height;
-                    var context = canvas.getContext('2d');
-                    context.drawImage(image, 0, 0);
-                    var imageData = context.getImageData(0, 0, image.width, image.height);
-                    var attribute = node.geometry.getAttribute('position');
-                    var gridX1 = node.geometry.parameters.widthSegments + 1;
-                    var gridY1 = node.geometry.parameters.heightSegments + 1;
-                    var i = 0;
-                    for (var iy = 0; iy < gridY1; ++iy) {
-                        for (var ix = 0; ix < gridX1; ++ix) {
-                            var pixel = getPixel(imageData, ix, iy);
-                            attribute.setZ(i++, 0.01 * (pixel.r + pixel.g + pixel.b));
-                        }
-                    }
-                    attribute.needsUpdate = true;
-                    node.geometry.computeFaceNormals();
-                    node.geometry.computeVertexNormals();
-                    node.geometry.normalsNeedUpdate = true;
-                    node.geometry.computeBoundingSphere();
-                    node.geometry.computeBoundingBox();
-                });
-            }
-        });
-    }
-
-
     return {
         load:           load,
         parse:          parse,
         CANNONize:      CANNONize,
         isLoaded:       isLoaded,
-        setOnLoad:      setOnLoad,
         TextGeomMesher: TextGeomMesher,
         config:         window.THREE_PY_CONFIG || {}
     };
