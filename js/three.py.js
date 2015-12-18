@@ -107,6 +107,7 @@ THREE.py = ( function () {
             }
             obj.traverse( function (node) {
                 if (node.userData && node.userData.heightfield) {
+                    var heightfieldScale = node.userData.heightfieldScale || 1;
                     isLoaded_ = false;
                     imageLoader.load(node.userData.heightfield, function(image) {
                         var canvas = document.createElement('canvas');
@@ -122,7 +123,7 @@ THREE.py = ( function () {
                         for (var iy = 0; iy < gridY1; ++iy) {
                             for (var ix = 0; ix < gridX1; ++ix) {
                                 var pixel = getPixel(imageData, ix, iy);
-                                attribute.setZ(i++, 0.01 * (pixel.r + pixel.g + pixel.b));
+                                attribute.setZ(i++, heightfieldScale * (pixel.r + 256*pixel.g + 256*256*pixel.b) / (256 * 256 * 256));
                             }
                         }
                         attribute.needsUpdate = true;
