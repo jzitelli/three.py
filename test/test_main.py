@@ -1,11 +1,8 @@
 import unittest
-
 from needle.cases import NeedleTestCase
-
 import sys
-import os
+import os.path
 sys.path.append(os.path.join(os.path.split(__file__)[0], os.path.pardir))
-import pyserver
 from pyserver.flask_app import app
 
 
