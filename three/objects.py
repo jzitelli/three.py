@@ -68,7 +68,8 @@ class Object3D(Three):
         d.update({k: v for k, v in self.__dict__.items()
                   if v is not None and k not in d})
         return d
-    def export(self, geometries=None, materials=None, textures=None, images=None):
+    def export(self, geometries=None, materials=None, textures=None, images=None,
+               url_prefix=""):
         if geometries is None:
             geometries = self.find_geometries()
         if materials is None:
@@ -77,11 +78,14 @@ class Object3D(Three):
             textures = self.find_textures()
         if images is None:
             images = self.find_images()
-        return {'object': self.json(),
-                "geometries": [g.json() for g in geometries.values()],
-                "materials": [m.json() for m in materials.values()],
-                "textures": [t.json() for t in textures.values()],
-                "images": [i.json() for i in images.values()]}
+        d = {'object': self.json(),
+             "geometries": [g.json() for g in geometries.values()],
+             "materials": [m.json() for m in materials.values()],
+             "textures": [t.json() for t in textures.values()],
+             "images": [i.json() for i in images.values()]}
+        for imagejson in d['images']:
+            imagejson['url'] = url_prefix + imagejson['url']
+        return d
 
 
 class Scene(Object3D):

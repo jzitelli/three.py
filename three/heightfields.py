@@ -11,7 +11,7 @@ from . import *
 
 class HeightfieldMesh(Mesh):
     def __init__(self, heightfieldImage=None, heightfieldScale=1, width=None, height=None, **kwargs):
-        image = ndimage.imread(heightfield)
+        image = ndimage.imread(heightfieldImage.url)
         if width is None:
             width = image.shape[0]
         if height is None:
@@ -22,7 +22,7 @@ class HeightfieldMesh(Mesh):
         if not hasattr(self, 'userData'):
             self.userData = {}
         self.userData['heightfield']      = heightfieldImage.url
-        self.userData['heightfieldImage'] = heightfieldImage.uuid
+        self.userData['heightfieldImage'] = str(heightfieldImage.uuid)
         self.userData['heightfieldScale'] = heightfieldScale
         self.heightfieldImage = heightfieldImage
     def find_images(self, images=None):
@@ -32,4 +32,5 @@ class HeightfieldMesh(Mesh):
     def json(self):
         d = Mesh.json(self)
         d['type'] = 'Mesh'
+        d.pop('heightfieldImage')
         return d

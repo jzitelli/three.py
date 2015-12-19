@@ -38,7 +38,7 @@ def config_page():
                            json_config=Markup("""<script>
 var JSON_SCENE = %s;
 </script>""" % json.dumps(scene.export(), indent=2)),
-                           threejs_lib='lib/three-r73.js')
+                           threejs_lib='lib/three.js')
 
 
 @app.route("/read")

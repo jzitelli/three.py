@@ -67,6 +67,7 @@ class Image(Three):
             d['url'] = self.url
         return d
 
+
 # from . import objects
 from .objects import *
 from .lights import *
@@ -78,3 +79,4 @@ from .shaderlib import ShaderLib as shaderlib
 
 from .text import *
 from .heightfields import *
+from .skybox import *

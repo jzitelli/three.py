@@ -25,9 +25,13 @@ if (THREE.py.config.controls) {
 
 var vrControls = new THREE.VRControls(camera);
 var vrEffect = new THREE.VREffect(renderer);
+
+vrEffect.setSize(window.innerWidth, window.innerHeight);
+
 var vrManager = new WebVRManager(renderer, vrEffect, {
     hideButton: false
 });
+
 window.addEventListener('resize', function () {
     "use strict";
     vrEffect.setSize(window.innerWidth, window.innerHeight);
@@ -56,7 +60,9 @@ function onLoad() {
     }
 
     if (window.JSON_SCENE !== undefined) {
-        scene = THREE.py.parse(JSON_SCENE);
+        scene = THREE.py.parse(JSON_SCENE, undefined, function () {
+            THREE.py.CANNONize(scene, world);
+        });
     } else {
         scene = new THREE.Scene();
         var textGeom = new THREE.TextGeometry("This is what you get when you don't define window.JSON_SCENE", {size: 0.3, height: 0, font: 'anonymous pro'});
@@ -84,7 +90,6 @@ function onLoad() {
     function waitForResources(t) {
         if (THREE.py.isLoaded()) {
             vrEffect.setSize(window.innerWidth, window.innerHeight);
-            THREE.py.CANNONize(scene, world);
             requestAnimationFrame(animate);
         } else {
             requestAnimationFrame(waitForResources);
