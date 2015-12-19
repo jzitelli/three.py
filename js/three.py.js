@@ -1,7 +1,7 @@
 THREE.py = ( function () {
     "use strict";
     var manager = new THREE.LoadingManager();
-    var isLoaded_ = true;
+    var isLoaded_ = false;
     manager.onLoad = function () {
         isLoaded_ = true;
     };
@@ -24,6 +24,7 @@ THREE.py = ( function () {
         }
 
         function onLoad_(obj) {
+            loadHeightfields(obj);
             obj.traverse( function (node) {
                 if (node instanceof THREE.Mesh) {
                     node.geometry.computeBoundingSphere();
@@ -80,13 +81,11 @@ THREE.py = ( function () {
                 geometries[geom.uuid] = geometry;
             }
         } );
-        var images = objectLoader.parseImages(json.images, onLoad_);
+        var images = objectLoader.parseImages(json.images, function () {onLoad_(object);});
         var textures = objectLoader.parseTextures(json.textures, images);
         var materials = objectLoader.parseMaterials(json.materials, textures);
-
         var object = objectLoader.parseObject(json.object, geometries, materials);
 
-        loadHeightfields(object);
 
         if (json.images === undefined || json.images.length === 0) {
             onLoad_(object);
@@ -104,10 +103,11 @@ THREE.py = ( function () {
                 };
             }
             obj.traverse( function (node) {
-                if (node.userData && node.userData.heightfield) {
+                if (node.userData && node.userData.heightfieldImage) {
+                    var uuid = node.userData.heightfieldImage;
                     var heightfieldScale = node.userData.heightfieldScale || 1;
-                    isLoaded_ = false;
-                    imageLoader.load(node.userData.heightfield, function(image) {
+                    var image = images[uuid];
+                    if (image) {
                         var canvas = document.createElement('canvas');
                         canvas.width = image.width;
                         canvas.height = image.height;
@@ -130,8 +130,7 @@ THREE.py = ( function () {
                         node.geometry.normalsNeedUpdate = true;
                         node.geometry.computeBoundingSphere();
                         node.geometry.computeBoundingBox();
-                        isLoaded_ = true;
-                    });
+                    }
                 }
             });
         }
