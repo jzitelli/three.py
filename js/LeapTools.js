@@ -133,7 +133,7 @@ function addTool(parent, world, options) {
         tipMaterial = new THREE.MeshBasicMaterial({color: tipColor, transparent: true});
     }
     else {
-        stickMaterial = new THREE.MeshLambertMaterial({color: stickColor, side: THREE.DoubleSide, transparent: true, shading: THREE.FlatShading});
+        stickMaterial = new THREE.MeshPhongMaterial({color: stickColor, side: THREE.DoubleSide, transparent: true, shading: THREE.FlatShading});
         tipMaterial = new THREE.MeshLambertMaterial({color: tipColor, transparent: true});
         stickGeom.computeFaceNormals();
     }

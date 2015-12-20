@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 from flask import Flask, render_template, request, jsonify, Markup
 
-STATIC_FOLDER = os.path.join(os.path.split(__file__)[0], os.path.pardir)
+STATIC_FOLDER = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir))
 app = Flask(__name__,
             static_folder=STATIC_FOLDER,
             static_url_path='')
@@ -24,16 +24,6 @@ import scenes
 @app.route('/')
 def index():
     scene = scenes.index_scene()
-    return render_template('index.html',
-                           json_config=Markup("""<script>
-var JSON_SCENE = %s;
-</script>""" % json.dumps(scene.export(), indent=2)),
-                           threejs_lib='lib/three.js')
-
-
-@app.route('/config')
-def config_page():
-    scene = scenes.config_scene(url_prefix='../')
     return render_template('index.html',
                            json_config=Markup("""<script>
 var JSON_SCENE = %s;
@@ -54,32 +44,24 @@ def read():
     return jsonify(response)
 
 
-# WRITE_FOLDER = os.path.join(os.getcwd(), 'write')
 WRITE_FOLDER = os.path.join(os.path.split(__file__)[0], os.pardir, 'three')
-try:
-    if not os.path.exists(WRITE_FOLDER):
-        raise Exception('write is disabled, you need to create the write folder %s' % WRITE_FOLDER)
-    @app.route("/write", methods=['POST'])
-    def write():
-        filename = os.path.join(WRITE_FOLDER, os.path.split(request.args['file'])[1])
-        try:
-            if request.json is not None:
-                with open(filename, 'w') as f:
-                    f.write(json.dumps(request.json))
-            else:
-                with open(filename, 'w') as f:
-                    f.write(request.form['text'])
-            response = {'filename': filename}
-            _logger.info('wrote %s' % filename)
-        except Exception as err:
-            response = {'error': str(err)}
-        return jsonify(response)
-except Exception as err:
-    @app.route('/write', methods=['POST'])
-    def write():
-        filename = os.path.join(WRITE_FOLDER, os.path.split(request.args['file'])[1])
-        return jsonify({'filename': filename,
-                        'writeDisabled': True})
+if not os.path.exists(WRITE_FOLDER):
+    raise Exception('write is disabled, you need to create the write folder %s' % WRITE_FOLDER)
+@app.route("/write", methods=['POST'])
+def write():
+    filename = os.path.join(WRITE_FOLDER, os.path.split(request.args['file'])[1])
+    try:
+        if request.json is not None:
+            with open(filename, 'w') as f:
+                f.write(json.dumps(request.json))
+        else:
+            with open(filename, 'w') as f:
+                f.write(request.form['text'])
+        response = {'filename': filename}
+        _logger.info('wrote %s' % filename)
+    except Exception as err:
+        response = {'error': str(err)}
+    return jsonify(response)
 
 
 @app.route('/log', methods=['POST'])

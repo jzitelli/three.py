@@ -1,7 +1,7 @@
 THREE.py = ( function () {
     "use strict";
     var manager = new THREE.LoadingManager();
-    var isLoaded_ = false;
+    var isLoaded_ = true;
     manager.onLoad = function () {
         isLoaded_ = true;
     };

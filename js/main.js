@@ -11,9 +11,7 @@ if (window.JSON_CAMERA !== undefined) {
 
 avatar.add(camera);
 
-var renderer = new THREE.WebGLRenderer({antialias: true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+var renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
 
 var controls;
 if (THREE.py.config.controls) {
@@ -25,8 +23,6 @@ if (THREE.py.config.controls) {
 
 var vrControls = new THREE.VRControls(camera);
 var vrEffect = new THREE.VREffect(renderer);
-
-vrEffect.setSize(window.innerWidth, window.innerHeight);
 
 var vrManager = new WebVRManager(renderer, vrEffect, {
     hideButton: false
@@ -40,12 +36,8 @@ window.addEventListener('resize', function () {
 });
 
 
-var world = new CANNON.World();
-world.gravity.set(0, -9.8, 0 );
-
-
 var stats;
-
+var world;
 var leapController,
     animateLeap;
 
@@ -53,15 +45,21 @@ function onLoad() {
     "use strict";
     pyserver.log('THREE.REVISION = ' + THREE.REVISION);
 
+    vrEffect.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
     stats = new Stats();
 
     if (window.extractShaderLib) {
         extractShaderLib();
     }
 
+    world = new CANNON.World();
+    world.gravity.set(0, -9.8, 0 );
+
     if (window.JSON_SCENE !== undefined) {
-        scene = THREE.py.parse(JSON_SCENE, undefined, function () {
-            THREE.py.CANNONize(scene, world);
+        scene = THREE.py.parse(JSON_SCENE, undefined, function (obj) {
+            THREE.py.CANNONize(obj, world);
         });
     } else {
         scene = new THREE.Scene();
@@ -74,13 +72,15 @@ function onLoad() {
 
     scene.add(avatar);
 
+    var mouseStuff = setupMouse(avatar);
+    var animateMousePointer = mouseStuff.animateMousePointer;
+
     stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
     // align top-left
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.left = '0px';
     stats.domElement.style.top = '0px';
     document.body.appendChild( stats.domElement );
-    console.log(stats.domElement);
 
     var toolOptions = {};
     var toolStuff = addTool(avatar, world, toolOptions);
@@ -89,8 +89,7 @@ function onLoad() {
 
     function waitForResources(t) {
         if (THREE.py.isLoaded()) {
-            vrEffect.setSize(window.innerWidth, window.innerHeight);
-            requestAnimationFrame(animate);
+            requestAnimationFrame(animate(animateMousePointer));
         } else {
             requestAnimationFrame(waitForResources);
         }
@@ -99,7 +98,7 @@ function onLoad() {
 }
 
 
-var animate = ( function () {
+var animate = function (animateMousePointer) {
     "use strict";
     var lt = 0;
     var lastFrameID;
@@ -129,9 +128,12 @@ var animate = ( function () {
             animateLeap(frame, dt);
             lastFrameID = frame.id;
         }
+
+        animateMousePointer(t);
+
         lt = t;
 
         stats.end();
     }
     return animate;
-} )();
+};

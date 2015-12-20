@@ -18,11 +18,11 @@ def index_scene(url_prefix=""):
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=100, position=[-4, 5, 20]))
     boxMesh = Mesh(geometry=BoxGeometry(width=1, height=1, depth=1),
-                   material=MeshLambertMaterial(color=0xff0000, shading=FlatShading),
+                   material=MeshPhongMaterial(color=0xff0000, shading=FlatShading),
                    position=[1, 0, -4])
     scene.add(boxMesh)
     sphereMesh = Mesh(geometry=SphereBufferGeometry(radius=0.5, widthSegments=11, heightSegments=9),
-                      material=MeshLambertMaterial(color=0x00ff00, shading=FlatShading),
+                      material=MeshLambertMaterial(color=0x00ff00),
                       position=[0, 1, -4])
     scene.add(sphereMesh)
     textGeomMesh = Mesh(geometry=TextGeometry(text='three.py', size=0.25, height=0.25/16),
