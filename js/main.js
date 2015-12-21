@@ -35,8 +35,8 @@ function onLoad() {
     }
 
     scene.add(avatar);
-
     app = new WebVRApplication(scene);
+    avatar.add(app.camera);
 
     var mouseStuff = setupMouse(avatar);
     var animateMousePointer = mouseStuff.animateMousePointer;

@@ -23,6 +23,7 @@ THREE.py = ( function () {
             objectLoader.setTexturePath(texturePath);
         }
 
+        isLoaded_ = false;
         function onLoad_(obj) {
             loadHeightfields(obj);
             obj.traverse( function (node) {
@@ -40,6 +41,7 @@ THREE.py = ( function () {
                         node.geometry.computeFaceNormals();
                 }
             } );
+            isLoaded_ = true;
             if (onLoad) {
                 onLoad(obj);
             }
@@ -53,12 +55,10 @@ THREE.py = ( function () {
                         var uniform = uniforms[key];
                         if (uniform.type === 't') {
                             if (Array.isArray(uniform.value) && uniform.value.length == 6) {
-                                isLoaded_ = false;
                                 // texture cube specified by urls
                                 uniform.value = cubeTextureLoader.load(uniform.value);
                             } else
                             if (typeof uniform.value === 'string') {
-                                isLoaded_ = false;
                                 // single texture specified by url
                                 uniform.value = textureLoader.load(uniform.value);
                             }

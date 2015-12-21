@@ -18,6 +18,8 @@ app = Flask(__name__,
             static_url_path='')
 app.debug = True
 
+import sys
+sys.path.insert(0, os.path.join(os.path.split(__file__)[0], os.path.pardir))
 import pyserver.scenes as scenes
 
 
