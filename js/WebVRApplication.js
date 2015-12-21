@@ -57,14 +57,14 @@ WebVRApplication = ( function () {
             this.vrManager = ( function () {
                 var mode = 0;
                 var onFullscreenChange = function () {
+                    mode = 1 - mode;
                     vrEffect.setSize(window.innerWidth, window.innerHeight);
                 };
                 document.addEventListener('webkitfullscreenchange', onFullscreenChange);
                 document.addEventListener('mozfullscreenchange', onFullscreenChange);
                 window.addEventListener('keydown', function (evt) {
                     if (evt.keyCode === 70) { // F
-                        mode = 1 - mode;
-                        vrEffect.setFullScreen((mode === 1));
+                        vrEffect.setFullScreen((mode === 0));
                     }
                 });
                 return {

@@ -38,13 +38,13 @@ function setupMouse(parent, position, particleTexture, onpointerlockchange) {
     function lockChangeAlert() {
         if ( document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement ) {
             pyserver.log('pointer lock status is now locked');
-            mousePointerMesh.visible = true;
+            //mousePointerMesh.visible = true;
             if (onpointerlockchange) {
                 onpointerlockchange(true);
             }
         } else {
             pyserver.log('pointer lock status is now unlocked');
-            mousePointerMesh.visible = false;
+            //mousePointerMesh.visible = false;
             if (onpointerlockchange) {
                 onpointerlockchange(false);
             }
@@ -116,5 +116,8 @@ function setupMouse(parent, position, particleTexture, onpointerlockchange) {
     //     setVisible: setVisible
     // };
 
-    return {animateMousePointer: animateMousePointer};
+    return {
+        animateMousePointer: animateMousePointer,
+        mousePointerMesh: mousePointerMesh
+    };
 }
