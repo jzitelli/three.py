@@ -43,12 +43,12 @@ var JSON_SCENE = %s;
 
 
 class CANNONTest(NeedleTestCase):
-    def setUp(self):
-        app.debug = True
-        app.config['TESTING'] = True
-        self.app = app.test_client()
+    # def setUp(self):
+    #     app.debug = True
+    #     app.config['TESTING'] = True
+    #     self.app = app.test_client()
     def test_screenshot(self):
-        self.driver.get('/test/cannon')
+        self.driver.get('127.0.0.1:5000/test/cannon')
         self.assertScreenshot('canvas', 'cannon_screenshot')
 
 

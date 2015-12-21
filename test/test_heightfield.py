@@ -5,8 +5,9 @@ from needle.cases import NeedleTestCase
 
 import os.path
 import sys
-sys.path.append(os.path.join(os.path.split(__file__)[0], os.path.pardir))
-
+THREEPYDIR = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir))
+if THREEPYDIR not in sys.path:
+    sys.path.insert(0, THREEPYDIR)
 from pyserver.flask_app import app, request, Markup, render_template, main
 from three import *
 
@@ -40,12 +41,12 @@ var JSON_SCENE = %s;
 
 
 class HeightfieldTest(NeedleTestCase):
-    def setUp(self):
-        app.debug = True
-        app.config['TESTING'] = True
-        self.app = flask_app.test_client()
+    # def setUp(self):
+    #     app.debug = True
+    #     app.config['TESTING'] = True
+    #     self.app = app.test_client()
     def test_screenshot(self):
-        self.driver.get('/test/heightfield')
+        self.driver.get('127.0.0.1:5000/test/heightfield')
         self.assertScreenshot('canvas', 'heightfield_screenshot')
 
 

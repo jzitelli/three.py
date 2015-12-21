@@ -1,5 +1,5 @@
 import threading
-# import unittest
+import unittest
 
 import os.path
 import sys
@@ -8,13 +8,14 @@ sys.path.insert(0, THREEPYDIR)
 from pyserver.flask_app import app, render_template, Markup, main, json, request
 from three import *
 
-import test_main
-# import test_index
-import test_cannon
-import test_heightfield
-import test_skybox
-# import test_text
+#from test_flask_app import FlaskAppTest
+from test_cannon import CANNONTest
+from test_heightfield import HeightfieldTest
 
+# from test_main import *
+# import test_index
+# import test_skybox
+# import test_text
 
 @app.route('/test')
 def test_page():
@@ -35,10 +36,15 @@ var JSON_SCENE = %s;
 
 
 if __name__ == "__main__":
-    #unittest.main()
     import logging
     logging.basicConfig(level=(logging.DEBUG if app.debug else logging.INFO),
                         format="%(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")
     app.config['TESTING'] = True
-    threading.Thread(target=main, name='server', daemon=True)
+
+    def run_tests():
+        unittest.main(argv=['run_tests.py'])
+        # threading.main_thread().join()
+    client_thread = threading.Thread(target=run_tests, name='client')
+    client_thread.start()
+
     main()
