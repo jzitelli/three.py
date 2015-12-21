@@ -44,10 +44,12 @@ WebVRApplication = ( function () {
 
         this.vrEffect = new THREE.VREffect(this.renderer);
         this.vrEffect.setSize(window.innerWidth, window.innerHeight);
+        this.vrControls = new THREE.VRControls(this.camera);
+
+
         this.vrManager = new WebVRManager(this.renderer, this.vrEffect, {
             hideButton: false
         });
-        this.vrControls = new THREE.VRControls(this.camera);
 
 
         this.toggleVRControls = function () {
