@@ -52,7 +52,7 @@ function setupMouse(parent, position, particleTexture, onpointerlockchange) {
     }
 
     var xMax = 2, xMin = -2,
-        yMax = 1, yMin = -1;
+        yMax = 1.25, yMin = -1;
     window.addEventListener("mousemove", function (evt) {
         if (!mousePointerMesh.visible) return;
         var dx = evt.movementX,
@@ -66,58 +66,49 @@ function setupMouse(parent, position, particleTexture, onpointerlockchange) {
             else if (mousePointerMesh.position.y < yMin) mousePointerMesh.position.y = yMin;
         }
     });
+    // TODO
+    // window.addEventListener("click", function (evt) {
+    // });
 
+    var pickables,
+        picked;
+    function setPickables(p) {
+        pickables = p;
+    }
 
-    // function setVisible(visible) {
-    //     mousePointerMesh.visible = visible;
-    // }
-
-
-    // var pickables,
-    //     picked;
-    // function setPickables(p) {
-    //     pickables = p;
-    // }
-
-
-    // var origin = new THREE.Vector3();
-    // var direction = new THREE.Vector3();
-    // var raycaster = new THREE.Raycaster();
+    var origin = new THREE.Vector3();
+    var direction = new THREE.Vector3();
+    var raycaster = new THREE.Raycaster();
     var lt = 0;
     function animateMousePointer(t, camera) {
         var dt = 0.001*(t - lt);
         if (mousePointerMesh.visible) {
             mouseParticleGroup.tick(dt);
-            // if (pickables && camera) {
-            //     origin.set(0, 0, 0);
-            //     direction.set(0, 0, 0);
-            //     direction.subVectors(mousePointerMesh.localToWorld(direction), camera.localToWorld(origin)).normalize();
-            //     raycaster.set(origin, direction);
-            //     var intersects = raycaster.intersectObjects(pickables);
-            //     if (intersects.length > 0) {
-            //         if (picked != intersects[0].object) {
-            //             if (picked) picked.material.color.setHex(picked.currentHex);
-            //             picked = intersects[0].object;
-            //             picked.currentHex = picked.material.color.getHex();
-            //             picked.material.color.setHex(0xff4444); //0x44ff44);
-            //         }
-            //     } else {
-            //         if (picked) picked.material.color.setHex(picked.currentHex);
-            //         picked = null;
-            //     }
-            // }
+            if (pickables && camera) {
+                origin.set(0, 0, 0);
+                direction.set(0, 0, 0);
+                direction.subVectors(mousePointerMesh.localToWorld(direction), camera.localToWorld(origin)).normalize();
+                raycaster.set(origin, direction);
+                var intersects = raycaster.intersectObjects(pickables);
+                if (intersects.length > 0) {
+                    if (picked != intersects[0].object) {
+                        if (picked) picked.material.color.setHex(picked.currentHex);
+                        picked = intersects[0].object;
+                        picked.currentHex = picked.material.color.getHex();
+                        picked.material.color.setHex(0xff4444); //0x44ff44);
+                    }
+                } else {
+                    if (picked) picked.material.color.setHex(picked.currentHex);
+                    picked = null;
+                }
+            }
         }
         lt = t;
     }
 
-    // return {
-    //     animateMousePointer: animateMousePointer,
-    //     setPickables: setPickables,
-    //     setVisible: setVisible
-    // };
-
     return {
         animateMousePointer: animateMousePointer,
-        mousePointerMesh: mousePointerMesh
+        setPickables       : setPickables,
+        mousePointerMesh   : mousePointerMesh
     };
 }
