@@ -7,7 +7,7 @@ import os.path
 import sys
 sys.path.append(os.path.join(os.path.split(__file__)[0], os.path.pardir))
 
-from pyserver.flask_app import app, request, Markup, render_template
+from pyserver.flask_app import app, request, Markup, render_template, main
 from three import *
 
 
@@ -54,4 +54,8 @@ class CANNONTest(NeedleTestCase):
 if __name__ == "__main__":
     #unittest.main()
     #app.run(host='0.0.0.0')
+    import logging
+    logging.basicConfig(level=(logging.DEBUG if app.debug else logging.INFO),
+                        format="%(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")
+    app.config['TESTING'] = True
     main()

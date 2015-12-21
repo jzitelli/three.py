@@ -52,4 +52,8 @@ class HeightfieldTest(NeedleTestCase):
 if __name__ == "__main__":
     #unittest.main()
     #app.run(host='0.0.0.0')
+    import logging
+    logging.basicConfig(level=(logging.DEBUG if app.debug else logging.INFO),
+                        format="%(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")
+    app.config['TESTING'] = True
     main()
