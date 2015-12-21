@@ -11,7 +11,8 @@ WebVRApplication = ( function () {
         var keyboardCommands = config.keyboardCommands || {};
         var gamepadCommands  = config.gamepadCommands || {};
 
-        var useWebVRBoilerplate = config.useWebVRBoilerplate;
+        // var useWebVRBoilerplate = config.useWebVRBoilerplate;
+        var useWebVRBoilerplate = true;
 
         var world = config.world;
         if (!world) {
