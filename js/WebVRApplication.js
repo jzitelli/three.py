@@ -50,6 +50,8 @@ WebVRApplication = ( function () {
 
         var vrEffect = new THREE.VREffect(this.renderer);
         this.vrEffect = vrEffect;
+        this.vrEffect.setSize(window.innerWidth, window.innerHeight);
+
         this.vrControls = new THREE.VRControls(this.camera);
 
         if (useWebVRBoilerplate) {
