@@ -1,18 +1,6 @@
-var scene;
-
+var app;
 var avatar = new THREE.Object3D();
-
-var camera;
-if (window.JSON_CAMERA !== undefined) {
-    camera = THREE.py.parse(JSON_CAMERA);
-} else {
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-}
-
-avatar.add(camera);
-
-var renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
-
+var scene;
 var controls;
 if (THREE.py.config.controls) {
     controls = new THREE[THREE.py.config.controls](avatar, renderer.domElement);
@@ -21,26 +9,7 @@ if (THREE.py.config.controls) {
     }
 }
 
-var vrControls = new THREE.VRControls(camera);
-var vrEffect = new THREE.VREffect(renderer);
-
-var WebVRConfig = WebVRConfig || {};
-WebVRConfig.TOUCH_PANNER_DISABLED = true;
-
-var vrManager = new WebVRManager(renderer, vrEffect, {
-    hideButton: false
-});
-
-window.addEventListener('resize', function () {
-    "use strict";
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    vrEffect.setSize(window.innerWidth, window.innerHeight);
-});
-
-
 var stats;
-var world;
 var leapController,
     animateLeap;
 
@@ -48,22 +17,14 @@ function onLoad() {
     "use strict";
     pyserver.log('THREE.REVISION = ' + THREE.REVISION);
 
-    vrEffect.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
     stats = new Stats();
 
     if (window.extractShaderLib) {
         extractShaderLib();
     }
 
-    world = new CANNON.World();
-    world.gravity.set(0, -9.8, 0 );
-
     if (window.JSON_SCENE !== undefined) {
-        scene = THREE.py.parse(JSON_SCENE, undefined, function (obj) {
-            THREE.py.CANNONize(obj, world);
-        });
+        scene = THREE.py.parse(JSON_SCENE, undefined);
     } else {
         scene = new THREE.Scene();
         var textGeom = new THREE.TextGeometry("This is what you get when you don't define window.JSON_SCENE", {size: 0.3, height: 0, font: 'anonymous pro'});
@@ -74,6 +35,8 @@ function onLoad() {
     }
 
     scene.add(avatar);
+
+    app = new WebVRApplication(scene);
 
     var mouseStuff = setupMouse(avatar);
     var animateMousePointer = mouseStuff.animateMousePointer;
@@ -86,18 +49,11 @@ function onLoad() {
     document.body.appendChild( stats.domElement );
 
     var toolOptions = {};
-    var toolStuff = addTool(avatar, world, toolOptions);
+    var toolStuff = addTool(avatar, app.world, toolOptions);
     leapController = toolStuff.leapController;
     animateLeap    = toolStuff.animateLeap;
 
-    function waitForResources(t) {
-        if (THREE.py.isLoaded()) {
-            requestAnimationFrame(animate(animateMousePointer));
-        } else {
-            requestAnimationFrame(waitForResources);
-        }
-    }
-    requestAnimationFrame(waitForResources);
+    app.start(animate(animateMousePointer));
 }
 
 
@@ -110,12 +66,12 @@ var animate = function (animateMousePointer) {
 
         var dt = 0.001 * (t - lt);
         requestAnimationFrame(animate);
-        world.step(1/75, dt, 10);
+        app.world.step(1/75, dt, 10);
         if (controls) {
             controls.update(dt);
         }
-        for (var i = 0; i < world.bodies.length; i++) {
-            var body = world.bodies[i];
+        for (var i = 0; i < app.world.bodies.length; i++) {
+            var body = app.world.bodies[i];
             if (body.mass > 0) {
                 var mesh = body.mesh;
                 if (mesh) {
@@ -124,8 +80,8 @@ var animate = function (animateMousePointer) {
                 }
             }
         }
-        vrControls.update();
-        vrManager.render(scene, camera);
+        app.vrControls.update();
+        app.vrManager.render(scene, app.camera, t);
         var frame = leapController.frame();
         if (frame.valid && frame.id !== lastFrameID) {
             animateLeap(frame, dt);
