@@ -7,7 +7,7 @@ import os.path
 import sys
 sys.path.append(os.path.join(os.path.split(__file__)[0], os.path.pardir))
 
-from pyserver.flask_app import app, request, Markup, render_template
+from pyserver.flask_app import app, request, Markup, render_template, main
 from three import *
 
 
@@ -51,4 +51,5 @@ class HeightfieldTest(NeedleTestCase):
 
 if __name__ == "__main__":
     #unittest.main()
-    app.run(host='0.0.0.0')
+    #app.run(host='0.0.0.0')
+    main()

@@ -2,12 +2,18 @@ WebVRApplication = ( function () {
     function WebVRApplication(scene, config) {
         this.scene = scene;
         config = config || {};
+
         var rendererOptions    = config.rendererOptions || {antialias: true, alpha: true};
         var useShadowMap       = config.useShadowMap;
-        var onResetVRSensor    = config.onResetVRSensor;
-        var onfullscreenchange = config.onfullscreenchange;
-        var world              = config.world;
 
+        var onResetVRSensor    = config.onResetVRSensor;
+
+        var keyboardCommands = config.keyboardCommands || {};
+        var gamepadCommands  = config.gamepadCommands || {};
+
+        var useWebVRBoilerplate = config.useWebVRBoilerplate;
+
+        var world = config.world;
         if (!world) {
             var worldConfig = config.worldConfig || {};
             worldConfig.gravity                    = worldConfig.gravity || 9.8;
@@ -42,15 +48,25 @@ WebVRApplication = ( function () {
         document.body.appendChild(domElement);
         domElement.id = 'renderer';
 
-        this.vrEffect = new THREE.VREffect(this.renderer);
-        this.vrEffect.setSize(window.innerWidth, window.innerHeight);
+        var vrEffect = new THREE.VREffect(this.renderer);
+        this.vrEffect = vrEffect;
         this.vrControls = new THREE.VRControls(this.camera);
 
-
-        this.vrManager = new WebVRManager(this.renderer, this.vrEffect, {
-            hideButton: false
-        });
-
+        if (useWebVRBoilerplate) {
+            this.vrManager = new WebVRManager(this.renderer, this.vrEffect, {
+                hideButton: false
+            });
+        } else {
+            this.vrManager = {
+                isVRMode: function () {return true;},
+                render:   this.vrEffect.render
+            };
+            function onFullscreenChange() {
+                this.vrEffect.setSize(window.innerWidth, window.innerHeight);
+            }
+            document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+            document.addEventListener('mozfullscreenchange', onFullscreenChange);
+        }
 
         this.toggleVRControls = function () {
             if (this.vrControls.enabled) {
@@ -109,10 +125,6 @@ WebVRApplication = ( function () {
             } else {
                 requestPointerLock();
             }
-            if (onfullscreenchange) {
-                console.log("WebVRApplication: calling onfullscreenchange callback...");
-                onfullscreenchange(fullscreen);
-            }
         }.bind(this));
 
 
@@ -123,6 +135,7 @@ WebVRApplication = ( function () {
                     for (var i = 0; i < 240*2; i++) {
                         world.step(1/240);
                     }
+                    vrEffect.setFullScreen(true);
                     requestAnimationFrame(animate);
                 } else {
                     requestAnimationFrame(waitForResources);
