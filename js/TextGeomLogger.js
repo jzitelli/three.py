@@ -12,7 +12,7 @@ var TextGeomLogger = (function () {
             size:          options.size || 0.12,
             font:          options.font || 'anonymous pro',
             height:        options.height || 0,
-            curveSegments: options.curveSegments || 1
+            curveSegments: options.curveSegments || 2
         };
         this.geometries = {};
         this.meshes = {};
