@@ -11,8 +11,7 @@ WebVRApplication = ( function () {
         var keyboardCommands = config.keyboardCommands || {};
         var gamepadCommands  = config.gamepadCommands || {};
 
-        // var useWebVRBoilerplate = config.useWebVRBoilerplate;
-        var useWebVRBoilerplate = true;
+        var useWebVRBoilerplate = config.useWebVRBoilerplate;
 
         var world = config.world;
         if (!world) {
@@ -62,11 +61,17 @@ WebVRApplication = ( function () {
                 isVRMode: function () {return true;},
                 render:   this.vrEffect.render
             };
-            function onFullscreenChange() {
+            var onFullscreenChange = function () {
                 this.vrEffect.setSize(window.innerWidth, window.innerHeight);
-            }
+            }.bind(this);
             document.addEventListener('webkitfullscreenchange', onFullscreenChange);
             document.addEventListener('mozfullscreenchange', onFullscreenChange);
+            window.addEventListener('keydown', function (evt) {
+                console.log(evt.keyCode);
+                if (evt.keyCode === 70) {
+                    vrEffect.setFullScreen(true);
+                }
+            });
         }
 
         this.toggleVRControls = function () {
@@ -136,7 +141,6 @@ WebVRApplication = ( function () {
                     for (var i = 0; i < 240*2; i++) {
                         world.step(1/240);
                     }
-                    vrEffect.setFullScreen(true);
                     requestAnimationFrame(animate);
                 } else {
                     requestAnimationFrame(waitForResources);
