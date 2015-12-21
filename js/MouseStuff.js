@@ -26,7 +26,7 @@ function setupMouse(parent, position, particleTexture, onpointerlockchange) {
     mousePointerMesh.position.copy(position);
 
     // mousePointerMesh.visible = true;
-    // mousePointerMesh.visible = false;
+    mousePointerMesh.visible = false;
 
     if ("onpointerlockchange" in document) {
       document.addEventListener('pointerlockchange', lockChangeAlert, false);
