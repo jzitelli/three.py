@@ -1,16 +1,11 @@
 WebVRApplication = ( function () {
     function WebVRApplication(scene, config) {
         this.scene = scene;
+
         config = config || {};
-
-        var rendererOptions    = config.rendererOptions || {antialias: true, alpha: true};
-        var useShadowMap       = config.useShadowMap;
-
-        var onResetVRSensor    = config.onResetVRSensor;
-
-        var keyboardCommands = config.keyboardCommands || {};
-        var gamepadCommands  = config.gamepadCommands || {};
-
+        var rendererOptions     = config.rendererOptions || {antialias: true, alpha: true};
+        var useShadowMap        = config.useShadowMap;
+        var onResetVRSensor     = config.onResetVRSensor;
         var useWebVRBoilerplate = config.useWebVRBoilerplate;
 
         var world = config.world;
@@ -59,20 +54,29 @@ WebVRApplication = ( function () {
                 hideButton: false
             });
         } else {
-            this.vrManager = {
-                isVRMode: function () {return true;},
-                render:   this.vrEffect.render
-            };
-            var onFullscreenChange = function () {
-                this.vrEffect.setSize(window.innerWidth, window.innerHeight);
-            }.bind(this);
-            document.addEventListener('webkitfullscreenchange', onFullscreenChange);
-            document.addEventListener('mozfullscreenchange', onFullscreenChange);
-            window.addEventListener('keydown', function (evt) {
-                if (evt.keyCode === 70) { // F
-                    vrEffect.setFullScreen(true);
-                }
-            });
+            this.vrManager = ( function () {
+                var mode = 0;
+                var onFullscreenChange = function () {
+                    vrEffect.setSize(window.innerWidth, window.innerHeight);
+                };
+                document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+                document.addEventListener('mozfullscreenchange', onFullscreenChange);
+                window.addEventListener('keydown', function (evt) {
+                    if (evt.keyCode === 70) { // F
+                        mode = 1 - mode;
+                        vrEffect.setFullScreen((mode === 1));
+                    }
+                });
+                return {
+                    isVRMode: function () {
+                        return mode === 1;
+                    },
+                    render: function (scene, camera, t) {
+                        if (mode === 1) vrEffect.render(scene, camera);
+                        else renderer.render(scene, camera);
+                    }
+                };
+            } )();
         }
 
         this.toggleVRControls = function () {
