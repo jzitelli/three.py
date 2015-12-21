@@ -2,9 +2,10 @@
 from copy import deepcopy
 import scipy.ndimage as ndimage
 
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.split(__file__)[0], os.path.pardir))
+# from pyserver.flask_app import THREEPYDIR
+# import sys
+# import os
+# sys.path.insert(0, os.path.join(os.path.split(__file__)[0], os.path.pardir))
 from three import *
 
 FT2METERS   = 0.3048

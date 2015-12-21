@@ -12,14 +12,16 @@ _logger = logging.getLogger(__name__)
 
 from flask import Flask, render_template, request, jsonify, Markup
 
-STATIC_FOLDER = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir))
+import sys
+THREEPYDIR    = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir))
+STATIC_FOLDER = THREEPYDIR
 app = Flask(__name__,
             static_folder=STATIC_FOLDER,
             static_url_path='')
 app.debug = True
 
-import sys
-sys.path.insert(0, os.path.join(os.path.split(__file__)[0], os.path.pardir))
+if THREEPYDIR not in sys.path:
+    sys.path.insert(0, THREEPYDIR)
 import pyserver.scenes as scenes
 
 
@@ -46,7 +48,7 @@ def read():
     return jsonify(response)
 
 
-WRITE_FOLDER = os.path.join(os.path.split(__file__)[0], os.pardir, 'three')
+WRITE_FOLDER = os.path.join(THREEPYDIR, 'three')
 if not os.path.exists(WRITE_FOLDER):
     raise Exception('write is disabled, you need to create the write folder %s' % WRITE_FOLDER)
 @app.route("/write", methods=['POST'])

@@ -72,6 +72,17 @@ var TextGeomLogger = (function () {
                 child.position.y = (this.root.children.length - i) * 1.6*textGeomParams.size;
             }
         }.bind(this);
+
+        this.clear = function () {
+            var toRemove = [];
+            for (var i = 0; i < this.root.children.length; i++) {
+                toRemove.push(this.root.children[i]);
+            }
+            for (i = 0; i < toRemove.length; i++) {
+                this.root.remove(toRemove[i]);
+            }
+        }.bind(this);
+
     }
 
     return TextGeomLogger;
