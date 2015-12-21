@@ -24,15 +24,18 @@ if (THREE.py.config.controls) {
 var vrControls = new THREE.VRControls(camera);
 var vrEffect = new THREE.VREffect(renderer);
 
+var WebVRConfig = WebVRConfig || {};
+WebVRConfig.TOUCH_PANNER_DISABLED = true;
+
 var vrManager = new WebVRManager(renderer, vrEffect, {
     hideButton: false
 });
 
 window.addEventListener('resize', function () {
     "use strict";
-    vrEffect.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
+    vrEffect.setSize(window.innerWidth, window.innerHeight);
 });
 
 
