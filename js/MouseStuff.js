@@ -58,17 +58,20 @@ function setupMouse(parent, position, particleTexture, onpointerlockchange) {
         var dx = evt.movementX,
             dy = evt.movementY;
         if (dx) {
-            mousePointerMesh.position.x += 0.0004*dx;
-            mousePointerMesh.position.y -= 0.0004*dy;
+            mousePointerMesh.position.x += 0.0005*dx;
+            mousePointerMesh.position.y -= 0.0005*dy;
             if      (mousePointerMesh.position.x > xMax) mousePointerMesh.position.x = xMax;
             else if (mousePointerMesh.position.x < xMin) mousePointerMesh.position.x = xMin;
             if      (mousePointerMesh.position.y > yMax) mousePointerMesh.position.y = yMax;
             else if (mousePointerMesh.position.y < yMin) mousePointerMesh.position.y = yMin;
         }
     });
-    // TODO
-    // window.addEventListener("click", function (evt) {
-    // });
+    window.addEventListener("mousedown", function (evt) {
+        if (!mousePointerMesh.visible) return;
+        if (picked && picked.onSelect) {
+            picked.onSelect();
+        }
+    });
 
     var pickables,
         picked;
