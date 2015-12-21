@@ -69,8 +69,7 @@ WebVRApplication = ( function () {
             document.addEventListener('webkitfullscreenchange', onFullscreenChange);
             document.addEventListener('mozfullscreenchange', onFullscreenChange);
             window.addEventListener('keydown', function (evt) {
-                console.log(evt.keyCode);
-                if (evt.keyCode === 70) {
+                if (evt.keyCode === 70) { // F
                     vrEffect.setFullScreen(true);
                 }
             });
