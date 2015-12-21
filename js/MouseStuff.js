@@ -25,7 +25,7 @@ function setupMouse(parent, position, particleTexture, onpointerlockchange) {
     parent.add(mousePointerMesh);
     mousePointerMesh.position.copy(position);
 
-    mousePointerMesh.visible = true;
+    // mousePointerMesh.visible = true;
     // mousePointerMesh.visible = false;
 
     if ("onpointerlockchange" in document) {
@@ -86,7 +86,8 @@ function setupMouse(parent, position, particleTexture, onpointerlockchange) {
     var lt = 0;
     function animateMousePointer(t, camera) {
         var dt = 0.001*(t - lt);
-        mouseParticleGroup.tick(dt);
+        if (mousePointerMesh.visible) {
+            mouseParticleGroup.tick(dt);
             // if (pickables && camera) {
             //     origin.set(0, 0, 0);
             //     direction.set(0, 0, 0);
@@ -105,6 +106,7 @@ function setupMouse(parent, position, particleTexture, onpointerlockchange) {
             //         picked = null;
             //     }
             // }
+        }
         lt = t;
     }
 
