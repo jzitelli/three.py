@@ -12,7 +12,7 @@ from three import *
 
 
 @app.route('/test/heightfield')
-def test_heightfield():
+def _test_heightfield():
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=800,
                          position=[10, 0, 0]))

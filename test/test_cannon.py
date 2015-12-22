@@ -12,7 +12,7 @@ from three import *
 
 
 @app.route('/test/cannon')
-def test_cannon():
+def _test_cannon():
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=100,
                          position=[-2, 20, 4]))

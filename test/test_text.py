@@ -14,9 +14,9 @@ from three import *
 @app.route('/test/text')
 def _test_text():
     scene = Scene()
-    scene.add(Mesh(geometry=TextGeometry(text='test text'),
-                   material=MeshPhongMaterial(color=0xff00ff, shading=FlatShading),
-                   position=[4, 1, -4]))
+    scene.add(Mesh(geometry=TextGeometry(text='test text', size=0.1, height=0),
+                   material=MeshBasicMaterial(color=0xff00ff),
+                   position=[0, 0, -4]))
     return render_template('index.html',
                            json_config=Markup(r"""<script>
 var THREE_PY_CONFIG = %s;

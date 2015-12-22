@@ -19,7 +19,7 @@ from pyserver.flask_app import app, render_template, Markup, main, json, request
 from test_cannon import CANNONTest
 from test_heightfield import HeightfieldTest
 from test_skybox import SkyboxTest
-# from test_text import TextGeometryTest
+from test_text import TextGeometryTest
 
 # from test_main import *
 
@@ -36,7 +36,9 @@ def _test_page():
                    cannonData={'mass': 0, 'shapes': ['Plane']}))
     return render_template('test.html',
                            links=Markup('\n<br>\n'.join([r"<a href='%s'>%s</a>" % (endpoint, endpoint)
-                                                         for endpoint in ('test/cannon', 'test/heightfield')])),
+                                                         for endpoint in ('test/cannon',
+                                                                          'test/heightfield',
+                                                                          'test/skybox')])),
                            json_config=Markup(r"""<script>
 var THREE_PY_CONFIG = %s;
 var JSON_SCENE = %s;

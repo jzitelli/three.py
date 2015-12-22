@@ -1,3 +1,3 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 python pyserver/flask_app.py
