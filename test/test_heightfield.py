@@ -1,4 +1,3 @@
-import unittest
 import json
 import numpy as np
 from needle.cases import NeedleTestCase
@@ -41,18 +40,12 @@ var JSON_SCENE = %s;
 
 
 class HeightfieldTest(NeedleTestCase):
-    # def setUp(self):
-    #     app.debug = True
-    #     app.config['TESTING'] = True
-    #     self.app = app.test_client()
     def test_screenshot(self):
         self.driver.get('127.0.0.1:5000/test/heightfield')
         self.assertScreenshot('canvas', 'heightfield_screenshot')
 
 
 if __name__ == "__main__":
-    #unittest.main()
-    #app.run(host='0.0.0.0')
     import logging
     logging.basicConfig(level=(logging.DEBUG if app.debug else logging.INFO),
                         format="%(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")

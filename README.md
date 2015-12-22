@@ -16,7 +16,11 @@ TODO
 
 ### Screenshot tests
 
-TODO
+From the `three.py/test` directory,
+
+```
+$ python ./run_tests.py --with-needle-capture --with-needle-cleanup-on-success
+```
 
 <!-- First, start a local server:
 
@@ -38,7 +42,6 @@ JavaScript libraries:
   - [three.js](http://threejs.org)
   - [Cannon.js](http://www.cannonjs.org)
   - [Leap Motion JavaScript framework](https://github.com/leapmotion/leapjs)
-  - [LeapJS-Plugins](https://github.com/leapmotion/leapjs-plugins)
   - [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate)
   - [Shader Particle Engine](https://github.com/squarefeet/ShaderParticleEngine)
 
@@ -46,6 +49,8 @@ Python packages:
   - [Flask](http://flask.pocoo.org/)
   - [NumPy](http://www.numpy.org)
   - [SciPy](http://www.scipy.org)
+  - nose
+  - [Needle](https://github.com/bfirsh/needle)
 
 
 
