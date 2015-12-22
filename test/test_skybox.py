@@ -28,7 +28,7 @@ class SkyboxTest(NeedleTestCase):
     def setUp(self):
         app.debug = True
         app.config['TESTING'] = True
-        self.app = flask_app.test_client()
+        self.app = app.test_client()
     def test_screenshot(self):
         self.driver.get('/test/skybox')
         self.assertScreenshot('canvas', 'skybox_screenshot')
