@@ -48,12 +48,14 @@ WebVRApplication = ( function () {
         this.vrEffect.setSize(window.innerWidth, window.innerHeight);
 
         this.vrControls = new THREE.VRControls(this.camera);
+        this.vrControls.enabled = true;
 
         if (useWebVRBoilerplate) {
             this.vrManager = new WebVRManager(this.renderer, this.vrEffect, {
                 hideButton: false
             });
         } else {
+            // TODO: HTML/CSS interface
             this.vrManager = ( function () {
                 var mode = 0;
                 var onFullscreenChange = function () {
