@@ -62,67 +62,70 @@ WebVRApplication = ( function () {
 
         } else {
 
+            var vrMode = 0;
+
             window.addEventListener("resize", function () {
-                // vrEffect.setSize(window.innerWidth, window.innerHeight);
+                vrEffect.setSize(window.innerWidth, window.innerHeight);
                 // TODO:
                 // camera.aspect
             });
 
             // TODO: HTML/CSS interface
             this.enterVR = function () {
-                this.vrEffect.setFullScreen(!this.vrManager.isVRMode());
+                if (vrMode === 0) {
+                    vrMode = 1;
+                    this.vrEffect.setFullScreen(true);
+                }
             }.bind(this);
 
             this.vrManager = ( function () {
-                var mode = 0;
-                var onFullscreenChange = function () {
-                    mode = 1 - mode;
-                    vrEffect.setSize(window.innerWidth, window.innerHeight);
-                };
-                document.addEventListener('webkitfullscreenchange', onFullscreenChange);
-                document.addEventListener('mozfullscreenchange', onFullscreenChange);
-                window.addEventListener('keydown', function (evt) {
-                    if (evt.keyCode === 70) { // F
-                        this.enterVR();
-                    }
-                });
+                // var onFullscreenChange = function () {
+                //     vrEffect.setSize(window.innerWidth, window.innerHeight);
+                // };
+                // document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+                // document.addEventListener('mozfullscreenchange', onFullscreenChange);
+                // window.addEventListener('keydown', function (evt) {
+                //     if (evt.keyCode === 70) { // F
+                //         this.enterVR();
+                //     }
+                // });
                 return {
                     isVRMode: function () {
-                        return mode === 1;
+                        return vrMode === 1;
                     },
                     render: function (scene, camera, t) {
-                        if (mode === 1) vrEffect.render(scene, camera);
+                        if (vrMode === 1) vrEffect.render(scene, camera);
                         else renderer.render(scene, camera);
                     }
                 };
             }.bind(this) )();
 
-            function requestFullScreen ( elem, vrDisplay ) {
-                var fullScreenParam;
-                if ( window.HMDVRDevice && vrDisplay && vrDisplay instanceof HMDVRDevice) {
-                    fullScreenParam = {vrDisplay: vrDisplay};
-                }
-                if ( elem.webkitRequestFullscreen && fullScreenParam ) {
-                    elem.webkitRequestFullscreen( fullScreenParam );
-                }
-                else if ( elem.webkitRequestFullscreen && !fullScreenParam ) {
-                    elem.webkitRequestFullscreen( window.Element.ALLOW_KEYBOARD_INPUT );
-                }
-                else if ( elem.mozRequestFullScreen && fullScreenParam ) {
-                    elem.mozRequestFullScreen( fullScreenParam );
-                }
-                else if ( elem.mozRequestFullScreen && !fullScreenParam ) {
-                    elem.mozRequestFullScreen( );
-                }
-                else if ( elem.requestFullscreen ) {
-                    elem.requestFullscreen();
-                }
-                else if ( elem.msRequestFullscreen ) {
-                    elem.msRequestFullscreen();
-                }
-            }
             this.enterFullscreen = function () {
                 // Primrose function:
+                function requestFullScreen ( elem, vrDisplay ) {
+                    var fullScreenParam;
+                    if ( window.HMDVRDevice && vrDisplay && vrDisplay instanceof HMDVRDevice) {
+                        fullScreenParam = {vrDisplay: vrDisplay};
+                    }
+                    if ( elem.webkitRequestFullscreen && fullScreenParam ) {
+                        elem.webkitRequestFullscreen( fullScreenParam );
+                    }
+                    else if ( elem.webkitRequestFullscreen && !fullScreenParam ) {
+                        elem.webkitRequestFullscreen( window.Element.ALLOW_KEYBOARD_INPUT );
+                    }
+                    else if ( elem.mozRequestFullScreen && fullScreenParam ) {
+                        elem.mozRequestFullScreen( fullScreenParam );
+                    }
+                    else if ( elem.mozRequestFullScreen && !fullScreenParam ) {
+                        elem.mozRequestFullScreen( );
+                    }
+                    else if ( elem.requestFullscreen ) {
+                        elem.requestFullscreen();
+                    }
+                    else if ( elem.msRequestFullscreen ) {
+                        elem.msRequestFullscreen();
+                    }
+                }
                 requestFullScreen(domElement);
             };
 
