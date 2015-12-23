@@ -65,12 +65,11 @@ WebVRApplication = ( function () {
             var vrMode = 0;
 
             window.addEventListener("resize", function () {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
                 vrEffect.setSize(window.innerWidth, window.innerHeight);
-                // TODO:
-                // camera.aspect
             });
 
-            // TODO: HTML/CSS interface
             this.enterVR = function () {
                 if (vrMode === 0) {
                     vrMode = 1;
