@@ -23,7 +23,7 @@ var TextGeomLogger = (function () {
             bufferGeom.fromGeometry(geom);
             geom.dispose();
             this.geometries[c] = bufferGeom;
-            this.meshes[c] = new THREE.Mesh(geom, material);
+            this.meshes[c] = new THREE.Mesh(bufferGeom, material);
         }
 
         var nrows = options.nrows || 7;
