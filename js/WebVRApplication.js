@@ -50,12 +50,29 @@ WebVRApplication = ( function () {
         this.vrControls = new THREE.VRControls(this.camera);
         this.vrControls.enabled = true;
 
+
         if (useWebVRBoilerplate) {
+
             this.vrManager = new WebVRManager(this.renderer, this.vrEffect, {
                 hideButton: false
             });
+
+            this.enterVR = function () {
+            };
+
         } else {
+
+            window.addEventListener("resize", function () {
+                // vrEffect.setSize(window.innerWidth, window.innerHeight);
+                // TODO:
+                // camera.aspect
+            });
+
             // TODO: HTML/CSS interface
+            this.enterVR = function () {
+                this.vrEffect.setFullScreen(!this.vrManager.isVRMode());
+            }.bind(this);
+
             this.vrManager = ( function () {
                 var mode = 0;
                 var onFullscreenChange = function () {
@@ -66,7 +83,7 @@ WebVRApplication = ( function () {
                 document.addEventListener('mozfullscreenchange', onFullscreenChange);
                 window.addEventListener('keydown', function (evt) {
                     if (evt.keyCode === 70) { // F
-                        vrEffect.setFullScreen((mode === 0));
+                        this.enterVR();
                     }
                 });
                 return {
@@ -78,8 +95,39 @@ WebVRApplication = ( function () {
                         else renderer.render(scene, camera);
                     }
                 };
-            } )();
+            }.bind(this) )();
+
+            function requestFullScreen ( elem, vrDisplay ) {
+                var fullScreenParam;
+                if ( window.HMDVRDevice && vrDisplay && vrDisplay instanceof HMDVRDevice) {
+                    fullScreenParam = {vrDisplay: vrDisplay};
+                }
+                if ( elem.webkitRequestFullscreen && fullScreenParam ) {
+                    elem.webkitRequestFullscreen( fullScreenParam );
+                }
+                else if ( elem.webkitRequestFullscreen && !fullScreenParam ) {
+                    elem.webkitRequestFullscreen( window.Element.ALLOW_KEYBOARD_INPUT );
+                }
+                else if ( elem.mozRequestFullScreen && fullScreenParam ) {
+                    elem.mozRequestFullScreen( fullScreenParam );
+                }
+                else if ( elem.mozRequestFullScreen && !fullScreenParam ) {
+                    elem.mozRequestFullScreen( );
+                }
+                else if ( elem.requestFullscreen ) {
+                    elem.requestFullscreen();
+                }
+                else if ( elem.msRequestFullscreen ) {
+                    elem.msRequestFullscreen();
+                }
+            }
+            this.enterFullscreen = function () {
+                // Primrose function:
+                requestFullScreen(domElement);
+            };
+
         }
+
 
         this.toggleVRControls = function () {
             if (this.vrControls.enabled) {
@@ -88,7 +136,6 @@ WebVRApplication = ( function () {
                 this.camera.quaternion.set(0, 0, 0, 1);
             } else {
                 this.vrControls.enabled = true;
-                // this.vrControls.update();
             }
         }.bind(this);
 
