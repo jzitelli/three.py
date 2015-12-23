@@ -164,6 +164,8 @@ function addTool(parent, world, options) {
     }
 
     world.addBody(tipBody);
+    tipBody.sleep();
+
     toolRoot.visible = false;
 
     // three.js hands: ############################
@@ -239,6 +241,28 @@ function addTool(parent, world, options) {
             interactionBoxMesh.scale.set(interactionBox.width*scalar, interactionBox.height*scalar, interactionBox.depth*scalar);
         }
 
+        var toolDrive = 0;
+        var toolFloat = 0;
+        var toolStrafe = 0;
+        var rotateToolCW = 0;
+        if (keyboard) {
+            toolDrive += keyboard.getValue("moveToolForwards") - keyboard.getValue("moveToolBackwards");
+            toolFloat += keyboard.getValue("moveToolUp") - keyboard.getValue("moveToolDown");
+            toolStrafe += keyboard.getValue("moveToolRight") - keyboard.getValue("moveToolLeft");
+            rotateToolCW += keyboard.getValue("rotateToolCW") - keyboard.getValue("rotateToolCCW");
+        }
+        if (gamepad) {
+            if (parent.toolMode) {
+                toolFloat += gamepad.getValue("toolFloat");
+                toolStrafe += gamepad.getValue("toolStrafe");
+            } else {
+                toolDrive -= gamepad.getValue("toolDrive");
+                rotateToolCW -= gamepad.getValue("toolStrafe");
+            }
+        }
+        var toolMoved = toolDrive !== 0 || toolStrafe !== 0 || toolFloat !== 0 || rotateToolCW !== 0;
+
+        
         if (frame.tools.length === 1) {
 
             var tool = frame.tools[0];
@@ -296,7 +320,7 @@ function addTool(parent, world, options) {
             tipBody.sleep();
             tipMaterial.color.setHex(tipColor);
 
-        } else {
+        } else if (!toolMoved) {
 
             // fade out stick
             if (tipMaterial.opacity > 0.1) {
@@ -334,27 +358,7 @@ function addTool(parent, world, options) {
             }
         }
 
-
-        var toolDrive = 0;
-        var toolFloat = 0;
-        var toolStrafe = 0;
-        var rotateToolCW = 0;
-        if (keyboard) {
-            toolDrive += keyboard.getValue("moveToolForwards") - keyboard.getValue("moveToolBackwards");
-            toolFloat += keyboard.getValue("moveToolUp") - keyboard.getValue("moveToolDown");
-            toolStrafe += keyboard.getValue("moveToolRight") - keyboard.getValue("moveToolLeft");
-            rotateToolCW += keyboard.getValue("rotateToolCW") - keyboard.getValue("rotateToolCCW");
-        }
-        if (gamepad) {
-            if (parent.toolMode) {
-                toolFloat += gamepad.getValue("toolFloat");
-                toolStrafe += gamepad.getValue("toolStrafe");
-            } else {
-                toolDrive -= gamepad.getValue("toolDrive");
-                rotateToolCW -= gamepad.getValue("toolStrafe");
-            }
-        }
-        if (toolDrive !== 0 || toolStrafe !== 0 || toolFloat !== 0 || rotateToolCW !== 0) {
+        if (toolMoved) {
             toolRoot.position.x += 0.2  * dt * toolStrafe;
             toolRoot.position.z += -0.2 * dt * toolDrive;
             toolRoot.position.y += 0.2  * dt * toolFloat;
@@ -363,13 +367,14 @@ function addTool(parent, world, options) {
             toolRoot.rotation.y += 0.15 * dt * rotateToolCW;
             leftRoot.rotation.y = rightRoot.rotation.y = toolRoot.rotation.y;
 
-            if (toolRoot.visible === false || stickMaterial.opacity !== 1) {
+            if (toolRoot.visible === false) {
                 toolRoot.visible = true;
                 stickMaterial.opacity = tipMaterial.opacity = 1;
                 interactionBoxMaterial.opacity = interactionBoxOpacity;
                 interactionPlaneMaterial.opacity = interactionPlaneOpacity;
             }
         }
+
     }
 
     // leapController.on('frame', animateLeap);
