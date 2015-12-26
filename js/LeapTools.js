@@ -32,7 +32,10 @@ function addTool(parent, world, options) {
     }
     var toolRotation = options.toolRotation || 0;
 
-    var handOffset = options.handOffset || new THREE.Vector3().copy(toolOffset);
+    var handOffset = new THREE.Vector3().copy(toolOffset);
+    if (options.handOffset) {
+        handOffset.fromArray(options.handOffset);
+    }
     var handRotation = options.handRotation || toolRotation;
 
     var toolTime  = options.toolTime  || 0.25;
@@ -44,26 +47,34 @@ function addTool(parent, world, options) {
     var interactionBoxOpacity   = options.interactionBoxOpacity || (options.useBasicMaterials === false ? 0.1 : 0.25);
     var interactionPlaneOpacity = options.interactionPlaneOpacity || interactionBoxOpacity;
 
+    var stickColor = options.stickColor || 0xeebb99;
+    var tipColor   = options.tipColor   || 0x004488;
+
 
     var keyboard = options.keyboard;
-    var gamepad = options.gamepad;
+    var gamepad  = options.gamepad;
 
-    var leapController = new Leap.Controller({frameEventName: 'animationFrame'});
+    var host = options.host || '127.0.0.1';
+    var port = options.port || 6437;
+
+    var leapController = new Leap.Controller({frameEventName: 'animationFrame',
+                                              background: true,
+                                              host: host, port: port});
 
     var scalar;
-    var transformOptions = options.transformOptions;
-    if (transformOptions) {
-        leapController.use('transform', transformOptions);
-        pyserver.log("transformOptions =\n" + JSON.stringify(transformOptions, undefined, 2));
-        if (transformOptions.vr === true) {
-            toolOffset.set(0, 0, 0);
-            toolRotation = 0;
-            handOffset.set(0, 0, 0);
-        }
-        scalar = 1; // transform plugin takes care of scaling
-    } else {
+    // var transformOptions = options.transformOptions;
+    // if (transformOptions) {
+    //     leapController.use('transform', transformOptions);
+    //     pyserver.log("transformOptions =\n" + JSON.stringify(transformOptions, undefined, 2));
+    //     if (transformOptions.vr === true) {
+    //         toolOffset.set(0, 0, 0);
+    //         toolRotation = 0;
+    //         handOffset.set(0, 0, 0);
+    //     }
+    //     scalar = 1; // transform plugin takes care of scaling
+    // } else {
         scalar = 0.001;
-    }
+    // }
 
     // leap motion event callbacks:
     var onConnect = options.onConnect || function () {
@@ -126,8 +137,6 @@ function addTool(parent, world, options) {
     stickGeom = bufferGeom;
 
     var stickMaterial;
-    var stickColor = 0xeebb99;
-    var tipColor = 0x004488;
     var tipMaterial;
     if (options.useBasicMaterials) {
         stickMaterial = new THREE.MeshBasicMaterial({color: stickColor, side: THREE.DoubleSide, transparent: true});
@@ -262,7 +271,7 @@ function addTool(parent, world, options) {
         }
         var toolMoved = toolDrive !== 0 || toolStrafe !== 0 || toolFloat !== 0 || rotateToolCW !== 0;
 
-        
+
         if (frame.tools.length === 1) {
 
             var tool = frame.tools[0];
