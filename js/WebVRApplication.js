@@ -72,17 +72,21 @@ WebVRApplication = ( function () {
 
             this.enterVR = function () {
                 if (vrMode === 0) {
-                    vrMode = 1;
                     this.vrEffect.setFullScreen(true);
                 }
             }.bind(this);
 
             this.vrManager = ( function () {
-                // var onFullscreenChange = function () {
-                //     vrEffect.setSize(window.innerWidth, window.innerHeight);
-                // };
-                // document.addEventListener('webkitfullscreenchange', onFullscreenChange);
-                // document.addEventListener('mozfullscreenchange', onFullscreenChange);
+                var onFullscreenChange = function () {
+                    if (vrMode === 0) {
+                        vrMode = 1;
+                        vrEffect.setSize(window.innerWidth, window.innerHeight);
+                    } else {
+                        vrMode = 0;
+                    }
+                };
+                document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+                document.addEventListener('mozfullscreenchange', onFullscreenChange);
                 // window.addEventListener('keydown', function (evt) {
                 //     if (evt.keyCode === 70) { // F
                 //         this.enterVR();
