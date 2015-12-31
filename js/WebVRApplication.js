@@ -107,9 +107,9 @@ WebVRApplication = ( function () {
                 // Primrose function:
                 function requestFullScreen ( elem, vrDisplay ) {
                     var fullScreenParam;
-                    if ( window.HMDVRDevice && vrDisplay && vrDisplay instanceof HMDVRDevice) {
-                        fullScreenParam = {vrDisplay: vrDisplay};
-                    }
+                    // if ( window.HMDVRDevice && vrDisplay && vrDisplay instanceof HMDVRDevice) {
+                    //     fullScreenParam = {vrDisplay: vrDisplay};
+                    // }
                     if ( elem.webkitRequestFullscreen && fullScreenParam ) {
                         elem.webkitRequestFullscreen( fullScreenParam );
                     }
