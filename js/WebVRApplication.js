@@ -12,8 +12,8 @@ WebVRApplication = ( function () {
         if (!world) {
             var worldConfig = config.worldConfig || {};
             worldConfig.gravity                    = worldConfig.gravity || 9.8;
-            worldConfig.contactEquationStiffness   = worldConfig.contactEquationStiffness || 1e7;
-            worldConfig.frictionEquationStiffness  = worldConfig.frictionEquationStiffness || 1e7;
+            worldConfig.contactEquationStiffness   = worldConfig.contactEquationStiffness || 1e6;
+            worldConfig.frictionEquationStiffness  = worldConfig.frictionEquationStiffness || 1e6;
             worldConfig.contactEquationRelaxation  = worldConfig.contactEquationRelaxation || 3;
             worldConfig.frictionEquationRelaxation = worldConfig.frictionEquationRelaxation || 3;
             worldConfig.iterations                 = worldConfig.iterations || 8;

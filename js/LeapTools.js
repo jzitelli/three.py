@@ -241,6 +241,9 @@ function addTool(parent, world, options) {
     var position = new THREE.Vector3();
     var velocity = new THREE.Vector3();
 
+    var cannonUP = new CANNON.Vec3(0, 1, 0);
+    var cannonVec = new CANNON.Vec3();
+
     // TODO: restructure w/ mixin pattern
     function animateLeap(frame, dt) {
 
@@ -269,7 +272,7 @@ function addTool(parent, world, options) {
                 rotateToolCW -= gamepad.getValue("toolStrafe");
             }
         }
-        var toolMoved = toolDrive !== 0 || toolStrafe !== 0 || toolFloat !== 0 || rotateToolCW !== 0;
+        var toolMoved = (toolDrive !== 0) || (toolStrafe !== 0) || (toolFloat !== 0) || (rotateToolCW !== 0);
 
 
         if (frame.tools.length === 1) {
@@ -281,7 +284,7 @@ function addTool(parent, world, options) {
                 // position.fromArray(tool.tipPosition);
                 position.fromArray(tool.stabilizedTipPosition);
 
-                stickMesh.position.copy(position);
+                //stickMesh.position.copy(position);
 
                 direction.fromArray(tool.direction);
 
@@ -299,7 +302,11 @@ function addTool(parent, world, options) {
                     toolRoot.localToWorld(position);
                     tipBody.position.copy(position);
 
-                    tipBody.quaternion.copy(stickMesh.getWorldQuaternion());
+                    // tipBody.quaternion.copy(stickMesh.getWorldQuaternion());
+                    direction.applyQuaternion(toolRoot.getWorldQuaternion());
+                    cannonVec.copy(direction);
+                    tipBody.quaternion.setFromVectors(cannonUP, cannonVec);
+
 
                     velocity.fromArray(tool.tipVelocity);
                     toolRoot.localToWorld(velocity);
