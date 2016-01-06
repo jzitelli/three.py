@@ -20,7 +20,7 @@ WebVRApplication = ( function () {
 
             world = new CANNON.World();
             world.gravity.set( 0, -worldConfig.gravity, 0 );
-            world.broadphase = new CANNON.SAPBroadphase( world );
+            //world.broadphase = new CANNON.SAPBroadphase( world );
             world.defaultContactMaterial.contactEquationStiffness   = worldConfig.contactEquationStiffness;
             world.defaultContactMaterial.frictionEquationStiffness  = worldConfig.frictionEquationStiffness;
             world.defaultContactMaterial.contactEquationRelaxation  = worldConfig.contactEquationRelaxation;
