@@ -2,7 +2,6 @@ var pyserver = {
 
     log: function (msg, success) {
         "use strict";
-        // console.log('pyserver.log: ' + msg);
         var xhr = new XMLHttpRequest();
         var data = new FormData();
         data.append("msg", msg);
