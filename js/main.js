@@ -19,9 +19,7 @@ function onLoad() {
 
     stats = new Stats();
 
-    if (window.extractShaderLib) {
-        extractShaderLib();
-    }
+    THREE.py.extractShaderLib();
 
     if (window.JSON_SCENE !== undefined) {
         scene = THREE.py.parse(JSON_SCENE, undefined);

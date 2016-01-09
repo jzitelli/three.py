@@ -18,6 +18,12 @@ THREE.py = ( function () {
         // TODO:
     }
 
+    function extractShaderLib() {
+        pyserver.writeFile('ShaderLib.json',   JSON.stringify(THREE.ShaderLib,   undefined, 2));
+        pyserver.writeFile('ShaderChunk.json', JSON.stringify(THREE.ShaderChunk, undefined, 2));
+        pyserver.writeFile('UniformsLib.json', JSON.stringify(THREE.UniformsLib, undefined, 2));
+    }
+
     function parse(json, texturePath, onLoad) {
         if (texturePath) {
             objectLoader.setTexturePath(texturePath);
@@ -346,11 +352,12 @@ THREE.py = ( function () {
 
 
     return {
-        load:           load,
-        parse:          parse,
-        CANNONize:      CANNONize,
-        isLoaded:       isLoaded,
-        TextGeomMesher: TextGeomMesher,
-        config:         window.THREE_PY_CONFIG || {}
+        load:             load,
+        parse:            parse,
+        extractShaderLib: extractShaderLib,
+        CANNONize:        CANNONize,
+        isLoaded:         isLoaded,
+        TextGeomMesher:   TextGeomMesher,
+        config:           window.THREE_PY_CONFIG || {}
     };
 } )();
