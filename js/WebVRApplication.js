@@ -7,6 +7,7 @@ WebVRApplication = ( function () {
         var useShadowMap        = config.useShadowMap;
         var onResetVRSensor     = config.onResetVRSensor;
         var useWebVRBoilerplate = config.useWebVRBoilerplate;
+        var useDistortionMesh   = config.useDistortionMesh;
 
         var world = config.world;
         if (!world) {
@@ -43,7 +44,7 @@ WebVRApplication = ( function () {
         document.body.appendChild(domElement);
         domElement.id = 'renderer';
 
-        var vrEffect = new THREE.VREffect(this.renderer);
+        var vrEffect = new THREE.VREffect(this.renderer, undefined, useDistortionMesh);
         this.vrEffect = vrEffect;
         this.vrEffect.setSize(window.innerWidth, window.innerHeight);
 
