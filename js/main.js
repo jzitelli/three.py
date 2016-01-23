@@ -10,8 +10,6 @@ if (THREE.py.config.controls) {
 }
 
 var stats;
-var leapController,
-    animateLeap;
 
 function onLoad() {
     "use strict";
@@ -36,9 +34,6 @@ function onLoad() {
     app = new WebVRApplication(scene);
     avatar.add(app.camera);
 
-    var mouseStuff = setupMouse(avatar);
-    var animateMousePointer = mouseStuff.animateMousePointer;
-
     stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
     // align top-left
     stats.domElement.style.position = 'absolute';
@@ -46,19 +41,13 @@ function onLoad() {
     stats.domElement.style.top = '0px';
     document.body.appendChild( stats.domElement );
 
-    var toolOptions = {};
-    var toolStuff = addTool(avatar, app.world, toolOptions);
-    leapController = toolStuff.leapController;
-    animateLeap    = toolStuff.animateLeap;
-
-    app.start(animate(animateMousePointer));
+    app.start(animate());
 }
 
 
-var animate = function (animateMousePointer) {
+var animate = function () {
     "use strict";
     var lt = 0;
-    var lastFrameID;
     function animate(t) {
         stats.begin();
 
@@ -80,13 +69,6 @@ var animate = function (animateMousePointer) {
         }
         app.vrControls.update();
         app.vrManager.render(scene, app.camera, t);
-        var frame = leapController.frame();
-        if (frame.valid && frame.id !== lastFrameID) {
-            animateLeap(frame, dt);
-            lastFrameID = frame.id;
-        }
-
-        animateMousePointer(t);
 
         lt = t;
 
