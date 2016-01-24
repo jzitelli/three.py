@@ -76,6 +76,7 @@ WebVRApplication = ( function () {
             }.bind(this);
 
             this.vrManager = ( function () {
+
                 var onFullscreenChange = function () {
                     if (vrMode === 0) {
                         vrMode = 1;
@@ -84,13 +85,10 @@ WebVRApplication = ( function () {
                         vrMode = 0;
                     }
                 };
+
                 document.addEventListener('webkitfullscreenchange', onFullscreenChange);
                 document.addEventListener('mozfullscreenchange', onFullscreenChange);
-                // window.addEventListener('keydown', function (evt) {
-                //     if (evt.keyCode === 70) { // F
-                //         this.enterVR();
-                //     }
-                // });
+
                 return {
                     isVRMode: function () {
                         return vrMode === 1;
@@ -100,7 +98,8 @@ WebVRApplication = ( function () {
                         else renderer.render(scene, camera);
                     }
                 };
-            }.bind(this) )();
+
+            } )();
 
             this.enterFullscreen = function () {
                 // Primrose function:
