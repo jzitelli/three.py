@@ -1,7 +1,7 @@
 {
   "name": "three.py",
   "description": "Utilities for interfacing Python with three.js and cannon.js",
-  "version": "0.1.0",
+  "version": "0.74.0",
   "author": "Jeffrey Zitelli <jeffrey.zitelli@gmail.com> (https://github.com/jzitelli)",
   "license": "MIT",
   "homepage": "http://subvr.info",
@@ -28,7 +28,7 @@
     "WebGL"
   ],
   "dependencies": {
-    "three.js": "git://github.com/jzitelli/three.js.git",
+    "three.js": "git://github.com/jzitelli/three.js.git#dev",
     "cannon": "git://github.com/jzitelli/cannon.js.git"
   }
 }
