@@ -29,6 +29,6 @@
     "WebGL"
   ],
   "dependencies": {
-    "threejs": "git://github.com/jzitelli/three.js.git"
+    "three.js": "git://github.com/jzitelli/three.js.git"
   }
 }
