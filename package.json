@@ -11,7 +11,6 @@
   },
   "bugs": "https://github.com/jzitelli/three.py/issues",
   "files": [
-    "fonts/",
     "images/",
     "js/",
     "pyserver/",
@@ -29,6 +28,7 @@
     "WebGL"
   ],
   "dependencies": {
-    "three.js": "git://github.com/jzitelli/three.js.git"
+    "three.js": "git://github.com/jzitelli/three.js.git",
+    "cannon": "git://github.com/jzitelli/cannon.js.git"
   }
 }
