@@ -1,0 +1,34 @@
+{
+  "name": "three.py",
+  "description": "Utilities for interfacing Python with three.js and cannon.js",
+  "version": "0.1.0",
+  "author": "Jeffrey Zitelli <jeffrey.zitelli@gmail.com> (https://github.com/jzitelli)",
+  "license": "MIT",
+  "homepage": "http://subvr.info",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jzitelli/three.py.git"
+  },
+  "bugs": "https://github.com/jzitelli/three.py/issues",
+  "files": [
+    "fonts/",
+    "images/",
+    "js/",
+    "pyserver/",
+    "test/",
+    "three/",
+    "start_server.sh",
+    "favicon.ico"
+  ],
+  "keywords": [
+    "WebVR",
+    "cannon.js",
+    "three.js",
+    "VR",
+    "virtual reality",
+    "WebGL"
+  ],
+  "dependencies": {
+    "threejs": "git://github.com/jzitelli/three.js.git"
+  }
+}
