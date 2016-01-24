@@ -7,7 +7,6 @@ WebVRApplication = ( function () {
         var useShadowMap        = config.useShadowMap;
         var onResetVRSensor     = config.onResetVRSensor;
         var useWebVRBoilerplate = config.useWebVRBoilerplate;
-        var useDistortionMesh   = config.useDistortionMesh;
 
         var world = config.world;
         if (!world) {
@@ -44,11 +43,11 @@ WebVRApplication = ( function () {
         document.body.appendChild(domElement);
         domElement.id = 'renderer';
 
-        var vrEffect = new THREE.VREffect(this.renderer, undefined, useDistortionMesh);
+        var vrEffect = new THREE.VREffect(this.renderer, pyserver.log);
         this.vrEffect = vrEffect;
         this.vrEffect.setSize(window.innerWidth, window.innerHeight);
 
-        this.vrControls = new THREE.VRControls(this.camera);
+        this.vrControls = new THREE.VRControls(this.camera, pyserver.log);
         this.vrControls.enabled = true;
 
 
@@ -58,8 +57,7 @@ WebVRApplication = ( function () {
                 hideButton: false
             });
 
-            this.enterVR = function () {
-            };
+            this.enterVR = function () {};
 
         } else {
 
