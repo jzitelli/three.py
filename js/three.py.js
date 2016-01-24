@@ -5,14 +5,19 @@ THREE.py = ( function () {
     manager.onLoad = function () {
         isLoaded_ = true;
     };
+    
+    function isLoaded() {
+        return isLoaded_;
+    }
+
     var objectLoader = new THREE.ObjectLoader(manager),
         imageLoader = new THREE.ImageLoader(manager),
         textureLoader = new THREE.TextureLoader(manager),
         cubeTextureLoader = new THREE.CubeTextureLoader(manager);
 
-    function isLoaded() {
-        return isLoaded_;
-    }
+    // TODO: handle TextGeometry
+    // var fontManager = new THREE.LoadingManager();
+    // var fontLoader = new THREE.FontLoader(fontManager);
 
     function load(url, onLoad) {
         // TODO:
@@ -25,6 +30,7 @@ THREE.py = ( function () {
     }
 
     function parse(json, texturePath, onLoad) {
+
         if (texturePath) {
             objectLoader.setTexturePath(texturePath);
         }
@@ -63,8 +69,7 @@ THREE.py = ( function () {
                             if (Array.isArray(uniform.value) && uniform.value.length == 6) {
                                 // texture cube specified by urls
                                 uniform.value = cubeTextureLoader.load(uniform.value);
-                            } else
-                            if (typeof uniform.value === 'string') {
+                            } else if (typeof uniform.value === 'string') {
                                 // single texture specified by url
                                 uniform.value = textureLoader.load(uniform.value);
                             }
@@ -74,24 +79,43 @@ THREE.py = ( function () {
             } );
         }
 
-        // filter out geometries that ObjectLoader doesn't handle:
-        var geometries = objectLoader.parseGeometries(json.geometries.filter(function (geom) {
+        // filter out geometries that ObjectLoader doesn't handle, parse the rest:
+        var geometries = objectLoader.parseGeometries(json.geometries.filter( function (geom) {
             return geom.type !== "TextGeometry" && geom.type !== 'HeightfieldBufferGeometry';
-        }));
+        } ));
+
+        // fontManager.onLoad = function () {
+        //     // crappy callback
+        //     // and what if there are no fonts
+        //     var images = objectLoader.parseImages(json.images, function () {onLoad_(object);});
+        //     var textures = objectLoader.parseTextures(json.textures, images);
+        //     var materials = objectLoader.parseMaterials(json.materials, textures);
+            
+        //     object = objectLoader.parseObject(json.object, geometries, materials);
+        //     if (json.images === undefined || json.images.length === 0) {
+        //         onLoad_(object);
+        //     }
+        // };
+
         // construct and insert geometries that ObjectLoader doesn't handle
         json.geometries.forEach( function (geom) {
-            if (geom.type == "TextGeometry") {
-                var geometry = new THREE.TextGeometry(geom.text, geom.parameters);
-                geometry.uuid = geom.uuid;
-                if (geom.name !== undefined) geometry.name = geom.name;
-                geometries[geom.uuid] = geometry;
+            if (geom.type === "TextGeometry") {
+                console.log('three.py: TextGeometry not yet supported for r74');
+                // var textGeometry;
+                // fontLoader.load(geom.url, function (font) {
+                //     geom.parameters.font = font;
+                //     textGeometry = new THREE.TextGeometry(geom.text, geom.parameters);
+                //     textGeometry.uuid = geom.uuid;
+                //     if (geom.name !== undefined) textGeometry.name = geom.name;
+                //     geometries[geom.uuid] = textGeometry;
+                // });
             }
         } );
+
         var images = objectLoader.parseImages(json.images, function () {onLoad_(object);});
         var textures = objectLoader.parseTextures(json.textures, images);
         var materials = objectLoader.parseMaterials(json.materials, textures);
         var object = objectLoader.parseObject(json.object, geometries, materials);
-
 
         if (json.images === undefined || json.images.length === 0) {
             onLoad_(object);
@@ -290,6 +314,7 @@ THREE.py = ( function () {
         }
     }
 
+    // TODO: put this elsewhere?
     var TextGeomMesher = ( function () {
 
         var alphas = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
