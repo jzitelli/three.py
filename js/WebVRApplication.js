@@ -7,7 +7,6 @@ WebVRApplication = ( function () {
         var useShadowMap        = config.useShadowMap;
         var onResetVRSensor     = config.onResetVRSensor;
         var useWebVRBoilerplate = config.useWebVRBoilerplate;
-        var useDistortionMesh   = config.useDistortionMesh;
 
         var world = config.world;
         if (!world) {
@@ -44,13 +43,12 @@ WebVRApplication = ( function () {
         document.body.appendChild(domElement);
         domElement.id = 'renderer';
 
-        var vrEffect = new THREE.VREffect(this.renderer, undefined, useDistortionMesh);
+        var vrEffect = new THREE.VREffect(this.renderer, pyserver.log);
         this.vrEffect = vrEffect;
         this.vrEffect.setSize(window.innerWidth, window.innerHeight);
 
-        this.vrControls = new THREE.VRControls(this.camera);
+        this.vrControls = new THREE.VRControls(this.camera, pyserver.log);
         this.vrControls.enabled = true;
-
 
         if (useWebVRBoilerplate) {
 
@@ -58,10 +56,11 @@ WebVRApplication = ( function () {
                 hideButton: false
             });
 
-            this.enterVR = function () {
-            };
+            this.enterVR = function () {};
 
         } else {
+
+            // bare bones webvr-manager, suitable for desktop VR devices
 
             var vrMode = 0;
 
@@ -88,11 +87,6 @@ WebVRApplication = ( function () {
                 };
                 document.addEventListener('webkitfullscreenchange', onFullscreenChange);
                 document.addEventListener('mozfullscreenchange', onFullscreenChange);
-                // window.addEventListener('keydown', function (evt) {
-                //     if (evt.keyCode === 70) { // F
-                //         this.enterVR();
-                //     }
-                // });
                 return {
                     isVRMode: function () {
                         return vrMode === 1;
