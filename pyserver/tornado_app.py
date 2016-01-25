@@ -10,7 +10,6 @@ from tornado.web import Application, FallbackHandler
 from tornado.ioloop import IOLoop
 
 import sys
-#sys.path.append(os.getcwd())
 sys.path.insert(0, os.path.join(os.path.split(__file__)[0], os.path.pardir))
 import pyserver
 import pyserver.flask_app as flask_app
