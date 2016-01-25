@@ -1,6 +1,7 @@
 # three.py
 
-This project provides utilities for integrating Python with [three.js](http://threejs.org).
+This project provides utilities for integrating Python with [three.js](http://threejs.org).  It's also where I'm throwing random
+WebVR-related prototypes / experiments.
 
 The Python package `three` defines classes mirroring those in three.js.  They can be JSON-serialized and (for the most part) loaded with three.js loaders.
 
@@ -22,19 +23,6 @@ From the `three.py/test` directory,
 $ python ./run_tests.py --with-needle-capture --with-needle-cleanup-on-success
 ```
 
-<!-- First, start a local server:
-
-```
-.../three.py $ python ./pyserver/flask_app.py
-```
-
-When the server is running:
-
-```
-.../three.py/test $ nosetests ./test_js.py
-```
- -->
-
 
 ## Acknowledgements
 
@@ -51,9 +39,3 @@ Python packages:
   - [SciPy](http://www.scipy.org)
   - nose
   - [Needle](https://github.com/bfirsh/needle)
-
-
-
-## TODO list:
-
-1. todo list
