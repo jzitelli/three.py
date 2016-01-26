@@ -1,20 +1,11 @@
 var app;
 var avatar = new THREE.Object3D();
 var scene;
-var controls;
-if (THREE.py.config.controls) {
-    controls = new THREE[THREE.py.config.controls](avatar, renderer.domElement);
-    if (THREE.py.config.controls === 'FirstPersonControls') {
-        controls.lon = -90;
-    }
-}
 
 var stats;
 
 function onLoad() {
     "use strict";
-    pyserver.log('THREE.REVISION = ' + THREE.REVISION);
-
     stats = new Stats();
 
     THREE.py.extractShaderLib();
@@ -51,12 +42,10 @@ var animate = function () {
     function animate(t) {
         stats.begin();
 
-        var dt = 0.001 * (t - lt);
         requestAnimationFrame(animate);
+
+        var dt = 0.001 * (t - lt);
         app.world.step(1/75, dt, 10);
-        if (controls) {
-            controls.update(dt);
-        }
         for (var i = 0; i < app.world.bodies.length; i++) {
             var body = app.world.bodies[i];
             if (body.mass > 0) {

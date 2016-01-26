@@ -30,7 +30,9 @@
   ],
   "dependencies": {
     "three.js": "git://github.com/jzitelli/three.js.git#dev",
+    "stats.js": "git://github.com/mrdoob/stats.js.git",
     "cannon": "git://github.com/jzitelli/cannon.js.git",
-    "webvr-boilerplate": "git://github.com/jzitelli/webvr-boilerplate.git#dev"
+    "webvr-boilerplate": "git://github.com/jzitelli/webvr-boilerplate.git#dev",
+    "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git"
   }
 }

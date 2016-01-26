@@ -1,26 +1,29 @@
-function setupMouse(parent, position, particleTexture, onpointerlockchange) {
+function setupMouse(parent, position, onpointerlockchange) {
     "use strict";
     position = position || new THREE.Vector3(0, 0, -2);
-    var numParticles = 50;
-    particleTexture = particleTexture || '/images/mouseParticle.png';
-    var mouseParticleGroup = new SPE.Group({
-        texture: {value: THREE.ImageUtils.loadTexture(particleTexture)},
-        maxParticleCount: numParticles
-    });
-    var mouseParticleEmitter = new SPE.Emitter({
-        maxAge: {value: 0.5},
-        position: {value: new THREE.Vector3(0, 0, 0),
-                   spread: new THREE.Vector3(0, 0, 0)},
-        velocity: {value: new THREE.Vector3(0, 0, 0),
-                   spread: new THREE.Vector3(0.4, 0.4, 0.4)},
-        color: {value: [new THREE.Color('blue'), new THREE.Color('red')]},
-        opacity: {value: [1, 0.1]},
-        size: {value: 0.1},
-        particleCount: numParticles
-    });
-    mouseParticleGroup.addEmitter(mouseParticleEmitter);
 
-    var mousePointerMesh = mouseParticleGroup.mesh;
+    // var numParticles = 50;
+    // particleTexture = particleTexture || '/images/particle.png';
+    // var mouseParticleGroup = new SPE.Group({
+    //     texture: {value: THREE.ImageUtils.loadTexture(particleTexture)},
+    //     maxParticleCount: numParticles
+    // });
+    // var mouseParticleEmitter = new SPE.Emitter({
+    //     maxAge: {value: 0.5},
+    //     position: {value: new THREE.Vector3(0, 0, 0),
+    //                spread: new THREE.Vector3(0, 0, 0)},
+    //     velocity: {value: new THREE.Vector3(0, 0, 0),
+    //                spread: new THREE.Vector3(0.4, 0.4, 0.4)},
+    //     color: {value: [new THREE.Color('blue'), new THREE.Color('red')]},
+    //     opacity: {value: [1, 0.1]},
+    //     size: {value: 0.1},
+    //     particleCount: numParticles
+    // });
+    // mouseParticleGroup.addEmitter(mouseParticleEmitter);
+
+    // var mousePointerMesh = mouseParticleGroup.mesh;
+
+    var mousePointerMesh = new THREE.Mesh(new THREE.SphereBufferGeometry(0.1, 4, 4), new THREE.MeshBasicMaterial({color: 0xff0000}));
 
     parent.add(mousePointerMesh);
     mousePointerMesh.position.copy(position);
@@ -83,10 +86,10 @@ function setupMouse(parent, position, particleTexture, onpointerlockchange) {
     var direction = new THREE.Vector3();
     var raycaster = new THREE.Raycaster();
     var lt = 0;
-    function animateMousePointer(t, camera) {
+    function updatePicking(t, camera) {
         var dt = 0.001*(t - lt);
         if (mousePointerMesh.visible) {
-            mouseParticleGroup.tick(dt);
+            // mouseParticleGroup.tick(dt);
             if (pickables && camera) {
                 origin.set(0, 0, 0);
                 direction.set(0, 0, 0);
@@ -110,8 +113,8 @@ function setupMouse(parent, position, particleTexture, onpointerlockchange) {
     }
 
     return {
-        animateMousePointer: animateMousePointer,
-        setPickables       : setPickables,
-        mousePointerMesh   : mousePointerMesh
+        updatePicking   : updatePicking,
+        setPickables    : setPickables,
+        mousePointerMesh: mousePointerMesh
     };
 }
