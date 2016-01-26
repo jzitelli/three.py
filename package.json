@@ -25,10 +25,12 @@
     "three.js",
     "VR",
     "virtual reality",
-    "WebGL"
+    "WebGL",
+    "Python"
   ],
   "dependencies": {
     "three.js": "git://github.com/jzitelli/three.js.git#dev",
-    "cannon": "git://github.com/jzitelli/cannon.js.git"
+    "cannon": "git://github.com/jzitelli/cannon.js.git",
+    "webvr-boilerplate": "git://github.com/jzitelli/webvr-boilerplate.git#dev"
   }
 }
