@@ -22,7 +22,9 @@ function onLoad() {
     }
 
     scene.add(avatar);
-    app = new WebVRApplication(scene);
+
+    app = new WebVRApplication(scene, {useWebVRBoilerplate: true});
+    
     avatar.add(app.camera);
 
     stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
