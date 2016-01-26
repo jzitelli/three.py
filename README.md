@@ -22,19 +22,6 @@ From the `three.py/test` directory,
 $ python ./run_tests.py --with-needle-capture --with-needle-cleanup-on-success
 ```
 
-<!-- First, start a local server:
-
-```
-.../three.py $ python ./pyserver/flask_app.py
-```
-
-When the server is running:
-
-```
-.../three.py/test $ nosetests ./test_js.py
-```
- -->
-
 
 ## Acknowledgements
 
