@@ -26,11 +26,11 @@ def index_scene(url_prefix=""):
                       material=MeshLambertMaterial(color=0x00ff00),
                       position=[0, 1, -4])
     scene.add(sphereMesh)
-    # textGeomMesh = Mesh(geometry=TextGeometry(url='node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js',
-    #                                           text='three.py', size=0.25, height=0.25/16),
-    #                     material=MeshBasicMaterial(color=0x0000ff),
-    #                     position=[-1, 0, -4])
-    # scene.add(textGeomMesh)
+    textGeomMesh = Mesh(geometry=TextGeometry(url='node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js',
+                                              text='three.py', size=0.25, height=0.25/16),
+                        material=MeshBasicMaterial(color=0x0000ff),
+                        position=[-1, 0, -4])
+    scene.add(textGeomMesh)
     return scene
 
 

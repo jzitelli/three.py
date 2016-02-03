@@ -15,10 +15,6 @@ THREE.py = ( function () {
         textureLoader = new THREE.TextureLoader(manager),
         cubeTextureLoader = new THREE.CubeTextureLoader(manager);
 
-    // TODO: handle TextGeometry
-    // var fontManager = new THREE.LoadingManager();
-    // var fontLoader = new THREE.FontLoader(fontManager);
-
     function load(url, onLoad) {
         // TODO:
     }
@@ -28,6 +24,15 @@ THREE.py = ( function () {
         pyserver.writeFile('ShaderChunk.json', JSON.stringify(THREE.ShaderChunk, undefined, 2));
         pyserver.writeFile('UniformsLib.json', JSON.stringify(THREE.UniformsLib, undefined, 2));
     }
+
+    var fontLoader = new THREE.FontLoader();
+    var font;
+    // fontLoader.load('/node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js', function (_font) {
+    //     font = _font;
+    // });
+    fontLoader.load('/fonts/Anonymous Pro_Regular.js', function (_font) {
+        font = _font;
+    });
 
     function parse(json, texturePath, onLoad) {
 
@@ -59,6 +64,22 @@ THREE.py = ( function () {
             }
         }
 
+        // filter out geometries that ObjectLoader doesn't handle, parse the rest:
+        var geometries = objectLoader.parseGeometries(json.geometries.filter( function (geom) {
+            return geom.type !== "TextGeometry" && geom.type !== 'HeightfieldBufferGeometry';
+        } ));
+
+        // construct and insert geometries that ObjectLoader doesn't handle
+        json.geometries.forEach( function (geom) {
+            if (geom.type === "TextGeometry") {
+                geom.parameters.font = font;
+                var textGeometry = new THREE.TextGeometry(geom.text, geom.parameters);
+                textGeometry.uuid = geom.uuid;
+                if (geom.name !== undefined) textGeometry.name = geom.name;
+                geometries[geom.uuid] = textGeometry;
+            }
+        } );
+
         if (json.materials) {
             json.materials.forEach( function (mat) {
                 if (mat.type.endsWith("ShaderMaterial") && mat.uniforms) {
@@ -79,47 +100,14 @@ THREE.py = ( function () {
             } );
         }
 
-        // filter out geometries that ObjectLoader doesn't handle, parse the rest:
-        var geometries = objectLoader.parseGeometries(json.geometries.filter( function (geom) {
-            return geom.type !== "TextGeometry" && geom.type !== 'HeightfieldBufferGeometry';
-        } ));
-
-        // fontManager.onLoad = function () {
-        //     // crappy callback
-        //     // and what if there are no fonts
-        //     var images = objectLoader.parseImages(json.images, function () {onLoad_(object);});
-        //     var textures = objectLoader.parseTextures(json.textures, images);
-        //     var materials = objectLoader.parseMaterials(json.materials, textures);
-            
-        //     object = objectLoader.parseObject(json.object, geometries, materials);
-        //     if (json.images === undefined || json.images.length === 0) {
-        //         onLoad_(object);
-        //     }
-        // };
-
-        // construct and insert geometries that ObjectLoader doesn't handle
-        json.geometries.forEach( function (geom) {
-            if (geom.type === "TextGeometry") {
-                console.log('three.py: TextGeometry not yet supported for r74');
-                // var textGeometry;
-                // fontLoader.load(geom.url, function (font) {
-                //     geom.parameters.font = font;
-                //     textGeometry = new THREE.TextGeometry(geom.text, geom.parameters);
-                //     textGeometry.uuid = geom.uuid;
-                //     if (geom.name !== undefined) textGeometry.name = geom.name;
-                //     geometries[geom.uuid] = textGeometry;
-                // });
-            }
-        } );
-
-        var images = objectLoader.parseImages(json.images, function () {onLoad_(object);});
+        var images = objectLoader.parseImages(json.images, function () { onLoad_(object); });
         var textures = objectLoader.parseTextures(json.textures, images);
         var materials = objectLoader.parseMaterials(json.materials, textures);
-        var object = objectLoader.parseObject(json.object, geometries, materials);
 
+        var object = objectLoader.parseObject(json.object, geometries, materials);
         if (json.images === undefined || json.images.length === 0) {
             onLoad_(object);
-        }
+        }   
 
         function loadHeightfields(obj) {
             function getPixel(imagedata, x, y) {
