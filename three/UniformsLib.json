@@ -163,45 +163,6 @@
         },
         "color": {
           "type": "c"
-        },
-        "shadow": {
-          "type": "i"
-        }
-      }
-    },
-    "hemisphereLights": {
-      "type": "sa",
-      "value": [],
-      "properties": {
-        "direction": {
-          "type": "v3"
-        },
-        "skyColor": {
-          "type": "c"
-        },
-        "groundColor": {
-          "type": "c"
-        }
-      }
-    },
-    "pointLights": {
-      "type": "sa",
-      "value": [],
-      "properties": {
-        "color": {
-          "type": "c"
-        },
-        "position": {
-          "type": "v3"
-        },
-        "decay": {
-          "type": "f"
-        },
-        "distance": {
-          "type": "f"
-        },
-        "shadow": {
-          "type": "i"
         }
       }
     },
@@ -229,9 +190,39 @@
         },
         "decay": {
           "type": "f"
+        }
+      }
+    },
+    "pointLights": {
+      "type": "sa",
+      "value": [],
+      "properties": {
+        "color": {
+          "type": "c"
         },
-        "shadow": {
-          "type": "i"
+        "position": {
+          "type": "v3"
+        },
+        "decay": {
+          "type": "f"
+        },
+        "distance": {
+          "type": "f"
+        }
+      }
+    },
+    "hemisphereLights": {
+      "type": "sa",
+      "value": [],
+      "properties": {
+        "direction": {
+          "type": "v3"
+        },
+        "skyColor": {
+          "type": "c"
+        },
+        "groundColor": {
+          "type": "c"
         }
       }
     }
@@ -272,23 +263,75 @@
     }
   },
   "shadowmap": {
-    "shadowMap": {
+    "directionalShadow": {
+      "type": "1iv",
+      "value": []
+    },
+    "directionalShadowMap": {
       "type": "tv",
       "value": []
     },
-    "shadowMapSize": {
+    "directionalShadowMapSize": {
       "type": "v2v",
       "value": []
     },
-    "shadowBias": {
-      "type": "fv1",
+    "directionalShadowBias": {
+      "type": "1fv",
       "value": []
     },
-    "shadowDarkness": {
-      "type": "fv1",
+    "directionalShadowRadius": {
+      "type": "1fv",
       "value": []
     },
-    "shadowMatrix": {
+    "directionalShadowMatrix": {
+      "type": "m4v",
+      "value": []
+    },
+    "spotShadow": {
+      "type": "1iv",
+      "value": []
+    },
+    "spotShadowMap": {
+      "type": "tv",
+      "value": []
+    },
+    "spotShadowMapSize": {
+      "type": "v2v",
+      "value": []
+    },
+    "spotShadowBias": {
+      "type": "1fv",
+      "value": []
+    },
+    "spotShadowRadius": {
+      "type": "1fv",
+      "value": []
+    },
+    "spotShadowMatrix": {
+      "type": "m4v",
+      "value": []
+    },
+    "pointShadow": {
+      "type": "1iv",
+      "value": []
+    },
+    "pointShadowMap": {
+      "type": "tv",
+      "value": []
+    },
+    "pointShadowMapSize": {
+      "type": "v2v",
+      "value": []
+    },
+    "pointShadowBias": {
+      "type": "1fv",
+      "value": []
+    },
+    "pointShadowRadius": {
+      "type": "1fv",
+      "value": []
+    },
+    "pointShadowMatrix": {
       "type": "m4v",
       "value": []
     }
