@@ -15,6 +15,7 @@ square = QuadBufferGeometry(vertices=[[-0.5, 0, -0.5], [-0.5, 0, 0.5], [0.5, 0, 
                                  uvs=[(0,1), (0,0), (1,0), (1,1)])
 
 
+
 def index_scene(url_prefix=""):
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=100, position=[-4, 5, 20]))
@@ -26,21 +27,12 @@ def index_scene(url_prefix=""):
                       material=MeshLambertMaterial(color=0x00ff00),
                       position=[0, 1, -4])
     scene.add(sphereMesh)
-    textGeomMesh = Mesh(geometry=TextGeometry(url='node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js',
-                                              text='three.py', size=0.25, height=0.25/16),
+    textGeomMesh = Mesh(geometry=TextGeometry(text='three.py', font='helvetiker', size=0.25, height=0.25/16),
                         material=MeshBasicMaterial(color=0x0000ff),
                         position=[-1, 0, -4])
     scene.add(textGeomMesh)
     return scene
 
-
-def config_scene(url_prefix="../", **config):
-    scene = Scene()
-    # textGeomMesh = Mesh(geometry=TextGeometry(text='three.py config', size=0.25, height=0.25/16),
-    #                     material=MeshBasicMaterial(color=0x0000ff),
-    #                     position=[-1, 0, -4])
-    # scene.add(textGeomMesh)
-    return scene
 
 
 def some_room(length=15.0, width=12.0, height=10.0, url_prefix=""):

@@ -31,8 +31,7 @@ def index():
     return render_template('index.html',
                            json_config=Markup("""<script>
 var JSON_SCENE = %s;
-</script>""" % json.dumps(scene.export(), indent=2)),
-                           threejs_lib='lib/three.js')
+</script>""" % json.dumps(scene.export(), indent=2)))
 
 
 @app.route("/read")
@@ -48,7 +47,7 @@ def read():
     return jsonify(response)
 
 
-WRITE_FOLDER = os.path.join(THREEPYDIR, 'three')
+WRITE_FOLDER = os.path.join(THREEPYDIR, 'shaderlib')
 if not os.path.exists(WRITE_FOLDER):
     raise Exception('write is disabled, you need to create the write folder %s' % WRITE_FOLDER)
 @app.route("/write", methods=['POST'])

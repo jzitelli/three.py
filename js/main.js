@@ -14,7 +14,7 @@ function onLoad() {
         scene = THREE.py.parse(JSON_SCENE, undefined);
     } else {
         scene = new THREE.Scene();
-        var textGeom = new THREE.TextGeometry("This is what you get when you don't define window.JSON_SCENE", {size: 0.3, height: 0, font: 'anonymous pro'});
+        var textGeom = new THREE.TextGeometry("This is what you get when you don't define window.JSON_SCENE", {size: 0.3, height: 0, font: THREE.py.fonts.anonymous_pro});
         var textMaterial = new THREE.BasicMaterial({color: 0xeeeb00});
         var textMesh = new THREE.Mesh(textGeom, textMaterial);
         scene.add(textMesh);

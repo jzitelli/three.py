@@ -27,11 +27,13 @@ THREE.py = ( function () {
 
     var fontLoader = new THREE.FontLoader();
     var font;
+    var fonts = {};
     // fontLoader.load('/node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js', function (_font) {
-    //     font = _font;
+    //     fonts.helvetiker = _font;
     // });
     fontLoader.load('/fonts/Anonymous Pro_Regular.js', function (_font) {
         font = _font;
+        fonts.anonymous_pro = _font;
     });
 
     function parse(json, texturePath, onLoad) {
@@ -371,6 +373,6 @@ THREE.py = ( function () {
         CANNONize:        CANNONize,
         isLoaded:         isLoaded,
         TextGeomMesher:   TextGeomMesher,
-        config:           window.THREE_PY_CONFIG || {}
+        fonts:            fonts
     };
 } )();
