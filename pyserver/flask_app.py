@@ -32,7 +32,8 @@ def index():
     return render_template('webvr_app.html',
                            json_config=Markup("""<script>
 var JSON_SCENE = %s;
-</script>""" % json.dumps(scene.export(), indent=2)))
+</script>""" % json.dumps(scene.export(), indent=2)),
+                           mainjs='js/index.js')
 
 
 
