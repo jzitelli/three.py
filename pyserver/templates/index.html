@@ -24,6 +24,9 @@
       }
     </style>
 
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='lib/rStats.css') }}">
+
+
 <!-- *** begin json_config *** -->
 {{ json_config if json_config else '' }}
 <!-- *** end json_config *** -->
@@ -41,14 +44,12 @@
     <script src="node_modules/webvr-polyfill/build/webvr-polyfill.js"></script>
     <script src="node_modules/webvr-boilerplate/build/webvr-manager.js"></script>
 
-    <script src="node_modules/stats.js/build/stats.min.js"></script>
-
     <script src="node_modules/cannon/build/cannon.js"></script>
     <script src="node_modules/cannon/util/cannon.serialize.js"></script>
 
-    <script src="{{ url_for('static', filename='js/WebVRApplication.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/rStats.js') }}"></script>
 
-    <script src="{{ url_for('static', filename='js/MouseStuff.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/WebVRApplication.js') }}"></script>
 
     <script src="{{ url_for('static', filename='js/pyserver.js') }}"></script>
     <script src="{{ url_for('static', filename='js/three.py.js') }}"></script>

@@ -2,12 +2,10 @@ var app;
 var avatar = new THREE.Object3D();
 var scene;
 
-var stats;
+var rS = new rStats();
 
 function onLoad() {
     "use strict";
-    stats = new Stats();
-
     THREE.py.extractShaderLib();
 
     if (window.JSON_SCENE !== undefined) {
@@ -27,13 +25,6 @@ function onLoad() {
     
     avatar.add(app.camera);
 
-    stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
-    // align top-left
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.left = '0px';
-    stats.domElement.style.top = '0px';
-    document.body.appendChild( stats.domElement );
-
     app.start(animate());
 }
 
@@ -41,10 +32,9 @@ function onLoad() {
 var animate = function () {
     "use strict";
     var lt = 0;
-    function animate(t) {
-        stats.begin();
 
-        requestAnimationFrame(animate);
+    function animate(t) {
+        rS('frame').start();
 
         var dt = 0.001 * (t - lt);
         app.world.step(1/75, dt, 10);
@@ -63,7 +53,11 @@ var animate = function () {
 
         lt = t;
 
-        stats.end();
+        rS('frame').end();
+        rS().update();
+
+        requestAnimationFrame(animate);
     }
+
     return animate;
 };

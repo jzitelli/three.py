@@ -28,11 +28,10 @@ THREE.py = ( function () {
     var fontLoader = new THREE.FontLoader();
     var font;
     var fonts = {};
-    // fontLoader.load('/node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js', function (_font) {
-    //     fonts.helvetiker = _font;
-    // });
+    fontLoader.load('/node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js', function (_font) {
+        fonts.helvetiker = _font;
+    });
     fontLoader.load('/fonts/Anonymous Pro_Regular.js', function (_font) {
-        font = _font;
         fonts.anonymous_pro = _font;
     });
 
@@ -74,7 +73,7 @@ THREE.py = ( function () {
         // construct and insert geometries that ObjectLoader doesn't handle
         json.geometries.forEach( function (geom) {
             if (geom.type === "TextGeometry") {
-                geom.parameters.font = font;
+                geom.parameters.font = fonts[geom.parameters.fontName || 'helvetiker'];
                 var textGeometry = new THREE.TextGeometry(geom.text, geom.parameters);
                 textGeometry.uuid = geom.uuid;
                 if (geom.name !== undefined) textGeometry.name = geom.name;

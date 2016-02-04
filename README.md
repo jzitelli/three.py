@@ -31,6 +31,7 @@ JavaScript libraries:
   - [Leap Motion JavaScript framework](https://github.com/leapmotion/leapjs)
   - [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate)
   - [Shader Particle Engine](https://github.com/squarefeet/ShaderParticleEngine)
+  - [rStats](https://github.com/spite/rstats)
 
 Python packages:
   - [Flask](http://flask.pocoo.org/)
