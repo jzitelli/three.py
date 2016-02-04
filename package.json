@@ -18,7 +18,9 @@
     "test/",
     "three/",
     "start_server.sh",
-    "favicon.ico"
+    "favicon.ico",
+    "LICENSE",
+    "README.md"
   ],
   "keywords": [
     "WebVR",
