@@ -14,6 +14,7 @@
     "images/",
     "js/",
     "pyserver/",
+    "shaderlib/",
     "test/",
     "three/",
     "start_server.sh",

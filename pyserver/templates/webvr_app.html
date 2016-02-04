@@ -54,7 +54,11 @@
     <script src="{{ url_for('static', filename='js/pyserver.js') }}"></script>
     <script src="{{ url_for('static', filename='js/three.py.js') }}"></script>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% if main %}
+    <script src="{{ url_for('static', filename=main) }}"></script>
+    {% else %}
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    {% endif %}
 
   </body>
 
