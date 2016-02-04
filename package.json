@@ -29,7 +29,9 @@
     "VR",
     "virtual reality",
     "WebGL",
-    "Python"
+    "Python",
+    "Flask",
+    "Tornado"
   ],
   "dependencies": {
     "three.js": "git://github.com/jzitelli/three.js.git#dev",
