@@ -25,13 +25,15 @@ if THREEPYDIR not in sys.path:
 import pyserver.scenes as scenes
 
 
+
 @app.route('/')
 def index():
     scene = scenes.index_scene()
-    return render_template('index.html',
+    return render_template('webvr_app.html',
                            json_config=Markup("""<script>
 var JSON_SCENE = %s;
 </script>""" % json.dumps(scene.export(), indent=2)))
+
 
 
 @app.route("/read")
@@ -45,6 +47,7 @@ def read():
     except Exception as err:
         response['error'] = str(err)
     return jsonify(response)
+
 
 
 WRITE_FOLDER = os.path.join(THREEPYDIR, 'shaderlib')
@@ -67,6 +70,7 @@ def write():
     return jsonify(response)
 
 
+
 @app.route('/log', methods=['POST'])
 def log():
     """Post message from client to the server log
@@ -75,6 +79,7 @@ def log():
     _logger.info(msg)
     response = {'status': 0}
     return jsonify(response)
+
 
 
 def main():
@@ -93,6 +98,7 @@ STARTING FLASK APP!!!!!!!!!!!!!
             ------
 """)
     app.run(host='0.0.0.0')
+
 
 
 if __name__ == "__main__":
