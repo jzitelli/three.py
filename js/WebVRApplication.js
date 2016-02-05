@@ -42,11 +42,11 @@ function WebVRApplication(scene, config) {
     document.body.appendChild(domElement);
     domElement.id = 'renderer';
 
-    var vrEffect = new THREE.VREffect(this.renderer, function(errorMsg) { pyserver.log('error creating VREffect: ' + errorMsg); });
+    var vrEffect = new THREE.VREffect(this.renderer, function(errorMsg) { console.log('error creating VREffect: ' + errorMsg); });
     this.vrEffect = vrEffect;
     this.vrEffect.setSize(window.innerWidth, window.innerHeight);
 
-    this.vrControls = new THREE.VRControls(this.camera, function(errorMsg) { pyserver.log('error creating VRControls: ' + errorMsg); });
+    this.vrControls = new THREE.VRControls(this.camera, function(errorMsg) { console.log('error creating VRControls: ' + errorMsg); });
     this.vrControls.enabled = true;
 
     if (useWebVRBoilerplate) {
