@@ -4,21 +4,17 @@
   "version": "0.74.0",
   "author": "Jeffrey Zitelli <jeffrey.zitelli@gmail.com> (https://github.com/jzitelli)",
   "license": "MIT",
-  "homepage": "http://subvr.info",
+  "homepage": "https://github.com/jzitelli/three.py",
   "repository": {
     "type": "git",
     "url": "https://github.com/jzitelli/three.py.git"
   },
   "bugs": "https://github.com/jzitelli/three.py/issues",
   "files": [
-    "images/",
     "js/",
-    "pyserver/",
     "shaderlib/",
-    "test/",
     "three/",
-    "start_server.sh",
-    "favicon.ico",
+    "pyserver.py",
     "LICENSE",
     "README.md"
   ],
@@ -34,9 +30,11 @@
     "Tornado"
   ],
   "dependencies": {
-    "three.js": "git://github.com/jzitelli/three.js.git#dev",
+    "three.js": "git://github.com/jzitelli/three.js.git#dev"
+  },
+  "devDependencies": {
     "cannon": "git://github.com/jzitelli/cannon.js.git",
     "webvr-boilerplate": "git://github.com/jzitelli/webvr-boilerplate.git#dev",
-    "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git"
+    "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git"    
   }
 }
