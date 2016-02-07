@@ -45,7 +45,6 @@
     <script src="node_modules/webvr-boilerplate/build/webvr-manager.js"></script>
 
     <script src="node_modules/cannon/build/cannon.js"></script>
-    <script src="node_modules/cannon/util/cannon.serialize.js"></script>
 
     <script src="{{ url_for('static', filename='lib/rStats.js') }}"></script>
 
@@ -54,7 +53,7 @@
     <script src="{{ url_for('static', filename='js/pyserver.js') }}"></script>
     <script src="{{ url_for('static', filename='js/three.py.js') }}"></script>
 
-    <script src="{{ url_for('static', filename=(mainjs if mainjs else 'js/index.js')) }}"></script>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 
   </body>
 
