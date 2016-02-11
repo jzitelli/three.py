@@ -162,16 +162,4 @@ function WebVRApplication(scene, config) {
         }
     }.bind(this));
 
-
-    this.start = function(animate) {
-        function waitForResources(t) {
-            if (THREE.py.isLoaded()) {
-                requestAnimationFrame(animate);
-            } else {
-                requestAnimationFrame(waitForResources);
-            }
-        }
-        waitForResources(0);
-    };
-
 }

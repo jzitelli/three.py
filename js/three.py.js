@@ -1,42 +1,96 @@
 THREE.py = ( function () {
     "use strict";
-    var manager = new THREE.LoadingManager();
-    var isLoaded_ = true;
-    manager.onLoad = function () {
-        isLoaded_ = true;
-    };
-    
-    function isLoaded() {
-        return isLoaded_;
-    }
 
-    var objectLoader = new THREE.ObjectLoader(manager),
-        imageLoader = new THREE.ImageLoader(manager),
-        textureLoader = new THREE.TextureLoader(manager),
-        cubeTextureLoader = new THREE.CubeTextureLoader(manager);
-
-    function load(url, onLoad) {
-        // TODO:
-    }
-
-    var fontLoader = new THREE.FontLoader();
-    var font;
     var fonts = {};
-    fontLoader.load('/node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js', function (_font) {
-        fonts.helvetiker = _font;
-    });
-    fontLoader.load('/fonts/Anonymous Pro_Regular.js', function (_font) {
-        fonts.anonymous_pro = _font;
-    });
 
     function parse(json, texturePath, onLoad) {
+
+        var objectLoader = new THREE.ObjectLoader();
 
         if (texturePath) {
             objectLoader.setTexturePath(texturePath);
         }
 
-        isLoaded_ = false;
-        function onLoad_(obj) {
+        var manager = new THREE.LoadingManager();
+        var textureLoader = new THREE.TextureLoader(manager),
+            cubeTextureLoader = new THREE.CubeTextureLoader(manager),
+            fontLoader = new THREE.FontLoader(manager);
+
+        var promise = new Promise( function (resolve, reject) {
+
+            // filter out geometries that ObjectLoader doesn't handle, parse the rest:
+            var geometries = objectLoader.parseGeometries(json.geometries.filter( function (geom) {
+                return geom.type !== "TextGeometry" && geom.type !== 'HeightfieldBufferGeometry';
+            } ));
+
+            var onPartsLoad = function () {
+
+                var images = objectLoader.parseImages(json.images, function () { _onLoad(object); });
+                var textures = objectLoader.parseTextures(json.textures, images);
+                var materials = objectLoader.parseMaterials(json.materials, textures);
+
+                // construct TextGeometries now that fonts are loaded:
+                json.geometries.forEach( function (geom) {
+                    if (geom.type === "TextGeometry") {
+                        geom.parameters.font = fonts[geom.font_url];
+                        var textGeometry = new THREE.TextGeometry(geom.text, geom.parameters);
+                        textGeometry.uuid = geom.uuid;
+                        if (geom.name !== undefined) textGeometry.name = geom.name;
+                        geometries[geom.uuid] = textGeometry;
+                    }
+                } );
+
+                var object = objectLoader.parseObject(json.object, geometries, materials);
+                if (json.images === undefined || json.images.length === 0) {
+                    _onLoad(object);
+                }
+
+                resolve(object);
+
+            };
+            manager.onLoad = onPartsLoad;
+
+            var needsLoading = false;
+
+            // set texture values for shader material uniforms:
+            if (json.materials) {
+                json.materials.forEach( function (mat) {
+                    if (mat.type.endsWith("ShaderMaterial") && mat.uniforms) {
+                        var uniforms = mat.uniforms;
+                        for (var key in uniforms) {
+                            var uniform = uniforms[key];
+                            if (uniform.type === 't') {
+                                if (Array.isArray(uniform.value) && uniform.value.length === 6) {
+                                    // texture cube specified by urls
+                                    uniform.value = cubeTextureLoader.load(uniform.value);
+                                    needsLoading = true;
+                                } else if (typeof uniform.value === 'string') {
+                                    // single texture specified by url
+                                    uniform.value = textureLoader.load(uniform.value);
+                                    needsLoading = true;
+                                }
+                            }
+                        }
+                    }
+                } );
+            }
+
+            // load fonts:
+            json.geometries.forEach( function (geom) {
+                if (geom.type === "TextGeometry" && fonts[geom.font_url] === undefined) {
+                    fonts[geom.font_url] = null;
+                    fontLoader.load(geom.font_url, function (font) {
+                        fonts[geom.font_url] = font;
+                    });
+                    needsLoading = true;
+                }
+            } );
+
+            if (needsLoading === false) onPartsLoad();
+
+        } );
+
+        function _onLoad(obj) {
             loadHeightfields(obj);
             obj.traverse( function (node) {
                 if (node instanceof THREE.Mesh) {
@@ -45,64 +99,15 @@ THREE.py = ( function () {
                     if (node.userData && node.userData.visible === false) {
                         node.visible = false;
                     }
-                    if (!(node.geometry instanceof THREE.SphereBufferGeometry)) {
-                        // makes seams appear on spherebuffergeometries due to doubled vertices at phi=0=2*pi
-                        //node.geometry.computeVertexNormals();
-                    }
-                    if (node.material.shading === THREE.FlatShading)
+                    if (node.material.shading === THREE.FlatShading) {
                         node.geometry.computeFaceNormals();
+                    }
                 }
             } );
-            isLoaded_ = true;
             if (onLoad) {
                 onLoad(obj);
             }
         }
-
-        // filter out geometries that ObjectLoader doesn't handle, parse the rest:
-        var geometries = objectLoader.parseGeometries(json.geometries.filter( function (geom) {
-            return geom.type !== "TextGeometry" && geom.type !== 'HeightfieldBufferGeometry';
-        } ));
-
-        // construct and insert geometries that ObjectLoader doesn't handle
-        json.geometries.forEach( function (geom) {
-            if (geom.type === "TextGeometry") {
-                geom.parameters.font = fonts[geom.parameters.fontName || 'helvetiker'];
-                var textGeometry = new THREE.TextGeometry(geom.text, geom.parameters);
-                textGeometry.uuid = geom.uuid;
-                if (geom.name !== undefined) textGeometry.name = geom.name;
-                geometries[geom.uuid] = textGeometry;
-            }
-        } );
-
-        if (json.materials) {
-            json.materials.forEach( function (mat) {
-                if (mat.type.endsWith("ShaderMaterial") && mat.uniforms) {
-                    var uniforms = mat.uniforms;
-                    for (var key in uniforms) {
-                        var uniform = uniforms[key];
-                        if (uniform.type === 't') {
-                            if (Array.isArray(uniform.value) && uniform.value.length == 6) {
-                                // texture cube specified by urls
-                                uniform.value = cubeTextureLoader.load(uniform.value);
-                            } else if (typeof uniform.value === 'string') {
-                                // single texture specified by url
-                                uniform.value = textureLoader.load(uniform.value);
-                            }
-                        }
-                    }
-                }
-            } );
-        }
-
-        var images = objectLoader.parseImages(json.images, function () { onLoad_(object); });
-        var textures = objectLoader.parseTextures(json.textures, images);
-        var materials = objectLoader.parseMaterials(json.materials, textures);
-
-        var object = objectLoader.parseObject(json.object, geometries, materials);
-        if (json.images === undefined || json.images.length === 0) {
-            onLoad_(object);
-        }   
 
         function loadHeightfields(obj) {
             function getPixel(imagedata, x, y) {
@@ -148,13 +153,12 @@ THREE.py = ( function () {
             });
         }
 
-        return object;
+        return promise;
+
     }
 
     return {
-        load:             load,
-        parse:            parse,
-        isLoaded:         isLoaded,
-        fonts:            fonts
+        parse: parse,
+        fonts: fonts
     };
 } )();
