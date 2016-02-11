@@ -2,18 +2,19 @@ from copy import deepcopy
 from . import *
 
 class Object3D(Three):
-    def __init__(self, name=None, position=(0,0,0), rotation=(0,0,0), scale=(1,1,1), visible=None, castShadow=None, receiveShadow=None, userData=None, cannonData=None, **kwargs):
+    def __init__(self, name=None, position=(0,0,0), rotation=(0,0,0), scale=(1,1,1),
+                 visible=None, castShadow=None, receiveShadow=None, 
+                 layers=None,
+                 userData=None, cannonData=None, **kwargs):
         Three.__init__(self, name)
         self.position = np.array(position, dtype=np.float64)
         self.rotation = np.array(rotation, dtype=np.float64)
         self.scale    = np.array(scale,    dtype=np.float64)
         self.children = []
-        if visible is not None:
-            self.visible = visible
-        if castShadow is not None:
-            self.castShadow = castShadow
-        if receiveShadow is not None:
-            self.receiveShadow = receiveShadow
+        self.visible = visible
+        self.castShadow = castShadow
+        self.receiveShadow = receiveShadow
+        self.layers = layers
         if userData is not None:
             userData = deepcopy(userData)
             if cannonData is not None:
@@ -60,7 +61,6 @@ class Object3D(Three):
         return images
     def json(self):
         d = Three.json(self)
-        # TODO: fix
         d['position'] = list(self.position.ravel())
         d['rotation'] = list(self.rotation.ravel())
         d['scale'] = list(self.scale.ravel())
@@ -107,26 +107,3 @@ class Mesh(Object3D):
             d.update({"material": str(self.material.uuid),
                       "geometry": str(self.geometry.uuid)})
         return d
-
-
-class PerspectiveCamera(Object3D):
-    def __init__(self, fov=50, aspect=1, near=0.1, far=1000, **kwargs):
-        Object3D.__init__(self, name=name, **kwargs)
-        self.fov = fov
-        self.aspect = aspect
-        self.near = near
-        self.far = far
-    def js(self):
-        return """THREE.py.PerspectiveCamera = ( function (THREE) {
-
-    window.addEventListener('resize', function () {
-        window.camera.aspect = window.innerWidth / window.innerHeight;
-        window.camera.updateProjectionMatrix();
-    });
-
-    return THREE.PerspectiveCamera;
-
-} )();
-
-window.camera = window.camera || new THREE.py.PerspectiveCamera();
-"""
