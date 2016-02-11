@@ -4,9 +4,17 @@ var scene;
 
 var rS = new rStats();
 
+
 function onLoad() {
     "use strict";
-    THREE.py.extractShaderLib();
+
+    function extractShaderLib() {
+        pyserver.writeFile('ShaderLib.json',   JSON.stringify(THREE.ShaderLib,   undefined, 2));
+        pyserver.writeFile('ShaderChunk.json', JSON.stringify(THREE.ShaderChunk, undefined, 2));
+        pyserver.writeFile('UniformsLib.json', JSON.stringify(THREE.UniformsLib, undefined, 2));
+    }
+
+    extractShaderLib();
 
     if (window.JSON_SCENE !== undefined) {
         scene = THREE.py.parse(JSON_SCENE, undefined);
@@ -49,17 +57,7 @@ var animate = function () {
         rS('FPS').frame();
 
         var dt = 0.001 * (t - lt);
-        app.world.step(1/75, dt, 10);
-        for (var i = 0; i < app.world.bodies.length; i++) {
-            var body = app.world.bodies[i];
-            if (body.mass > 0) {
-                var mesh = body.mesh;
-                if (mesh) {
-                    mesh.position.copy(body.position);
-                    mesh.quaternion.copy(body.quaternion);
-                }
-            }
-        }
+
         app.vrControls.update();
         app.vrManager.render(scene, app.camera, t);
 

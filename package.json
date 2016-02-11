@@ -7,7 +7,7 @@
   "homepage": "https://github.com/jzitelli/three.py",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jzitelli/three.py.git"
+    "url": "git+https://github.com/jzitelli/three.py.git"
   },
   "bugs": "https://github.com/jzitelli/three.py/issues",
   "files": [

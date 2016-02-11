@@ -3,30 +3,8 @@ function WebVRApplication(scene, config) {
 
     config = config || {};
     var rendererOptions     = config.rendererOptions || {antialias: true, alpha: true};
-    var useShadowMap        = config.useShadowMap;
     var onResetVRSensor     = config.onResetVRSensor;
     var useWebVRBoilerplate = config.useWebVRBoilerplate;
-
-    var world = config.world;
-    if (!world) {
-        var worldConfig = config.worldConfig || {};
-        worldConfig.gravity                    = worldConfig.gravity || 9.8;
-        worldConfig.contactEquationStiffness   = worldConfig.contactEquationStiffness || 1e6;
-        worldConfig.frictionEquationStiffness  = worldConfig.frictionEquationStiffness || 1e6;
-        worldConfig.contactEquationRelaxation  = worldConfig.contactEquationRelaxation || 3;
-        worldConfig.frictionEquationRelaxation = worldConfig.frictionEquationRelaxation || 3;
-        worldConfig.iterations                 = worldConfig.iterations || 8;
-
-        world = new CANNON.World();
-        world.gravity.set( 0, -worldConfig.gravity, 0 );
-        //world.broadphase = new CANNON.SAPBroadphase( world );
-        world.defaultContactMaterial.contactEquationStiffness   = worldConfig.contactEquationStiffness;
-        world.defaultContactMaterial.frictionEquationStiffness  = worldConfig.frictionEquationStiffness;
-        world.defaultContactMaterial.contactEquationRelaxation  = worldConfig.contactEquationRelaxation;
-        world.defaultContactMaterial.frictionEquationRelaxation = worldConfig.frictionEquationRelaxation;
-        world.solver.iterations = worldConfig.iterations;
-    }
-    this.world = world;
 
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera = camera;
@@ -34,10 +12,7 @@ function WebVRApplication(scene, config) {
     var renderer = new THREE.WebGLRenderer(rendererOptions);
     this.renderer = renderer;
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    if (useShadowMap) {
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    }
+
     var domElement = this.renderer.domElement;
     document.body.appendChild(domElement);
     domElement.id = 'renderer';
@@ -191,10 +166,6 @@ function WebVRApplication(scene, config) {
     this.start = function(animate) {
         function waitForResources(t) {
             if (THREE.py.isLoaded()) {
-                THREE.py.CANNONize(scene, world);
-                for (var i = 0; i < 240*2; i++) {
-                    world.step(1/240);
-                }
                 requestAnimationFrame(animate);
             } else {
                 requestAnimationFrame(waitForResources);

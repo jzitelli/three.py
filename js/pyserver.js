@@ -24,7 +24,7 @@ var pyserver = {
             if (response.text) {
                 success(response.text);
             } else if (response.error) {
-                console.log(response.error);
+                console.error(response.error);
                 if (logger) {
                     logger.log(response.error);
                 }
@@ -43,7 +43,7 @@ var pyserver = {
                 console.log("wrote " + response.filename);
             }
             else if (response.error) {
-                console.log(response.error);
+                console.error(response.error);
             }
         };
         if (typeof text === 'string') {

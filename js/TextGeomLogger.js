@@ -5,12 +5,12 @@ var TextGeomLogger = (function () {
     var symbols = ",./;'[]\\-=<>?:\"{}|_+~!@#$%^&*()";
     var chars = alphas + digits + symbols;
 
-    function TextGeomLogger(material, options) {
+    function TextGeomLogger(font, material, options) {
         material = material || new THREE.MeshBasicMaterial({color: 0xff2201});
         options = options || {};
         var textGeomParams = {
+            font:          font,
             size:          options.size || 0.12,
-            font:          options.font || 'anonymous pro',
             height:        options.height || 0,
             curveSegments: options.curveSegments || 2
         };
