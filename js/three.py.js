@@ -20,15 +20,11 @@ THREE.py = ( function () {
 
             // filter out geometries that ObjectLoader doesn't handle, parse the rest:
             var geometries = objectLoader.parseGeometries(json.geometries.filter( function (geom) {
-                return geom.type !== "TextGeometry" && geom.type !== 'HeightfieldBufferGeometry';
+                return geom.type !== "TextGeometry";
             } ));
 
-            var onPartsLoad = function () {
-
-                var images = objectLoader.parseImages(json.images, function () { _onLoad(object); });
-                var textures = objectLoader.parseTextures(json.textures, images);
-                var materials = objectLoader.parseMaterials(json.materials, textures);
-
+            manager.onLoad = onPartsLoad;
+            function onPartsLoad() {
                 // construct TextGeometries now that fonts are loaded:
                 json.geometries.forEach( function (geom) {
                     if (geom.type === "TextGeometry") {
@@ -40,15 +36,24 @@ THREE.py = ( function () {
                     }
                 } );
 
+                var images = objectLoader.parseImages(json.images, function () { _onLoad(object); });
+                var textures = objectLoader.parseTextures(json.textures, images);
+                var materials = objectLoader.parseMaterials(json.materials, textures);
+
                 var object = objectLoader.parseObject(json.object, geometries, materials);
+
+                if (json.object.layers) {
+                    json.object.layers.forEach( function (channel) {
+                        object.layers.set(channel);
+                    } );
+                }
+
                 if (json.images === undefined || json.images.length === 0) {
                     _onLoad(object);
                 }
 
                 resolve(object);
-
-            };
-            manager.onLoad = onPartsLoad;
+            }
 
             var needsLoading = false;
 

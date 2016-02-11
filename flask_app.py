@@ -45,11 +45,28 @@ def index_scene():
 
 @app.route('/')
 def index():
+    WebVRConfig = {
+        #### webvr-polyfill configuration
+        "FORCE_ENABLE_VR":       True,
+        "K_FILTER":              0.98,
+        "PREDICTION_TIME_S":     0.020,
+        #"TOUCH_PANNER_DISABLED": True,
+        #"YAW_ONLY":              True,
+        #"MOUSE_KEYBOARD_CONTROLS_DISABLED": True,
+
+        #### webvr-boilerplate configuration
+        #"FORCE_DISTORTION":      True,
+        "PREVENT_DISTORTION":    True,
+        #"SHOW_EYE_CENTERS":      True,
+        "NO_DPDB_FETCH":         True
+    }
     scene = index_scene()
     return render_template('index.html',
                            json_config=Markup("""<script>
+var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
-</script>""" % json.dumps(scene.export(), indent=2)))
+</script>""" % (json.dumps(WebVRConfig, indent=2),
+                json.dumps(scene.export(), indent=2))))
 
 
 

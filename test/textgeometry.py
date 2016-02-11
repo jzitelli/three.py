@@ -49,6 +49,7 @@ if __name__ == "__main__":
                 template_folder=site_settings.TEMPLATE_FOLDER)
     app.debug = site_settings.DEBUG
     app.testing = True
+    app.register_blueprint(pyserver.blueprint)
     app.register_blueprint(blueprint)
     logging.basicConfig(level=(logging.DEBUG if app.debug else logging.INFO),
                         format="%(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")
