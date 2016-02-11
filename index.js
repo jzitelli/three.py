@@ -1,9 +1,4 @@
 var app;
-var avatar = new THREE.Object3D();
-var scene;
-
-var rS = new rStats();
-
 
 function onLoad() {
     "use strict";
@@ -16,6 +11,10 @@ function onLoad() {
 
     extractShaderLib();
 
+
+    var rS = new rStats();
+
+    var scene;
     if (window.JSON_SCENE !== undefined) {
         scene = THREE.py.parse(JSON_SCENE, undefined);
     } else {
@@ -27,6 +26,7 @@ function onLoad() {
         textMesh.position.set(-3, 2, -6);
     }
 
+    var avatar = new THREE.Object3D();
     scene.add(avatar);
 
     app = new WebVRApplication(scene, {useWebVRBoilerplate: true});
@@ -43,31 +43,29 @@ function onLoad() {
         pyserver.log('vrDesk.json could not be loaded: ' + JSON.stringify(err, undefined, 2));
     });
 
+    var animate = function () {
+        var lt = 0;
+
+        function animate(t) {
+            rS('frame').start();
+            rS('raF').tick();
+            rS('FPS').frame();
+
+            var dt = 0.001 * (t - lt);
+
+            app.vrControls.update();
+            app.vrManager.render(scene, app.camera, t);
+
+            lt = t;
+
+            rS('frame').end();
+            rS().update();
+
+            requestAnimationFrame(animate);
+        }
+
+        return animate;
+    };
+
     app.start(animate());
 }
-
-
-var animate = function () {
-    "use strict";
-    var lt = 0;
-
-    function animate(t) {
-        rS('frame').start();
-        rS('raF').tick();
-        rS('FPS').frame();
-
-        var dt = 0.001 * (t - lt);
-
-        app.vrControls.update();
-        app.vrManager.render(scene, app.camera, t);
-
-        lt = t;
-
-        rS('frame').end();
-        rS().update();
-
-        requestAnimationFrame(animate);
-    }
-
-    return animate;
-};

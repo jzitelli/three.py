@@ -2,7 +2,7 @@ function WebVRApplication(scene, config) {
     this.scene = scene;
 
     config = config || {};
-    var rendererOptions     = config.rendererOptions || {antialias: true, alpha: true};
+    var rendererOptions     = config.rendererOptions;
     var onResetVRSensor     = config.onResetVRSensor;
     var useWebVRBoilerplate = config.useWebVRBoilerplate;
 

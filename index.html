@@ -26,13 +26,11 @@
 
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='rstats/rStats.css') }}">
 
-
 <!-- *** begin json_config *** -->
 {{ json_config if json_config else '' }}
 <!-- *** end json_config *** -->
 
   </head>
-
 
   <body onload="onLoad()">
 
@@ -43,8 +41,6 @@
 
     <script src="node_modules/webvr-polyfill/build/webvr-polyfill.js"></script>
     <script src="node_modules/webvr-boilerplate/build/webvr-manager.js"></script>
-
-    <script src="node_modules/cannon/build/cannon.js"></script>
 
     <script src="{{ url_for('static', filename='rstats/rStats.js') }}"></script>
 

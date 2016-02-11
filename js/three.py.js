@@ -154,7 +154,6 @@ THREE.py = ( function () {
     return {
         load:             load,
         parse:            parse,
-        extractShaderLib: extractShaderLib,
         isLoaded:         isLoaded,
         fonts:            fonts
     };
