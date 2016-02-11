@@ -205,7 +205,7 @@
         "angleCos": {
           "type": "f"
         },
-        "exponent": {
+        "penumbra": {
           "type": "f"
         },
         "decay": {
