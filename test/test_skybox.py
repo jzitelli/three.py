@@ -13,14 +13,14 @@ from three import *
 
 
 
-blueprint = Blueprint('/test_layers', __name__,
+blueprint = Blueprint('skybox', __name__,
                       static_folder=site_settings.STATIC_FOLDER,
                       static_url_path='',
                       template_folder=site_settings.TEMPLATE_FOLDER)
 
 
 
-@blueprint.route('/test_skybox')
+@blueprint.route('/skybox')
 def _test_skybox():
     scene = Scene()
     scene.add(Skybox(cube_images=['../images/%s.png' % side
@@ -36,8 +36,8 @@ var THREEPY_SCENE = %s;
 
 class SkyboxTest(NeedleTestCase):
     def test_screenshot(self):
-        self.driver.get('127.0.0.1:5000/test_skybox')
-        self.assertScreenshot('canvas', 'skybox_screenshot')
+        self.driver.get('127.0.0.1:5000/skybox')
+        self.assertScreenshot('canvas', 'skybox')
 
 
 

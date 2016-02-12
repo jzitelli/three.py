@@ -142,4 +142,4 @@ THREE.py.CANNONize = function (obj, world) {
             console.error("makeCANNON error");
         }
     }
-}
+};
