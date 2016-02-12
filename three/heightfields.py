@@ -21,7 +21,6 @@ class HeightfieldMesh(Mesh):
         Mesh.__init__(self, geometry=geometry, **kwargs)
         if not hasattr(self, 'userData'):
             self.userData = {}
-        self.userData['heightfield']      = heightfieldImage.url
         self.userData['heightfieldImage'] = str(heightfieldImage.uuid)
         self.userData['heightfieldScale'] = heightfieldScale
         self.heightfieldImage = heightfieldImage

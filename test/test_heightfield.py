@@ -13,14 +13,14 @@ from three import *
 
 
 
-blueprint = Blueprint('/test_layers', __name__,
+blueprint = Blueprint('heightfield', __name__,
                       static_folder=site_settings.STATIC_FOLDER,
                       static_url_path='',
                       template_folder=site_settings.TEMPLATE_FOLDER)
 
 
 
-@blueprint.route('/test_heightfield')
+@blueprint.route('/heightfield')
 def _test_heightfield():
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=800,
