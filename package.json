@@ -12,9 +12,12 @@
   "bugs": "https://github.com/jzitelli/three.py/issues",
   "files": [
     "js/",
+    "node_scripts/",
     "shaderlib/",
     "three/",
+    "favicon.ico"
     "pyserver.py",
+    "site_settings.py",
     "LICENSE",
     "README.md"
   ],
