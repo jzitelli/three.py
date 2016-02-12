@@ -38,10 +38,12 @@ var TextGeomUtils = ( function () {
         }.bind(this);
     }
 
-    function TextGeomLogger(textGeomCacher, material, nrows, ncols) {
-        material = material || new THREE.MeshBasicMaterial({color: 0xff2201});
-        nrows = nrows || 20;
-        ncols = ncols || 30;
+    function TextGeomLogger(textGeomCacher, options) {
+        options = options || {};
+        var material   = options.material || new THREE.MeshBasicMaterial({color: 0xff2201});
+        var nrows      = options.nrows || 20;
+        var ncols      = options.ncols || 30;
+        var lineHeight = options.lineHeight || 1.8 * 0.12;
 
         var lineObjects = {};
 
@@ -74,7 +76,7 @@ var TextGeomUtils = ( function () {
             // scroll lines:
             for (i = 0; i < this.root.children.length; i++) {
                 var child = this.root.children[i];
-                child.position.y = (this.root.children.length - i) * 1.6*textGeomParams.size;
+                child.position.y = (this.root.children.length - i) * lineHeight;
             }
         }.bind(this);
 
