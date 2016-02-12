@@ -1,4 +1,4 @@
-function CANNONize(obj, world) {
+THREE.py.CANNONize = function (obj, world) {
     "use strict";
     obj.updateMatrixWorld();
     obj.traverse(function(node) {
