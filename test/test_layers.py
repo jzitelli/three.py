@@ -8,6 +8,7 @@ if THREEPYDIR not in sys.path:
     sys.path.insert(0, THREEPYDIR)
 import pyserver
 import site_settings
+from flask_app import WebVRConfig
 from three import *
 
 
@@ -34,21 +35,6 @@ def _test_layers():
                    material=MeshBasicMaterial(color=0x0000ff),
                    position=[1.6, 0, -3],
                    layers=[2]))
-    WebVRConfig = {
-        #### webvr-polyfill configuration
-        "FORCE_ENABLE_VR":       True,
-        "K_FILTER":              0.98,
-        "PREDICTION_TIME_S":     0.020,
-        #"TOUCH_PANNER_DISABLED": True,
-        #"YAW_ONLY":              True,
-        #"MOUSE_KEYBOARD_CONTROLS_DISABLED": True,
-
-        #### webvr-boilerplate configuration
-        #"FORCE_DISTORTION":      True,
-        "PREVENT_DISTORTION":    True,
-        #"SHOW_EYE_CENTERS":      True,
-        "NO_DPDB_FETCH":         True
-    }
     return render_template('index.html',
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;

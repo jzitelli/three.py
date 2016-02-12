@@ -22,6 +22,25 @@ app.register_blueprint(pyserver.blueprint)
 
 
 
+WebVRConfig = {
+    #### webvr-polyfill configuration
+    "FORCE_ENABLE_VR":       True,
+    "K_FILTER":              0.98,
+    "PREDICTION_TIME_S":     0.020,
+    #"TOUCH_PANNER_DISABLED": True,
+    #"YAW_ONLY":              True,
+    #"MOUSE_KEYBOARD_CONTROLS_DISABLED": True,
+    "KEYBOARD_CONTROLS_DISABLED": True,
+
+    #### webvr-boilerplate configuration
+    #"FORCE_DISTORTION":      True,
+    "PREVENT_DISTORTION":    True,
+    #"SHOW_EYE_CENTERS":      True,
+    "NO_DPDB_FETCH":         True
+}
+
+
+
 def index_scene():
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=100, position=[-4, 5, 20]))
@@ -45,21 +64,6 @@ def index_scene():
 
 @app.route('/')
 def index():
-    WebVRConfig = {
-        #### webvr-polyfill configuration
-        "FORCE_ENABLE_VR":       True,
-        "K_FILTER":              0.98,
-        "PREDICTION_TIME_S":     0.020,
-        #"TOUCH_PANNER_DISABLED": True,
-        #"YAW_ONLY":              True,
-        #"MOUSE_KEYBOARD_CONTROLS_DISABLED": True,
-
-        #### webvr-boilerplate configuration
-        #"FORCE_DISTORTION":      True,
-        "PREVENT_DISTORTION":    True,
-        #"SHOW_EYE_CENTERS":      True,
-        "NO_DPDB_FETCH":         True
-    }
     scene = index_scene()
     return render_template('index.html',
                            json_config=Markup("""<script>
