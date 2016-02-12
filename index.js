@@ -20,7 +20,8 @@ function onLoad() {
         scene.add(avatar);
         app = new WebVRApplication(scene, {useWebVRBoilerplate: true});
         avatar.add(app.camera);
-
+        app.camera.layers.enable(1);
+        app.camera.layers.enable(2);
         var objectLoader = new THREE.ObjectLoader();
         objectLoader.load('models/vrDesk.json', function (object) {
             object.scale.set(0.01, 0.01, 0.01);

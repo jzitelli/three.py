@@ -42,12 +42,6 @@ THREE.py = ( function () {
 
                 var object = objectLoader.parseObject(json.object, geometries, materials);
 
-                if (json.object.layers) {
-                    json.object.layers.forEach( function (channel) {
-                        object.layers.set(channel);
-                    } );
-                }
-
                 if (json.images === undefined || json.images.length === 0) {
                     _onLoad(object);
                 }
@@ -98,12 +92,18 @@ THREE.py = ( function () {
         function _onLoad(obj) {
             loadHeightfields(obj);
             obj.traverse( function (node) {
+                if (node.userData) {
+                    if (node.userData.layers) {
+                        // node.layers.mask = 0;
+                        node.userData.layers.forEach( function (channel) {
+                            console.log('setting layer ' + channel);
+                            node.layers.set(channel);
+                        } );
+                    }
+                }
                 if (node instanceof THREE.Mesh) {
                     node.geometry.computeBoundingSphere();
                     node.geometry.computeBoundingBox();
-                    if (node.userData && node.userData.visible === false) {
-                        node.visible = false;
-                    }
                     if (node.material.shading === THREE.FlatShading) {
                         node.geometry.computeFaceNormals();
                     }
@@ -151,8 +151,8 @@ THREE.py = ( function () {
                         node.geometry.computeFaceNormals();
                         node.geometry.computeVertexNormals();
                         node.geometry.normalsNeedUpdate = true;
-                        node.geometry.computeBoundingSphere();
-                        node.geometry.computeBoundingBox();
+                        // node.geometry.computeBoundingSphere();
+                        // node.geometry.computeBoundingBox();
                     }
                 }
             });

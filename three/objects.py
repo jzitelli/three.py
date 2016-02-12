@@ -4,8 +4,7 @@ from . import *
 class Object3D(Three):
     def __init__(self, name=None, position=(0,0,0), rotation=(0,0,0), scale=(1,1,1),
                  visible=None, castShadow=None, receiveShadow=None, 
-                 layers=None,
-                 userData=None, cannonData=None, **kwargs):
+                 userData=None, layers=None, cannonData=None, **kwargs):
         Three.__init__(self, name)
         self.position = np.array(position, dtype=np.float64)
         self.rotation = np.array(rotation, dtype=np.float64)
@@ -14,14 +13,16 @@ class Object3D(Three):
         self.visible = visible
         self.castShadow = castShadow
         self.receiveShadow = receiveShadow
-        self.layers = layers
-        if userData is not None:
+        if userData is None:
+            userData = {}
+        else:
             userData = deepcopy(userData)
-            if cannonData is not None:
-                userData['cannonData']
+        if layers is not None:
+            userData['layers'] = list(layers)
+        if cannonData is not None:
+            userData['cannonData'] = cannonData
+        if userData:
             self.userData = userData
-        elif cannonData is not None:
-            self.userData = {'cannonData': cannonData}
     def add(self, *objs):
         self.children += objs
     def find_geometries(self, geometries=None):
