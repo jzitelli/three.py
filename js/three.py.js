@@ -16,6 +16,8 @@ THREE.py = ( function () {
             cubeTextureLoader = new THREE.CubeTextureLoader(manager),
             fontLoader = new THREE.FontLoader(manager);
 
+        var images;
+
         var promise = new Promise( function (resolve, reject) {
 
             // filter out geometries that ObjectLoader doesn't handle, parse the rest:
@@ -36,7 +38,7 @@ THREE.py = ( function () {
                     }
                 } );
 
-                var images = objectLoader.parseImages(json.images, function () { _onLoad(object); });
+                images = objectLoader.parseImages(json.images, function () { _onLoad(object); });
                 var textures = objectLoader.parseTextures(json.textures, images);
                 var materials = objectLoader.parseMaterials(json.materials, textures);
 
