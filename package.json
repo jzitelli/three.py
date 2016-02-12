@@ -15,7 +15,7 @@
     "node_scripts/",
     "shaderlib/",
     "three/",
-    "favicon.ico"
+    "favicon.ico",
     "pyserver.py",
     "site_settings.py",
     "LICENSE",
