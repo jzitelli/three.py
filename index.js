@@ -3,14 +3,6 @@ var app;
 function onLoad() {
     "use strict";
 
-    // function extractShaderLib() {
-    //     pyserver.writeFile('ShaderLib.json',   JSON.stringify(THREE.ShaderLib,   undefined, 2));
-    //     pyserver.writeFile('ShaderChunk.json', JSON.stringify(THREE.ShaderChunk, undefined, 2));
-    //     pyserver.writeFile('UniformsLib.json', JSON.stringify(THREE.UniformsLib, undefined, 2));
-    // }
-
-    // extractShaderLib();
-
     var rS = new rStats();
 
     var avatar = new THREE.Object3D();
