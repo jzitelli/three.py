@@ -3,13 +3,9 @@ THREE.py = ( function () {
 
     var fonts = {};
 
-    function parse(json, texturePath, onLoad) {
+    function parse(json, onLoad) {
 
         var objectLoader = new THREE.ObjectLoader();
-
-        if (texturePath) {
-            objectLoader.setTexturePath(texturePath);
-        }
 
         var manager = new THREE.LoadingManager();
         var textureLoader = new THREE.TextureLoader(manager),
@@ -38,6 +34,32 @@ THREE.py = ( function () {
                     }
                 } );
 
+                function _onLoad(obj) {
+                    // the final callback, calls promise resolve
+                    loadHeightfields(obj);
+                    obj.traverse( function (node) {
+                        if (node.userData) {
+                            if (node.userData.layers) {
+                                node.userData.layers.forEach( function (channel) {
+                                    console.log('setting layer ' + channel);
+                                    node.layers.set(channel);
+                                } );
+                            }
+                        }
+                        if (node instanceof THREE.Mesh) {
+                            node.geometry.computeBoundingSphere();
+                            node.geometry.computeBoundingBox();
+                            if (node.material.shading === THREE.FlatShading) {
+                                node.geometry.computeFaceNormals();
+                            }
+                        }
+                    } );
+                    if (onLoad) {
+                        onLoad(obj);
+                    }
+                    resolve(obj);
+                }
+
                 images = objectLoader.parseImages(json.images, function () { _onLoad(object); });
                 var textures = objectLoader.parseTextures(json.textures, images);
                 var materials = objectLoader.parseMaterials(json.materials, textures);
@@ -48,7 +70,6 @@ THREE.py = ( function () {
                     _onLoad(object);
                 }
 
-                resolve(object);
             }
 
             var needsLoading = false;
@@ -90,31 +111,6 @@ THREE.py = ( function () {
             if (needsLoading === false) onPartsLoad();
 
         } );
-
-        function _onLoad(obj) {
-            loadHeightfields(obj);
-            obj.traverse( function (node) {
-                if (node.userData) {
-                    if (node.userData.layers) {
-                        // node.layers.mask = 0;
-                        node.userData.layers.forEach( function (channel) {
-                            console.log('setting layer ' + channel);
-                            node.layers.set(channel);
-                        } );
-                    }
-                }
-                if (node instanceof THREE.Mesh) {
-                    node.geometry.computeBoundingSphere();
-                    node.geometry.computeBoundingBox();
-                    if (node.material.shading === THREE.FlatShading) {
-                        node.geometry.computeFaceNormals();
-                    }
-                }
-            } );
-            if (onLoad) {
-                onLoad(obj);
-            }
-        }
 
         function loadHeightfields(obj) {
             function getPixel(imagedata, x, y) {
