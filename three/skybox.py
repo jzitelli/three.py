@@ -6,7 +6,7 @@ class Skybox(Mesh):
             cube_images = ['images/%s.png' % side
                            for side in ('px', 'nx', 'py', 'ny', 'pz', 'nz')]
         geometry = BoxGeometry(width=size, height=size, depth=size)
-        shader = deepcopy(shaderlib['cube'])
+        shader = deepcopy(ShaderLib['cube'])
         shader['uniforms']['tCube']['value'] = cube_images
         material = ShaderMaterial(side=BackSide, **shader)
         Mesh.__init__(self, geometry=geometry, material=material, **kwargs)

@@ -75,7 +75,7 @@ from .materials import *
 from .geometries import *
 from .buffer_geometries import *
 
-from .shaderlib import ShaderLib as shaderlib
+from .shaderlib import ShaderLib, UniformsLib, ShaderChunk
 
 from .text import *
 from .heightfields import *
