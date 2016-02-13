@@ -51,8 +51,8 @@ var THREEPY_SCENE = %s;
 
 class HeightfieldTest(NeedleTestCase):
     def test_screenshot(self):
-        self.driver.get('127.0.0.1:5000/test_heightfield')
-        self.assertScreenshot('canvas', 'test_heightfield')
+        self.driver.get('127.0.0.1:5000/heightfield')
+        self.assertScreenshot('canvas', 'heightfield')
 
 
 

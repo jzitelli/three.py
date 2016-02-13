@@ -12,32 +12,35 @@ from three import *
 from flask_app import main
 
 
-blueprint = Blueprint("test_text", __name__,
+
+blueprint = Blueprint("textgeometry", __name__,
                       static_folder=site_settings.STATIC_FOLDER,
                       static_url_path='',
                       template_folder=site_settings.TEMPLATE_FOLDER)
 
 
 
-@blueprint.route('/test_text')
+@blueprint.route('/textgeometry')
 def _test_text():
     scene = Scene()
-    scene.add(Mesh(geometry=TextGeometry(text='test_text',
-                                         font_url="node_modules/three.js/fonts/helvetiker_regular.typeface.js",
+    scene.add(Mesh(geometry=TextGeometry(text='textgeometry',
+                                         font_url="node_modules/three/fonts/helvetiker_regular.typeface.js",
                                          size=0.1, height=0),
                    material=MeshBasicMaterial(color=0xff00ff),
                    position=[0, 0, -2]))
     return render_template('index.html',
                            json_config=Markup(r"""<script>
+var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
-</script>""" % json.dumps(scene.export(), indent=2)))
+</script>""" % (json.dumps(WebVRConfig, indent=2),
+                json.dumps(scene.export(), indent=2))))
 
 
 
 class TextGeometryTest(NeedleTestCase):
     def test_screenshot(self):
-        self.driver.get('127.0.0.1:5000/test_text')
-        self.assertScreenshot('canvas', 'test_text')
+        self.driver.get('127.0.0.1:5000/textgeometry')
+        self.assertScreenshot('canvas', 'textgeometry')
 
 
 

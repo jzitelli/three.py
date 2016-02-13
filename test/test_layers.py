@@ -13,24 +13,24 @@ from three import *
 
 
 
-blueprint = Blueprint('test_layers', __name__,
+blueprint = Blueprint('layers', __name__,
                       static_folder=site_settings.STATIC_FOLDER,
                       static_url_path='',
                       template_folder=site_settings.TEMPLATE_FOLDER)
 
 
 
-@blueprint.route('/test_layers')
+@blueprint.route('/layers')
 def _test_layers():
     scene = Scene()
     scene.add(Mesh(geometry=TextGeometry(text='LAYER 1',
-                                         font_url='node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js',
+                                         font_url='node_modules/three/examples/fonts/helvetiker_regular.typeface.js',
                                          size=0.14, height=0),
                    material=MeshBasicMaterial(color=0xff0000),
                    position=[-2, 0, -3],
                    layers=[1]))
     scene.add(Mesh(geometry=TextGeometry(text='LAYER 2',
-                                         font_url='node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js',
+                                         font_url='node_modules/three/examples/fonts/helvetiker_regular.typeface.js',
                                          size=0.14, height=0),
                    material=MeshBasicMaterial(color=0x0000ff),
                    position=[1.6, 0, -3],
@@ -46,8 +46,8 @@ var THREEPY_SCENE = %s;
 
 class LayersTest(NeedleTestCase):
     def test_screenshot(self):
-        self.driver.get('127.0.0.1:5000/test_layers')
-        self.assertScreenshot('canvas', 'test_layers')
+        self.driver.get('127.0.0.1:5000/layers')
+        self.assertScreenshot('canvas', 'layers')
 
 
 
