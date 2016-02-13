@@ -53,7 +53,7 @@ def index_scene():
                       position=[0, 1, -4])
     scene.add(sphereMesh)
     textGeomMesh = Mesh(geometry=TextGeometry(text='three.py',
-                                              font_url='node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js',
+                                              font_url='node_modules/three/examples/fonts/helvetiker_regular.typeface.js',
                                               size=0.25, height=0.25/16),
                         material=MeshBasicMaterial(color=0x0000ff),
                         position=[-1, 0, -4])
