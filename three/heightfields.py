@@ -2,13 +2,6 @@ from scipy import ndimage
 from . import *
 
 
-# class HeightfieldBufferGeometry(Three):
-#     def __init__(self, heightfield=None, size=1, **kwargs):
-#         Three.__init__(self, **kwargs)
-#         self.heightfield = heightfield
-#         self.size = size
-
-
 class HeightfieldMesh(Mesh):
     def __init__(self, heightfieldImage=None, heightfieldScale=1, width=None, height=None, **kwargs):
         image = ndimage.imread(heightfieldImage.url)

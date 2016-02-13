@@ -1,10 +1,13 @@
 from . import *
 
+class SkyboxError(Exception):
+    pass
+
+
 class Skybox(Mesh):
     def __init__(self, cube_images=None, size=1000, **kwargs):
         if cube_images is None:
-            cube_images = ['images/%s.png' % side
-                           for side in ('px', 'nx', 'py', 'ny', 'pz', 'nz')]
+            raise SkyboxError('cube_images must be specified')
         geometry = BoxGeometry(width=size, height=size, depth=size)
         shader = deepcopy(ShaderLib['cube'])
         shader['uniforms']['tCube']['value'] = cube_images
