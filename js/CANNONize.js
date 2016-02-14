@@ -76,7 +76,7 @@ THREE.py.CANNONize = function (obj, world) {
                             node.geometry.parameters.radiusBottom,
                             node.geometry.parameters.height,
                             node.geometry.parameters.radialSegments);
-                        var quaternion = new CANNON.Quaternion();
+                        quaternion = new CANNON.Quaternion();
                         quaternion.setFromEuler(-Math.PI/2, 0, 0, 'XYZ');
                         break;
                     case 'Heightfield':
@@ -115,8 +115,8 @@ THREE.py.CANNONize = function (obj, world) {
                                 vertices.push(vert.x, vert.y, vert.z);
                             }
                             indices = [];
-                            for (var iface = 0; iface < node.geometry.faces.length; iface++) {
-                                var face = node.geometry.faces[iface];
+                            for (i = 0; i < node.geometry.faces.length; i++) {
+                                face = node.geometry.faces[i];
                                 indices.push(face.a, face.b, face.c);
                             }
                         }
