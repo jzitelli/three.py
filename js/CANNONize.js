@@ -35,8 +35,8 @@ THREE.py.CANNONize = function (obj, world) {
             cannonData.shapes.forEach(function(e) {
                 var shape,
                     quaternion,
-                    position,
-                    array;
+                    position;
+                var array, face, i;
                 switch (e) {
                     case 'Plane':
                         shape = new CANNON.Plane();
@@ -58,12 +58,12 @@ THREE.py.CANNONize = function (obj, world) {
                         var faces = [];
                         if (node.geometry instanceof THREE.BufferGeometry) {
                             array = node.geometry.getAttribute('position').array;
-                            for (var i = 0; i < array.length; i += 3) {
+                            for (i = 0; i < array.length; i += 3) {
                                 points.push(new CANNON.Vec3(array[i], array[i+1], array[i+2]));
                             }
                             array = node.geometry.index.array;
                             for (i = 0; i < array.length; i += 3) {
-                                var face = [array[i], array[i+1], array[i+2]];
+                                face = [array[i], array[i+1], array[i+2]];
                                 faces.push(face);
                             }
                         } else if (node.geometry instanceof THREE.Geometry) {
@@ -110,8 +110,8 @@ THREE.py.CANNONize = function (obj, world) {
                             indices = node.geometry.index.array;
                         } else {
                             vertices = [];
-                            for (var iv = 0; iv < node.geometry.vertices.length; iv++) {
-                                var vert = node.geometry.vertices[iv];
+                            for (i = 0; i < node.geometry.vertices.length; i++) {
+                                var vert = node.geometry.vertices[i];
                                 vertices.push(vert.x, vert.y, vert.z);
                             }
                             indices = [];
