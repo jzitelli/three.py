@@ -149,8 +149,8 @@ THREE.py = ( function () {
                         node.geometry.computeFaceNormals();
                         node.geometry.computeVertexNormals();
                         node.geometry.normalsNeedUpdate = true;
-                        // node.geometry.computeBoundingSphere();
-                        // node.geometry.computeBoundingBox();
+                        node.geometry.computeBoundingSphere();
+                        node.geometry.computeBoundingBox();
                     }
                 }
             });
