@@ -1,9 +1,9 @@
 var TextGeomUtils = ( function () {
     "use strict";
-    const alphas  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const digits  = "0123456789";
-    const symbols = ",./;'[]\\-=<>?:\"{}|_+~!@#$%^&*()";
-    const chars   = alphas + digits + symbols;
+    var alphas  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var digits  = "0123456789";
+    var symbols = ",./;'[]\\-=<>?:\"{}|_+~!@#$%^&*()";
+    var chars   = alphas + digits + symbols;
 
     function TextGeomCacher(font, options) {
         options = options || {};
