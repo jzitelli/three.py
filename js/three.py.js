@@ -36,12 +36,14 @@ THREE.py = ( function () {
 
                 function _onLoad(obj) {
                     // the final callback, calls promise resolve
-                    loadHeightfields(obj);
                     obj.traverse( function (node) {
+
+                        node.updateMatrix();
+                        node.updateMatrixWorld();
+
                         if (node.userData) {
                             if (node.userData.layers) {
                                 node.userData.layers.forEach( function (channel) {
-                                    console.log('setting layer ' + channel);
                                     node.layers.set(channel);
                                 } );
                             }
@@ -54,10 +56,15 @@ THREE.py = ( function () {
                             }
                         }
                     } );
+
+                    loadHeightfields(obj);
+
                     if (onLoad) {
                         onLoad(obj);
                     }
+
                     resolve(obj);
+
                 }
 
                 images = objectLoader.parseImages(json.images, function () { _onLoad(object); });
