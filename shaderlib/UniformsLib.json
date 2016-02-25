@@ -202,10 +202,10 @@
         "distance": {
           "type": "f"
         },
-        "angleCos": {
+        "coneCos": {
           "type": "f"
         },
-        "penumbra": {
+        "penumbraCos": {
           "type": "f"
         },
         "decay": {
