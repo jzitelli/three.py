@@ -133,3 +133,7 @@ class CircleBufferGeometry(Three):
         d = Three.json(self)
         d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
         return d
+
+
+class BoxBufferGeometry(BoxGeometry):
+    pass

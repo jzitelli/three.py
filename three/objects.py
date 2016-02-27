@@ -3,7 +3,7 @@ from . import *
 
 class Object3D(Three):
     def __init__(self, name=None, position=(0,0,0), rotation=(0,0,0), scale=(1,1,1),
-                 visible=None, castShadow=None, receiveShadow=None, 
+                 visible=None, castShadow=None, receiveShadow=None,
                  userData=None, layers=None, cannonData=None, **kwargs):
         Three.__init__(self, name)
         self.position = np.array(position, dtype=np.float64)
@@ -86,6 +86,9 @@ class Object3D(Three):
              "images": [i.json() for i in images.values()]}
         for imagejson in d['images']:
             imagejson['url'] = url_prefix + imagejson['url']
+        d['metadata'] = {'version': 4.4,
+                         'type': 'Object',
+                         'generator': 'three.py'}
         return d
 
 
