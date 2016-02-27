@@ -7,8 +7,6 @@ from flask import Flask, render_template, Markup
 
 import site_settings
 
-import pyserver
-
 from three import *
 
 
@@ -18,7 +16,6 @@ app = Flask(__name__,
             static_url_path='',
             template_folder=site_settings.TEMPLATE_FOLDER)
 app.debug = site_settings.DEBUG
-app.register_blueprint(pyserver.blueprint)
 
 
 
