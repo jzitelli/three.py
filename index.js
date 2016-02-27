@@ -2,7 +2,7 @@
 function onLoad() {
     "use strict";
 
-    var rS = new rStats();
+    var rS = new rStats({CSSPath: 'rstats/'});
 
     var world = new CANNON.World();
     world.gravity.set( 0, -9.8, 0 );
@@ -37,7 +37,7 @@ function onLoad() {
             object.position.y -= 0.83;
             scene.add(object);
         }, undefined, function (err) {
-            pyserver.log('vrDesk.json could not be loaded: ' + JSON.stringify(err, undefined, 2));
+            console.log('vrDesk.json could not be loaded: ' + JSON.stringify(err, undefined, 2));
         });
 
         requestAnimationFrame(animate());
@@ -57,7 +57,7 @@ function onLoad() {
             app.vrControls.update();
             app.vrManager.render(app.scene, app.camera, t);
 
-            world.step(1/60, dt, 5);
+            world.step(1/60, dt, 6);
             world.bodies.forEach( function (body) {
                 body.mesh.position.copy(body.interpolatedPosition);
                 body.mesh.quaternion.copy(body.interpolatedQuaternion);
