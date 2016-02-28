@@ -30,10 +30,8 @@
     "Python",
     "Flask"
   ],
-  "dependencies": {
-    "three": "git://github.com/jzitelli/three.js.git#dev"
-  },
   "devDependencies": {
+    "three": "git://github.com/jzitelli/three.js.git#dev",
     "cannon": "git://github.com/jzitelli/cannon.js.git",
     "webvr-boilerplate": "git://github.com/jzitelli/webvr-boilerplate.git#dev",
     "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git"
