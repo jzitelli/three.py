@@ -1,26 +1,29 @@
+import logging
 import json
-from needle.cases import NeedleTestCase
+
 from flask import Blueprint, Flask, Markup, render_template
+
+from needle.cases import NeedleTestCase
+
 import os.path
 import sys
-THREEPYDIR = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir))
-if THREEPYDIR not in sys.path:
-    sys.path.insert(0, THREEPYDIR)
-import site_settings
-from flask_app import WebVRConfig
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir)))
+
+from flask_app import DEBUG, STATIC_FOLDER, TEMPLATE_FOLDER, WebVRConfig
+
 from three import *
 
 
 
 blueprint = Blueprint('skybox', __name__,
-                      static_folder=site_settings.STATIC_FOLDER,
+                      static_folder=STATIC_FOLDER,
                       static_url_path='',
-                      template_folder=site_settings.TEMPLATE_FOLDER)
+                      template_folder=TEMPLATE_FOLDER)
 
 
 
 @blueprint.route('/skybox')
-def _test_skybox():
+def skybox():
     scene = Scene()
     scene.add(Skybox(cube_images=['../images/%s.png' % side
                                   for side in ('px', 'nx', 'py', 'ny', 'pz', 'nz')]))
@@ -41,12 +44,11 @@ class SkyboxTest(NeedleTestCase):
 
 
 if __name__ == "__main__":
-    import logging
     app = Flask(__name__,
-                static_folder=site_settings.STATIC_FOLDER,
+                static_folder=STATIC_FOLDER,
                 static_url_path='',
-                template_folder=site_settings.TEMPLATE_FOLDER)
-    app.debug = site_settings.DEBUG
+                template_folder=TEMPLATE_FOLDER)
+    app.debug = DEBUG
     app.testing = True
     app.register_blueprint(blueprint)
     logging.basicConfig(level=(logging.DEBUG if app.debug else logging.INFO),

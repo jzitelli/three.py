@@ -1,26 +1,29 @@
+import logging
 import json
-from needle.cases import NeedleTestCase
+
 from flask import Blueprint, Flask, Markup, render_template
+
+from needle.cases import NeedleTestCase
+
 import os.path
 import sys
-THREEPYDIR = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir))
-if THREEPYDIR not in sys.path:
-    sys.path.insert(0, THREEPYDIR)
-import site_settings
-from flask_app import WebVRConfig
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir)))
+
+from flask_app import DEBUG, STATIC_FOLDER, TEMPLATE_FOLDER, WebVRConfig
+
 from three import *
 
 
 
 blueprint = Blueprint('heightfield', __name__,
-                      static_folder=site_settings.STATIC_FOLDER,
+                      static_folder=STATIC_FOLDER,
                       static_url_path='',
-                      template_folder=site_settings.TEMPLATE_FOLDER)
+                      template_folder=TEMPLATE_FOLDER)
 
 
 
 @blueprint.route('/heightfield')
-def _test_heightfield():
+def heightfield():
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=800,
                          position=[10, 0, 0]))
@@ -28,16 +31,16 @@ def _test_heightfield():
     scene.add(HeightfieldMesh(heightfieldImage=heightfieldImage,
                               heightfieldScale=32,
                               material=MeshLambertMaterial(color=0xff0000),
-                              rotation=[-np.pi/4, 0, 0],
-                              position=[0, -24, -32],
+                              rotation=[-0.33*np.pi, 0, 0],
+                              position=[0, -20, -32],
                               cannonData={'mass': 0, 'shapes': ['Heightfield']}))
     scene.add(Mesh(geometry=SphereBufferGeometry(radius=1),
                    material=MeshPhongMaterial(color=0xffff00, shading=FlatShading),
-                   position=[0, 10, -40],
+                   position=[0, 10, -45],
                    cannonData={'mass': 1, 'shapes': ['Sphere']}))
     scene.add(Mesh(geometry=BoxGeometry(width=1, height=1, depth=1),
                    material=MeshPhongMaterial(color=0xff00ff, shading=FlatShading),
-                   position=[4, 10, -40],
+                   position=[4, 10, -45],
                    cannonData={'mass': 1, 'shapes': ['Box']}))
     return render_template('index.html',
                            json_config=Markup(r"""<script>
@@ -56,12 +59,11 @@ class HeightfieldTest(NeedleTestCase):
 
 
 if __name__ == "__main__":
-    import logging
     app = Flask(__name__,
-                static_folder=site_settings.STATIC_FOLDER,
+                static_folder=STATIC_FOLDER,
                 static_url_path='',
-                template_folder=site_settings.TEMPLATE_FOLDER)
-    app.debug = site_settings.DEBUG
+                template_folder=TEMPLATE_FOLDER)
+    app.debug = DEBUG
     app.testing = True
     app.register_blueprint(blueprint)
     logging.basicConfig(level=(logging.DEBUG if app.debug else logging.INFO),

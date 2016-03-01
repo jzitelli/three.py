@@ -1,4 +1,3 @@
-
 function onLoad() {
     "use strict";
 
@@ -21,7 +20,7 @@ function onLoad() {
 
         scene.add(avatar);
 
-        app = new WebVRApplication(scene);
+        app = new WebVRApplication(scene, {rendererOptions: {antialias: !isMobile()}});
 
         avatar.add(app.camera);
 

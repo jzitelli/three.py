@@ -1,31 +1,35 @@
 import logging
-_logger = logging.getLogger(__name__)
 import json
+
 from flask import Flask, Blueprint, render_template, Markup
+
 from needle.cases import NeedleTestCase
+
+import os.path
 import sys
-import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir)))
-import site_settings
+
+from flask_app import DEBUG, STATIC_FOLDER, TEMPLATE_FOLDER, WebVRConfig
+
 from three import *
-from flask_app import WebVRConfig
 
 
 
 blueprint = Blueprint("textgeometry", __name__,
-                      static_folder=site_settings.STATIC_FOLDER,
+                      static_folder=STATIC_FOLDER,
                       static_url_path='',
-                      template_folder=site_settings.TEMPLATE_FOLDER)
+                      template_folder=TEMPLATE_FOLDER)
 
 
 
 @blueprint.route('/textgeometry')
-def _test_text():
+def textgeometry():
     scene = Scene()
+    scene.add(DirectionalLight(color=0xffffff, intensity=1, position=(-2,1,1)))
     scene.add(Mesh(geometry=TextGeometry(text='textgeometry',
-                                         font_url="node_modules/three/fonts/helvetiker_regular.typeface.js",
-                                         size=0.1, height=0),
-                   material=MeshBasicMaterial(color=0xff00ff),
+                                         font_url="node_modules/three/examples/fonts/helvetiker_regular.typeface.js",
+                                         size=0.3, height=0.02),
+                   material=MeshLambertMaterial(color=0xff00ff),
                    position=[0, 0, -2]))
     return render_template('index.html',
                            json_config=Markup(r"""<script>
@@ -44,12 +48,11 @@ class TextGeometryTest(NeedleTestCase):
 
 
 if __name__ == "__main__":
-    import logging
     app = Flask(__name__,
-                static_folder=site_settings.STATIC_FOLDER,
+                static_folder=STATIC_FOLDER,
                 static_url_path='',
-                template_folder=site_settings.TEMPLATE_FOLDER)
-    app.debug = site_settings.DEBUG
+                template_folder=TEMPLATE_FOLDER)
+    app.debug = DEBUG
     app.testing = True
     app.register_blueprint(blueprint)
     logging.basicConfig(level=(logging.DEBUG if app.debug else logging.INFO),

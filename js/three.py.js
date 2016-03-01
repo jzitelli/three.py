@@ -16,70 +16,14 @@ THREE.py = ( function () {
 
         var promise = new Promise( function (resolve, reject) {
 
-            // filter out geometries that ObjectLoader doesn't handle, parse the rest:
+            // parse geometries, filtering out geometries that ObjectLoader doesn't handle:
             var geometries = objectLoader.parseGeometries(json.geometries.filter( function (geom) {
                 return geom.type !== "TextGeometry";
             } ));
 
-            manager.onLoad = onPartsLoad;
-            function onPartsLoad() {
-                // construct TextGeometries now that fonts are loaded:
-                json.geometries.forEach( function (geom) {
-                    if (geom.type === "TextGeometry") {
-                        geom.parameters.font = fonts[geom.font_url];
-                        var textGeometry = new THREE.TextGeometry(geom.text, geom.parameters);
-                        textGeometry.uuid = geom.uuid;
-                        if (geom.name !== undefined) textGeometry.name = geom.name;
-                        geometries[geom.uuid] = textGeometry;
-                    }
-                } );
+            manager.onLoad = onLoadA;
 
-                function _onLoad(obj) {
-                    // the final callback, calls promise resolve
-                    obj.traverse( function (node) {
-
-                        node.updateMatrix();
-                        node.updateMatrixWorld();
-
-                        if (node.userData) {
-                            if (node.userData.layers) {
-                                node.userData.layers.forEach( function (channel) {
-                                    node.layers.set(channel);
-                                } );
-                            }
-                        }
-                        if (node instanceof THREE.Mesh) {
-                            node.geometry.computeBoundingSphere();
-                            node.geometry.computeBoundingBox();
-                            if (node.material.shading === THREE.FlatShading) {
-                                node.geometry.computeFaceNormals();
-                            }
-                        }
-                    } );
-
-                    loadHeightfields(obj);
-
-                    if (onLoad) {
-                        onLoad(obj);
-                    }
-
-                    resolve(obj);
-
-                }
-
-                images = objectLoader.parseImages(json.images, function () { _onLoad(object); });
-                var textures = objectLoader.parseTextures(json.textures, images);
-                var materials = objectLoader.parseMaterials(json.materials, textures);
-
-                var object = objectLoader.parseObject(json.object, geometries, materials);
-
-                if (json.images === undefined || json.images.length === 0) {
-                    _onLoad(object);
-                }
-
-            }
-
-            var needsLoading = false;
+            var waitForLoad = false;
 
             // set texture values for shader material uniforms:
             if (json.materials) {
@@ -92,11 +36,11 @@ THREE.py = ( function () {
                                 if (Array.isArray(uniform.value) && uniform.value.length === 6) {
                                     // texture cube specified by urls
                                     uniform.value = cubeTextureLoader.load(uniform.value);
-                                    needsLoading = true;
+                                    waitForLoad = true;
                                 } else if (typeof uniform.value === 'string') {
                                     // single texture specified by url
                                     uniform.value = textureLoader.load(uniform.value);
-                                    needsLoading = true;
+                                    waitForLoad = true;
                                 }
                             }
                         }
@@ -104,18 +48,78 @@ THREE.py = ( function () {
                 } );
             }
 
-            // load fonts:
+            // load fonts... each unique font URI is loaded once and stored in publically available object `fonts`:
             json.geometries.forEach( function (geom) {
                 if (geom.type === "TextGeometry" && fonts[geom.font_url] === undefined) {
                     fonts[geom.font_url] = null;
                     fontLoader.load(geom.font_url, function (font) {
                         fonts[geom.font_url] = font;
                     });
-                    needsLoading = true;
+                    waitForLoad = true;
                 }
             } );
 
-            if (needsLoading === false) onPartsLoad();
+            if (waitForLoad === false) onLoadA();
+
+            function onLoadA() {
+
+                // construct TextGeometries now that fonts are loaded:
+                json.geometries.forEach( function (geom) {
+                    if (geom.type === "TextGeometry") {
+                        geom.parameters.font = fonts[geom.font_url];
+                        var textGeometry = new THREE.TextGeometry(geom.text, geom.parameters);
+                        textGeometry.uuid = geom.uuid;
+                        if (geom.name !== undefined) textGeometry.name = geom.name;
+                        geometries[geom.uuid] = textGeometry;
+                    }
+                } );
+
+                images = objectLoader.parseImages(json.images, function () { onLoadB(object); });
+                var textures = objectLoader.parseTextures(json.textures, images);
+                var materials = objectLoader.parseMaterials(json.materials, textures);
+
+                var object = objectLoader.parseObject(json.object, geometries, materials);
+
+                if (json.images === undefined || json.images.length === 0) {
+                    onLoadB(object);
+                }
+
+                // the final callback, resolves promise:
+                function onLoadB(obj) {
+                    obj.traverse( function (node) {
+
+                        node.updateMatrix();
+
+                        if (node.userData) {
+                            if (node.userData.layers) {
+                                node.userData.layers.forEach( function (channel) {
+                                    node.layers.set(channel);
+                                } );
+                            }
+                        }
+
+                        if (node instanceof THREE.Mesh) {
+                            node.geometry.computeBoundingSphere();
+                            node.geometry.computeBoundingBox();
+                            if (node.material.shading === THREE.FlatShading) {
+                                node.geometry.computeFaceNormals();
+                            }
+                        }
+
+                    } );
+
+                    obj.updateMatrixWorld(true);
+
+                    loadHeightfields(obj);
+
+                    if (onLoad) {
+                        onLoad(obj);
+                    }
+
+                    resolve(obj);
+                }
+
+            }
 
         } );
 
@@ -160,7 +164,7 @@ THREE.py = ( function () {
                         node.geometry.computeBoundingBox();
                     }
                 }
-            });
+            } );
         }
 
         return promise;

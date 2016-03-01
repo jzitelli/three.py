@@ -1,21 +1,25 @@
 import logging
-_logger = logging.getLogger(__name__)
-
+import os.path
 import json
 
 from flask import Flask, render_template, Markup
 
-import site_settings
-
 from three import *
 
 
+_logger = logging.getLogger(__name__)
+
+
+DEBUG           = True
+PORT            = 5000
+STATIC_FOLDER   = os.path.abspath(os.path.split(__file__)[0])
+TEMPLATE_FOLDER = STATIC_FOLDER
 
 app = Flask(__name__,
-            static_folder=site_settings.STATIC_FOLDER,
+            static_folder=STATIC_FOLDER,
             static_url_path='',
-            template_folder=site_settings.TEMPLATE_FOLDER)
-app.debug = site_settings.DEBUG
+            template_folder=TEMPLATE_FOLDER)
+app.debug = DEBUG
 
 
 
