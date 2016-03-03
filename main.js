@@ -1,3 +1,46 @@
+function WebVRApplication(scene, config) {
+    "use strict";
+    this.scene = scene;
+
+    config = config || {};
+    var rendererOptions     = config.rendererOptions;
+    var onResetVRSensor     = config.onResetVRSensor;
+
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = camera;
+
+    this.renderer = new THREE.WebGLRenderer(rendererOptions);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+
+    var domElement = this.renderer.domElement;
+    document.body.appendChild(domElement);
+    domElement.id = 'renderer';
+
+    this.vrEffect = new THREE.VREffect(this.renderer, function(error) { console.error('error creating VREffect: ' + error); });
+    this.vrEffect.setSize(window.innerWidth, window.innerHeight);
+
+    this.vrControls = new THREE.VRControls(this.camera, function(error) { console.error('error creating VRControls: ' + error); });
+
+    this.vrManager = new WebVRManager(this.renderer, this.vrEffect, {hideButton: false});
+
+
+    this.render = function () {
+        this.vrControls.update();
+        this.vrManager.render(this.scene, this.camera);
+    }.bind(this);
+
+
+    var wireframeMaterial = new THREE.MeshBasicMaterial({color: 0xeeddaa, wireframe: true});
+    this.toggleWireframe = function () {
+        if (this.scene.overrideMaterial) {
+            this.scene.overrideMaterial = null;
+        } else {
+            this.scene.overrideMaterial = wireframeMaterial;
+        }
+    }.bind(this);
+}
+
+
 function onLoad() {
     "use strict";
 
@@ -33,7 +76,7 @@ function onLoad() {
         objectLoader.load('models/vrDesk.json', function (object) {
             object.scale.set(0.01, 0.01, 0.01);
             object.position.z -= 1.41;
-            object.position.y -= 0.83;
+            object.position.y -= 0.85;
             scene.add(object);
         }, undefined, function (err) {
             console.log('vrDesk.json could not be loaded: ' + JSON.stringify(err, undefined, 2));
@@ -53,14 +96,15 @@ function onLoad() {
 
             var dt = 0.001 * (t - lt);
 
-            app.vrControls.update();
-            app.vrManager.render(app.scene, app.camera, t);
+            app.render();
 
-            world.step(1/60, dt, 6);
-            world.bodies.forEach( function (body) {
+            world.step(Math.min(dt, 1/60), dt, 10);
+
+            for (var i = 0; i < world.bodies.length; i++) {
+                var body = world.bodies[i];
                 body.mesh.position.copy(body.interpolatedPosition);
                 body.mesh.quaternion.copy(body.interpolatedQuaternion);
-            } );
+            }
 
             lt = t;
 
