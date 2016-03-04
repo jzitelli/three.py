@@ -3,8 +3,7 @@ import json
 
 from . import *
 
-# TODO: http://stackoverflow.com/questions/10935127/way-to-access-resource-files-in-python
-SHADERLIB_PATH = os.path.join(os.path.split(__file__)[0], os.path.pardir, 'shaderlib')
+SHADERLIB_PATH = os.path.abspath(os.path.split(__file__)[0])
 
 try:
     with open(os.path.join(SHADERLIB_PATH, 'ShaderLib.json')) as f:
