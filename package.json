@@ -33,6 +33,6 @@
     "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git#webvr-1.0"
   },
   "scripts": {
-    "prepublish": "node ./node_scripts/extractShaderLib.js"
+    "postinstall": "node ./node_scripts/extractShaderLib.js"
   }
 }
