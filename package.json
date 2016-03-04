@@ -13,7 +13,6 @@
   "files": [
     "js/",
     "node_scripts/",
-    "shaderlib/",
     "three/",
     "LICENSE",
     "README.md"
