@@ -31,8 +31,7 @@
   },
   "devDependencies": {
     "cannon": "git://github.com/jzitelli/cannon.js.git",
-    "webvr-boilerplate": "git://github.com/jzitelli/webvr-boilerplate.git#dev",
-    "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git"
+    "webvr-polyfill": "git://github.com/borismus/webvr-polyfill.git#webvr-1.0"
   },
   "scripts": {
     "prepublish": "node ./node_scripts/extractShaderLib.js"
