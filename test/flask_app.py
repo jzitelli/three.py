@@ -34,8 +34,6 @@ import skybox
 import textgeometry
 import pool_table
 
-
-
 def index_scene():
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=100, position=[-4, 5, 20]))
