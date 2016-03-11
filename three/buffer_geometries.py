@@ -7,6 +7,10 @@ class BufferGeometry(Three):
         self.normals = normals
         self.indices = indices
         self.uvs = uvs
+    def computeBoundingBox(self):
+        vertices = self.vertices.reshape((-1, 3))
+        return np.array([[vertices[:,0].min(), vertices[:,1].min(), vertices[:,2].min()],
+                         [vertices[:,0].max(), vertices[:,1].max(), vertices[:,2].max()]])
     def json(self):
         d = Three.json(self)
         d['type'] = "BufferGeometry"
