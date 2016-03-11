@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "cannon": "git://github.com/jzitelli/cannon.js.git",
-    "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git#webvr-1.0"
+    "webvrapp": "git://github.com/jzitelli/WebVRApp.git"
   },
   "scripts": {
     "postinstall": "node ./node_scripts/extractShaderLib.js"
