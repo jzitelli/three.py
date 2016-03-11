@@ -82,7 +82,7 @@ function onLoad() {
 
     var world = new CANNON.World();
     world.gravity.set( 0, -9.8, 0 );
-    //world.broadphase = new CANNON.SAPBroadphase( world );
+    world.broadphase = new CANNON.SAPBroadphase( world );
     world.defaultContactMaterial.contactEquationStiffness   = 1e7;
     world.defaultContactMaterial.frictionEquationStiffness  = 1e7;
     world.defaultContactMaterial.contactEquationRelaxation  = 3;
@@ -90,6 +90,7 @@ function onLoad() {
     world.solver.iterations = 10;
 
     var avatar = new THREE.Object3D();
+    avatar.position.y = 4*12*0.0254
 
     var app;
 
@@ -106,15 +107,18 @@ function onLoad() {
 
         THREE.py.CANNONize(scene, world);
 
-        var objectLoader = new THREE.ObjectLoader();
-        objectLoader.load('test/models/vrDesk.json', function (object) {
-            object.scale.set(0.01, 0.01, 0.01);
-            object.position.z -= 1.41;
-            object.position.y -= 0.85;
-            scene.add(object);
-        }, undefined, function (err) {
-            console.log('vrDesk.json could not be loaded: ' + JSON.stringify(err, undefined, 2));
-        });
+        if (URL_PARAMS.model) {
+            var url = URL_PARAMS.model
+            var objectLoader = new THREE.ObjectLoader();
+            objectLoader.load(url, function (object) {
+                object.scale.set(0.01, 0.01, 0.01);
+                object.position.z -= 1.41;
+                object.position.y = avatar.position.y - 0.85;
+                scene.add(object);
+            }, undefined, function (err) {
+                console.error(url + ' could not be loaded: ' + JSON.stringify(err, undefined, 2));
+            });
+        }
 
         requestAnimationFrame(animate());
 

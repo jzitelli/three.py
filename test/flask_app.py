@@ -32,6 +32,7 @@ import heightfield
 import layers
 import skybox
 import textgeometry
+import pool_table
 
 
 
@@ -83,6 +84,7 @@ def main():
     app.register_blueprint(layers.blueprint)
     app.register_blueprint(skybox.blueprint)
     app.register_blueprint(textgeometry.blueprint)
+    app.register_blueprint(pool_table.blueprint)
 
     _logger.info("app.config:\n%s" % '\n'.join(['%s: %s' % (k, str(v))
                                                 for k, v in sorted(app.config.items(),

@@ -24,8 +24,6 @@
       }
     </style>
 
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='rstats/rStats.css') }}">
-
 <!-- *** begin json_config *** -->
 {{ json_config if json_config else '' }}
 <!-- *** end json_config *** -->
@@ -45,12 +43,12 @@
 
     <script src="rstats/rStats.js"></script>
 
-    <script src="js/utils.js"></script>
-
     <script src="js/three.py.js"></script>
     <script src="js/CANNONize.js"></script>
 
-    <script src="test/main.js"></script>
+    <script src="test/js/utils.js"></script>
+
+    <script src="test/js/main.js"></script>
 
   </body>
 

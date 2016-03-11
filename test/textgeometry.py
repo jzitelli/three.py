@@ -1,20 +1,17 @@
 import logging
 import json
 
-from flask import Flask, Blueprint, render_template, Markup
+from flask import Blueprint, render_template, Markup
 
 from needle.cases import NeedleTestCase
 
-from flask_app import STATIC_FOLDER, TEMPLATE_FOLDER, WebVRConfig
+from flask_app import WebVRConfig
 
 from three import *
 
 
 
-blueprint = Blueprint("textgeometry", __name__,
-                      static_folder=STATIC_FOLDER,
-                      static_url_path='',
-                      template_folder=TEMPLATE_FOLDER)
+blueprint = Blueprint("textgeometry", __name__)
 
 
 
