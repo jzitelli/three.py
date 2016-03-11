@@ -83,11 +83,11 @@ function onLoad() {
     var world = new CANNON.World();
     world.gravity.set( 0, -9.8, 0 );
     //world.broadphase = new CANNON.SAPBroadphase( world );
-    world.defaultContactMaterial.contactEquationStiffness   = 1e6;
-    world.defaultContactMaterial.frictionEquationStiffness  = 1e6;
+    world.defaultContactMaterial.contactEquationStiffness   = 1e7;
+    world.defaultContactMaterial.frictionEquationStiffness  = 1e7;
     world.defaultContactMaterial.contactEquationRelaxation  = 3;
     world.defaultContactMaterial.frictionEquationRelaxation = 3;
-    world.solver.iterations = 9;
+    world.solver.iterations = 10;
 
     var avatar = new THREE.Object3D();
 
@@ -107,7 +107,7 @@ function onLoad() {
         THREE.py.CANNONize(scene, world);
 
         var objectLoader = new THREE.ObjectLoader();
-        objectLoader.load('models/vrDesk.json', function (object) {
+        objectLoader.load('test/models/vrDesk.json', function (object) {
             object.scale.set(0.01, 0.01, 0.01);
             object.position.z -= 1.41;
             object.position.y -= 0.85;
