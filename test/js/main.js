@@ -5,7 +5,7 @@ function onLoad() {
     if (URL_PARAMS.rstats) {
         rS = new rStats({CSSPath: 'rstats/'});
     } else {
-        function nop() {};
+        var nop = function () {};
         rS = function () { return {start: nop, end: nop, frame: nop, tick: nop, update: nop}; };
     }
 

@@ -42,7 +42,8 @@
   <body onload="onLoad()">
 
     <canvas id='webgl-canvas'></canvas>
-    <div class=overlay></div>
+
+    <div class=overlay>{{ overlay_content if overlay_content else '' }}</div>
 
     <script src="node_modules/three/build/three.js"></script>
 
