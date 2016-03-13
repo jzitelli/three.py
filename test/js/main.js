@@ -75,14 +75,17 @@ function onLoad() {
         var lt = 0;
 
         function animate(t) {
-            rS('frame').start();
-            rS('raF').tick();
             rS('FPS').frame();
+            rS('raF').tick();
+            rS('frame').start();
 
             var dt = 0.001 * (t - lt);
 
+            rS('render').start();
             app.render();
+            rS('render').end();
 
+            rS('step').start();
             world.step(Math.min(dt, 1/60), dt, 20);
 
             for (var i = 0; i < world.bodies.length; i++) {
@@ -90,6 +93,7 @@ function onLoad() {
                 body.mesh.position.copy(body.interpolatedPosition);
                 body.mesh.quaternion.copy(body.interpolatedQuaternion);
             }
+            rS('step').end();
 
             lt = t;
 
