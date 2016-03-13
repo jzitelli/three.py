@@ -1,7 +1,7 @@
 import logging
 import json
 
-from flask import Blueprint, Markup, render_template
+from flask import Blueprint, Markup, render_template, request
 
 from flask_app import WebVRConfig, get_overlay_content
 

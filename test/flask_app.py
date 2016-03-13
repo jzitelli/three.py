@@ -3,14 +3,8 @@ import os.path
 import json
 import sys
 import unittest
-import threading
 
-import nose
-from nose.plugins.plugintest import run_buffered
-
-from selenium import webdriver
-
-from flask import Flask, render_template, Markup
+from flask import Flask, render_template, Markup, request
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir)))
 
@@ -32,19 +26,22 @@ PORT            = 5000
 STATIC_FOLDER   = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir))
 TEMPLATE_FOLDER = os.path.abspath(os.path.split(__file__)[0])
 
-test_hrefs = {name: href
-              for name, href in [(name, '/%s' % name)
-                                 for name in ['layers',
-                                              'heightfield',
-                                              'cannon',
-                                              'pool_table',
-                                              'skybox',
-                                              'textgeometry']]}
+TESTS = ['layers',
+         'heightfield',
+         'cannon',
+         'pool_table',
+         'skybox',
+         'textgeometry',
+         'points',
+         'aframe']
+
+TEST_HREFS = {name: href
+              for name, href in [(name, '/%s' % name) for name in TESTS]}
 
 def get_overlay_content():
     return Markup(" <hr> ".join([r"<a href='/'>HOME</a>",
-                                 " <br> ".join(['<a href="%s">%s</a>' % (href, name)
-                                                for name, href in test_hrefs.items()])]))
+                                 " <br> ".join(['<a href="%s">%s</a>' % (TEST_HREFS[name], name)
+                                                for name in TESTS])]))
 
 import cannon
 import heightfield
@@ -52,7 +49,7 @@ import layers
 import skybox
 import textgeometry
 import pool_table
-
+import points
 
 
 app = Flask(__name__,
@@ -92,13 +89,15 @@ var THREEPY_SCENE = %s;
 
 
 def main():
+    _logger = logging.getLogger(__name__);
+    _logger.info("TESTS:\n%s" % '\n'.join(TESTS))
     app.register_blueprint(cannon.blueprint)
     app.register_blueprint(heightfield.blueprint)
     app.register_blueprint(layers.blueprint)
     app.register_blueprint(skybox.blueprint)
     app.register_blueprint(textgeometry.blueprint)
     app.register_blueprint(pool_table.blueprint)
-    _logger = logging.getLogger(__name__);
+    app.register_blueprint(points.blueprint)
     _logger.info("app.config:\n%s" % '\n'.join(['%s: %s' % (k, str(v))
                                                 for k, v in sorted(app.config.items(),
                                                                    key=lambda i: i[0])]))
@@ -117,25 +116,7 @@ STARTING FLASK APP!!!!!!!!!!!!!
 
 
 
-class CANNONTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.driver = webdriver.Firefox()
-        # cls.driver.implicitly_wait(1000)
-        # cls.driver.maximize_window()
-    @classmethod
-    def tearDownClass(cls):
-        cls.driver.quit()
-    def test_screenshot(self):
-        self.driver.get('http://127.0.0.1:5000/cannon')
-        # canvas = self.driver.find_element_by_css_selector('#webgl-canvas')
-        #self.driver.get_screenshot_as_file('cannon.png')
-        # self.assertTrue(canvas is not None)
-
-
-
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO,
+    logging.basicConfig(level=logging.DEBUG,
                         format="%(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")
-    _logger = logging.getLogger(__name__)
     main()

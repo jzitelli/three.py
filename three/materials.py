@@ -28,6 +28,10 @@ class MeshPhongMaterial(Material):
     pass
 
 
+class PointsMaterial(Material):
+    pass
+
+
 class ShaderMaterial(Material):
     def __init__(self, vertexShader=None, fragmentShader=None, uniforms=None, **kwargs):
         Material.__init__(self, **kwargs)

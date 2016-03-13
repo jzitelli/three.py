@@ -111,3 +111,19 @@ class Mesh(Object3D):
             d.update({"material": str(self.material.uuid),
                       "geometry": str(self.geometry.uuid)})
         return d
+
+
+class Points(Object3D):
+    def __init__(self, geometry=None, material=None, **kwargs):
+        Object3D.__init__(self, **kwargs)
+        self.geometry = geometry
+        self.material = material
+    def json(self):
+        d = Object3D.json(self)
+        try:
+            d.update({"material": unicode(self.material.uuid),
+                      "geometry": unicode(self.geometry.uuid)})
+        except NameError:
+            d.update({"material": str(self.material.uuid),
+                      "geometry": str(self.geometry.uuid)})
+        return d

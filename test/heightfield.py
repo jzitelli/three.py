@@ -1,9 +1,7 @@
 import logging
 import json
 
-from flask import Blueprint, Markup, render_template
-
-from needle.cases import NeedleTestCase
+from flask import Blueprint, Markup, render_template, request
 
 from flask_app import WebVRConfig, get_overlay_content
 
@@ -17,10 +15,11 @@ blueprint = Blueprint(__name__, __name__)
 
 @blueprint.route('/%s' % __name__)
 def heightfield():
+    url = request.args.get('url', 'images/terrain128.png')
+    heightfieldImage = Image(url=url)
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=800,
                          position=[10, 0, 0]))
-    heightfieldImage = Image(url='images/terrain128.png')
     scene.add(HeightfieldMesh(heightfieldImage=heightfieldImage,
                               heightfieldScale=32,
                               material=MeshLambertMaterial(color=0xff0000),
@@ -43,10 +42,3 @@ var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
 </script>""" % (json.dumps(WebVRConfig, indent=2),
                 json.dumps(scene.export(url_prefix="test/"), indent=2))))
-
-
-
-class HeightfieldTest(NeedleTestCase):
-    def test_screenshot(self):
-        self.driver.get('127.0.0.1:5000/heightfield')
-        self.assertScreenshot('canvas', 'heightfield')
