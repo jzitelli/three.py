@@ -34,6 +34,7 @@
   },
   "scripts": {
     "extractShaderLib": "node ./node_scripts/extractShaderLib.js",
-    "postinstall": "cd ./node_modules/three/utils/build && python build.py --include common --include extras --output ../../build/three.js && cd ../../../.. && npm run extractShaderLib"
+    "postinstall": "cd ./node_modules/three/utils/build && python build.py --include common --include extras --output ../../build/three.js && cd ../../../.. && npm run extractShaderLib",
+    "test": "cd test && python flask_app.py --run-tests"
   }
 }
