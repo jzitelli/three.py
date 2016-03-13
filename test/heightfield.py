@@ -11,11 +11,11 @@ from three import *
 
 
 
-blueprint = Blueprint('heightfield', __name__)
+blueprint = Blueprint(__name__, __name__)
 
 
 
-@blueprint.route('/heightfield')
+@blueprint.route('/%s' % __name__)
 def heightfield():
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=800,
@@ -36,6 +36,7 @@ def heightfield():
                    position=[4, 10, -45],
                    cannonData={'mass': 1, 'shapes': ['Box']}))
     return render_template('template.html',
+                           title='three.py  -  %s test' % __name__,
                            overlay_content=get_overlay_content(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;

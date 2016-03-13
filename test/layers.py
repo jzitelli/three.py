@@ -11,11 +11,11 @@ from three import *
 
 
 
-blueprint = Blueprint('layers', __name__)
+blueprint = Blueprint(__name__, __name__)
 
 
 
-@blueprint.route('/layers')
+@blueprint.route('/%s' % __name__)
 def layers():
     scene = Scene()
     scene.add(Mesh(geometry=TextGeometry(text='LAYER 1',
@@ -31,6 +31,7 @@ def layers():
                    position=[1.6, 0, -3],
                    layers=[2]))
     return render_template('template.html',
+                           title='three.py  -  %s test' % __name__,
                            overlay_content=get_overlay_content(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;

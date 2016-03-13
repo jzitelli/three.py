@@ -38,6 +38,7 @@ def cannon():
                    rotation=[-np.pi/2, 0, 0],
                    cannonData={'mass': 0, 'shapes': ['Plane']}))
     return render_template('template.html',
+                           title='three.py  -  %s test' % __name__,
                            overlay_content=get_overlay_content(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;
