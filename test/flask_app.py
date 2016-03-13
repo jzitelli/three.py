@@ -2,11 +2,13 @@ import logging
 import os.path
 import json
 import sys
+import unittest
 import threading
-import nose
-from needle.cases import NeedleTestCase
+
 import nose
 from nose.plugins.plugintest import run_buffered
+
+from selenium import webdriver
 
 from flask import Flask, render_template, Markup
 
@@ -96,7 +98,7 @@ def main():
     app.register_blueprint(skybox.blueprint)
     app.register_blueprint(textgeometry.blueprint)
     app.register_blueprint(pool_table.blueprint)
-    _logger = logging.getLogger(threading.current_thread().name);
+    _logger = logging.getLogger(__name__);
     _logger.info("app.config:\n%s" % '\n'.join(['%s: %s' % (k, str(v))
                                                 for k, v in sorted(app.config.items(),
                                                                    key=lambda i: i[0])]))
@@ -113,27 +115,27 @@ STARTING FLASK APP!!!!!!!!!!!!!
 """)
     app.run(host='0.0.0.0')
 
-    # argv = [__file__, '-v', '-v', '-v', '--logging-level=DEBUG', '--with-needle-capture', '--with-needle-cleanup-on-success', '--with-save-baseline', __file__]
-    # thread = threading.Thread(target=run_buffered, kwargs={'argv': argv})
-    # _logger.debug("starting daemon thread...")
-    # thread.start()
 
 
-
-# class CANNONTest(NeedleTestCase):
-#     def setUp(self):
-#         self.app = app.test_client()
-#     def test_screenshot(self):
-#         #self.driver.get('http://127.0.0.1:5000/cannon')
-#         self.app.get('/cannon')
-#         self.assertScreenshot('canvas', 'cannon')
+class CANNONTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.driver = webdriver.Firefox()
+        # cls.driver.implicitly_wait(1000)
+        # cls.driver.maximize_window()
+    @classmethod
+    def tearDownClass(cls):
+        cls.driver.quit()
+    def test_screenshot(self):
+        self.driver.get('http://127.0.0.1:5000/cannon')
+        # canvas = self.driver.find_element_by_css_selector('#webgl-canvas')
+        #self.driver.get_screenshot_as_file('cannon.png')
+        # self.assertTrue(canvas is not None)
 
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=logging.INFO,
                         format="%(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")
     _logger = logging.getLogger(__name__)
     main()
-
-    #nose.run(argv=argv)
