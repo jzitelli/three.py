@@ -26,7 +26,7 @@ STATIC_FOLDER   = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.pa
 TEMPLATE_FOLDER = os.path.abspath(os.path.split(__file__)[0])
 
 def get_overlay_content():
-    return Markup(" <hr> ".join([r"<a href='/'>HOME</a>",
+    return Markup(" <hr> ".join([r"""<a href='/'>HOME</a> | <a href="/?model=test/models/vrDesk.json">(with desk)</a>""",
                                  " <br> ".join(['<a href="%s">%s</a>' % (TEST_HREFS[name], name)
                                                 for name in TESTS])]))
 

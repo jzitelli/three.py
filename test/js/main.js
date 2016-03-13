@@ -66,7 +66,7 @@ function onLoad() {
     world.solver.iterations = 10;
 
     var avatar = new THREE.Object3D();
-    avatar.position.y = 4*12*0.0254
+    avatar.position.y = 3.5*12*0.0254
 
     var app;
 
@@ -128,7 +128,7 @@ function onLoad() {
             objectLoader.load(url, function (object) {
                 object.scale.set(0.01, 0.01, 0.01);
                 object.position.z -= 1.41;
-                object.position.y = avatar.position.y - 0.85;
+                object.position.y = avatar.position.y - 0.73;
                 scene.add(object);
             }, undefined, function (err) {
                 console.error(url + ' could not be loaded: ' + JSON.stringify(err, undefined, 2));
