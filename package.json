@@ -26,12 +26,12 @@
     "Flask"
   ],
   "dependencies": {
-    "three": "git://github.com/jzitelli/three.js.git#dev"
+    "three": "git://github.com/jzitelli/three.js.git#dev",
+    "aframe": "git://github.com/jzitelli/aframe.git#dev"
   },
   "devDependencies": {
     "cannon": "git://github.com/jzitelli/cannon.js.git",
-    "yawvrb": "git://github.com/jzitelli/WebVRApp.git",
-    "aframe": "../aframe/"
+    "yawvrb": "git://github.com/jzitelli/WebVRApp.git"
   },
   "scripts": {
     "extractShaderLib": "node ./node_scripts/extractShaderLib.js",
