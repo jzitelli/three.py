@@ -1,4 +1,3 @@
-import logging
 import json
 
 from flask import Blueprint, Markup, render_template, request
@@ -10,8 +9,6 @@ from three import *
 
 
 blueprint = Blueprint(__name__, __name__)
-
-
 
 @blueprint.route('/%s' % __name__)
 def heightfield():
@@ -26,13 +23,13 @@ def heightfield():
                               rotation=[-0.33*np.pi, 0, 0],
                               position=[0, -20, -32],
                               cannonData={'mass': 0, 'shapes': ['Heightfield']}))
-    scene.add(Mesh(geometry=SphereBufferGeometry(radius=1),
+    scene.add(Mesh(geometry=SphereBufferGeometry(radius=2),
                    material=MeshPhongMaterial(color=0xffff00, shading=FlatShading),
-                   position=[0, 10, -45],
+                   position=[0, 14, -45],
                    cannonData={'mass': 1, 'shapes': ['Sphere']}))
-    scene.add(Mesh(geometry=BoxGeometry(width=1, height=1, depth=1),
+    scene.add(Mesh(geometry=BoxGeometry(width=2, height=2, depth=2),
                    material=MeshPhongMaterial(color=0xff00ff, shading=FlatShading),
-                   position=[4, 10, -45],
+                   position=[4, 13, -45],
                    cannonData={'mass': 1, 'shapes': ['Box']}))
     return render_template('template.html',
                            title='three.py  -  %s test' % __name__,

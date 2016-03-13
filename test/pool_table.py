@@ -3,20 +3,20 @@ three.js/Cannon.js pool table definition
 """
 import json
 
+import numpy as np
+
 from flask import Blueprint, Markup, render_template
 
 from flask_app import WebVRConfig, get_overlay_content
 
 from three import *
 
-import numpy as np
 
 
+blueprint = Blueprint(__name__, __name__)
 
-blueprint = Blueprint('pool_table', __name__)
-
-@blueprint.route('/pool_table')
-def _pool_table():
+@blueprint.route('/%s' % __name__)
+def pool_table():
     scene = pool_hall()
     scene.add(PointLight(intensity=0.5, position=[2, 4, -1]))
     return render_template('template.html',

@@ -30,11 +30,12 @@
   },
   "devDependencies": {
     "cannon": "git://github.com/jzitelli/cannon.js.git",
-    "yawvrb": "git://github.com/jzitelli/WebVRApp.git"
+    "yawvrb": "git://github.com/jzitelli/WebVRApp.git",
+    "aframe": "../aframe/"
   },
   "scripts": {
     "extractShaderLib": "node ./node_scripts/extractShaderLib.js",
     "postinstall": "cd ./node_modules/three/utils/build && python build.py --include common --include extras --output ../../build/three.js && cd ../../../.. && npm run extractShaderLib",
-    "test": "cd test && python flask_app.py --run-tests"
+    "test": "echo 'go to the test page (http://localhost:5000)' && cd test && python flask_app.py"
   }
 }

@@ -1,4 +1,3 @@
-import logging
 import json
 
 from flask import Blueprint, render_template, Markup
@@ -10,8 +9,6 @@ from three import *
 
 
 blueprint = Blueprint(__name__, __name__)
-
-
 
 @blueprint.route('/%s' % __name__)
 def textgeometry():

@@ -1,8 +1,7 @@
 import logging
-import os.path
 import json
+import os.path
 import sys
-import unittest
 
 from flask import Flask, render_template, Markup, request
 
@@ -26,6 +25,20 @@ PORT            = 5000
 STATIC_FOLDER   = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir))
 TEMPLATE_FOLDER = os.path.abspath(os.path.split(__file__)[0])
 
+def get_overlay_content():
+    return Markup(" <hr> ".join([r"<a href='/'>HOME</a>",
+                                 " <br> ".join(['<a href="%s">%s</a>' % (TEST_HREFS[name], name)
+                                                for name in TESTS])]))
+
+import layers
+import heightfield
+import cannon
+import pool_table
+import skybox
+import textgeometry
+import points
+import aframe
+
 TESTS = ['layers',
          'heightfield',
          'cannon',
@@ -38,19 +51,6 @@ TESTS = ['layers',
 TEST_HREFS = {name: href
               for name, href in [(name, '/%s' % name) for name in TESTS]}
 
-def get_overlay_content():
-    return Markup(" <hr> ".join([r"<a href='/'>HOME</a>",
-                                 " <br> ".join(['<a href="%s">%s</a>' % (TEST_HREFS[name], name)
-                                                for name in TESTS])]))
-
-import cannon
-import heightfield
-import layers
-import skybox
-import textgeometry
-import pool_table
-import points
-
 
 app = Flask(__name__,
             static_folder=STATIC_FOLDER,
@@ -58,8 +58,6 @@ app = Flask(__name__,
             template_folder=TEMPLATE_FOLDER)
 app.debug = DEBUG
 app.testing = True
-
-
 
 @app.route('/')
 def main_page():
@@ -90,7 +88,6 @@ var THREEPY_SCENE = %s;
 
 def main():
     _logger = logging.getLogger(__name__);
-    _logger.info("TESTS:\n%s" % '\n'.join(TESTS))
     app.register_blueprint(cannon.blueprint)
     app.register_blueprint(heightfield.blueprint)
     app.register_blueprint(layers.blueprint)
@@ -98,9 +95,10 @@ def main():
     app.register_blueprint(textgeometry.blueprint)
     app.register_blueprint(pool_table.blueprint)
     app.register_blueprint(points.blueprint)
-    _logger.info("app.config:\n%s" % '\n'.join(['%s: %s' % (k, str(v))
-                                                for k, v in sorted(app.config.items(),
-                                                                   key=lambda i: i[0])]))
+    app.register_blueprint(aframe.blueprint)
+    _logger.debug("app.config:\n%s" % '\n'.join(['%s: %s' % (k, str(v))
+                                                 for k, v in sorted(app.config.items(),
+                                                                    key=lambda i: i[0])]))
     _logger.info(r"""
             ------
         T H R E E . PY
@@ -112,11 +110,12 @@ STARTING FLASK APP!!!!!!!!!!!!!
         T H R E E . PY
             ------
 """)
+    _logger.info("\nTESTS:\n\n%s" % '\n'.join(TESTS))
     app.run(host='0.0.0.0')
 
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=(logging.DEBUG if ('-v' in sys.argv and app.debug) else logging.INFO),
                         format="%(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")
     main()

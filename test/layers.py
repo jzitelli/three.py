@@ -1,9 +1,6 @@
-import logging
 import json
 
 from flask import Blueprint, Markup, render_template
-
-from needle.cases import NeedleTestCase
 
 from flask_app import WebVRConfig, get_overlay_content
 
@@ -12,8 +9,6 @@ from three import *
 
 
 blueprint = Blueprint(__name__, __name__)
-
-
 
 @blueprint.route('/%s' % __name__)
 def layers():
@@ -38,10 +33,3 @@ var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
 </script>""" % (json.dumps(WebVRConfig, indent=2),
                 json.dumps(scene.export(), indent=2))))
-
-
-
-class LayersTest(NeedleTestCase):
-    def screenshot_test(self):
-        self.driver.get('127.0.0.1:5000/layers')
-        self.assertScreenshot('canvas', 'layers')

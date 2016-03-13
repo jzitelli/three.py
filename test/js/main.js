@@ -48,7 +48,6 @@ function isMobile() {
 
 function onLoad() {
     "use strict";
-
     var rS;
     if (URL_PARAMS.rstats) {
         rS = new rStats({CSSPath: 'rstats/'});
@@ -106,8 +105,7 @@ function onLoad() {
         return animate;
     };
 
-    THREE.py.parse(THREEPY_SCENE).then( function (scene) {
-
+    function onSceneReady(scene) {
         scene.add(avatar);
 
         app = new WebVRApp(scene, {
@@ -117,10 +115,10 @@ function onLoad() {
             }
         });
 
-        avatar.add(app.camera);
-
         app.camera.layers.enable(1);
         app.camera.layers.enable(2);
+
+        avatar.add(app.camera);
 
         THREE.py.CANNONize(scene, world);
 
@@ -138,7 +136,13 @@ function onLoad() {
         }
 
         requestAnimationFrame(animate());
+    }
 
-    } );
-
+    if (window.THREEPY_SCENE) {
+        THREE.py.parse(window.THREEPY_SCENE).then( function (scene) {
+            onSceneReady(scene);
+        } );
+    } else {
+        onSceneReady(new THREE.Scene());
+    }
 }
