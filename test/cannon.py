@@ -11,11 +11,11 @@ from three import *
 
 
 
-blueprint = Blueprint('cannon', __name__)
+blueprint = Blueprint(__name__, __name__)
 
 
 
-@blueprint.route('/cannon')
+@blueprint.route('/%s' % __name__)
 def cannon():
     scene = Scene()
     scene.add(PointLight(color=0xffffff, intensity=1, distance=100,

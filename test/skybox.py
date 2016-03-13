@@ -11,11 +11,11 @@ from three import *
 
 
 
-blueprint = Blueprint('skybox', __name__)
+blueprint = Blueprint(__name__, __name__)
 
 
 
-@blueprint.route('/skybox')
+@blueprint.route('/%s' % __name__)
 def skybox():
     scene = Scene()
     scene.add(Skybox(cube_images=['test/images/%s.png' % side
