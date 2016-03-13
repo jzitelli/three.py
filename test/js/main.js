@@ -83,7 +83,7 @@ function onLoad() {
 
             app.render();
 
-            world.step(Math.min(dt, 1/60), dt, 10);
+            world.step(Math.min(dt, 1/60), dt, 20);
 
             for (var i = 0; i < world.bodies.length; i++) {
                 var body = world.bodies[i];
