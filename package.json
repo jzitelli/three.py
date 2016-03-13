@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "cannon": "git://github.com/jzitelli/cannon.js.git",
-    "webvrapp": "git://github.com/jzitelli/WebVRApp.git"
+    "yawvrb": "git://github.com/jzitelli/WebVRApp.git"
   },
   "scripts": {
     "extractShaderLib": "node ./node_scripts/extractShaderLib.js",

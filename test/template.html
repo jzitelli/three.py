@@ -27,9 +27,14 @@
       }
       .overlay {
         position: fixed;
+        padding: 2vh;
         left: 2vh;
         top: 2vh;
-        background: rgba(200, 20, 20, 0.6);
+        background: rgba(80, 8, 2, 0.8);
+      }
+      a {
+        color: #efee00;
+        text-decoration: none;
       }
     </style>
 
@@ -43,7 +48,13 @@
 
     <canvas id='webgl-canvas'></canvas>
 
-    <div class=overlay>{{ overlay_content if overlay_content else '' }}</div>
+    {% if overlay_content %}
+<div class=overlay>
+
+{{overlay_content}}
+
+</div>
+    {% endif %}
 
     <script src="node_modules/three/build/three.js"></script>
 
@@ -56,12 +67,10 @@
 
     <script src="rstats/rStats.js"></script>
 
+    <script src="node_modules/yawvrb/WebVRApp.js"></script>
+
     <script src="js/three.py.js"></script>
     <script src="js/CANNONize.js"></script>
-
-    <script src="node_modules/webvrapp/WebVRApp.js"></script>
-
-    <script src="test/js/utils.js"></script>
 
     <script src="test/js/main.js"></script>
 

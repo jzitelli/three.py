@@ -27,12 +27,36 @@ PORT            = 5000
 STATIC_FOLDER   = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir))
 TEMPLATE_FOLDER = os.path.abspath(os.path.split(__file__)[0])
 
+test_hrefs = {name: href
+              for name, href in [(name, '/%s' % name)
+                                 for name in ['layers',
+                                              'heightfield',
+                                              'cannon',
+                                              'pool_table',
+                                              'skybox',
+                                              'textgeometry']]}
+
+def get_overlay_content():
+    return Markup(" <br> ".join(['<a href="%s">%s</a>' % (href, name)
+                                 for name, href in test_hrefs.items()]))
+
 import cannon
 import heightfield
 import layers
 import skybox
 import textgeometry
 import pool_table
+
+
+
+app = Flask(__name__,
+            static_folder=STATIC_FOLDER,
+            static_url_path='',
+            template_folder=TEMPLATE_FOLDER)
+app.debug = DEBUG
+app.testing = True
+
+
 
 def index_scene():
     scene = Scene()
@@ -55,15 +79,6 @@ def index_scene():
 
 
 
-app = Flask(__name__,
-            static_folder=STATIC_FOLDER,
-            static_url_path='',
-            template_folder=TEMPLATE_FOLDER)
-app.debug = DEBUG
-app.testing = True
-
-
-
 @app.route('/')
 def index():
     scene = index_scene()
@@ -71,8 +86,8 @@ def index():
                            json_config=Markup("""<script>
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
-</script>""" % (json.dumps(WebVRConfig, indent=2),
-                json.dumps(scene.export(), indent=2))))
+</script>""" % (json.dumps(WebVRConfig, indent=2), json.dumps(scene.export()))),
+                           overlay_content=get_overlay_content())
 
 
 
@@ -103,6 +118,6 @@ STARTING FLASK APP!!!!!!!!!!!!!
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=(logging.DEBUG if DEBUG else logging.IFNO),
                         format="%(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")
     main()

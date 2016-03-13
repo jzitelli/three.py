@@ -5,7 +5,7 @@ import json
 
 from flask import Blueprint, Markup, render_template
 
-from flask_app import WebVRConfig
+from flask_app import WebVRConfig, get_overlay_content
 
 from three import *
 
@@ -20,6 +20,7 @@ def _pool_table():
     scene = pool_hall()
     scene.add(PointLight(intensity=0.5, position=[2, 4, -1]))
     return render_template('template.html',
+                           overlay_content=get_overlay_content(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;

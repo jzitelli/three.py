@@ -5,7 +5,7 @@ from flask import Blueprint, Markup, render_template
 
 from needle.cases import NeedleTestCase
 
-from flask_app import WebVRConfig
+from flask_app import WebVRConfig, get_overlay_content
 
 from three import *
 
@@ -31,6 +31,7 @@ def layers():
                    position=[1.6, 0, -3],
                    layers=[2]))
     return render_template('template.html',
+                           overlay_content=get_overlay_content(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
@@ -40,6 +41,6 @@ var THREEPY_SCENE = %s;
 
 
 class LayersTest(NeedleTestCase):
-    def test_screenshot(self):
+    def screenshot_test(self):
         self.driver.get('127.0.0.1:5000/layers')
         self.assertScreenshot('canvas', 'layers')

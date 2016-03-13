@@ -5,7 +5,7 @@ from flask import Blueprint, Markup, render_template
 
 from needle.cases import NeedleTestCase
 
-from flask_app import WebVRConfig
+from flask_app import WebVRConfig, get_overlay_content
 
 from three import *
 
@@ -38,6 +38,7 @@ def cannon():
                    rotation=[-np.pi/2, 0, 0],
                    cannonData={'mass': 0, 'shapes': ['Plane']}))
     return render_template('template.html',
+                           overlay_content=get_overlay_content(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;

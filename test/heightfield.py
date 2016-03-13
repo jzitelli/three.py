@@ -5,7 +5,7 @@ from flask import Blueprint, Markup, render_template
 
 from needle.cases import NeedleTestCase
 
-from flask_app import WebVRConfig
+from flask_app import WebVRConfig, get_overlay_content
 
 from three import *
 
@@ -36,6 +36,7 @@ def heightfield():
                    position=[4, 10, -45],
                    cannonData={'mass': 1, 'shapes': ['Box']}))
     return render_template('template.html',
+                           overlay_content=get_overlay_content(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
