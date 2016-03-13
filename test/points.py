@@ -18,14 +18,14 @@ def points():
     scene.add(Points(geometry=geometry,
                      material=PointsMaterial(color=0xffff00, size=0.06),
                      position=position))
-    scene.add(PointLight(color=0xeeffff, intensity=0.4, distance=4,
+    scene.add(PointLight(color=0xeeffff, intensity=1, distance=4,
                          position=[position[0], position[1] + 1, position[2] + 0.2]))
-    scene.add(PointLight(color=0xffaaaa, intensity=0.4, distance=4,
+    scene.add(PointLight(color=0xffaaaa, intensity=1, distance=4,
                          position=[position[0] + 1, position[1], position[2]]))
     scene.add(Mesh(geometry=geometry,
                    material=MeshPhongMaterial(color=0x999987, shininess=70, shading=FlatShading, side=BackSide),
                    position=position,
-                   scale=[1.02, 1.02, 1.04]))
+                   scale=[1.01, 1.03, 1.01]))
     return render_template('template.html',
                            title='three.py  -  %s test' % __name__,
                            overlay_content=get_overlay_content(),
