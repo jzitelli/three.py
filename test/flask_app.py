@@ -22,10 +22,12 @@ STATIC_FOLDER   = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.pa
 TEMPLATE_FOLDER = os.path.abspath(os.path.split(__file__)[0])
 
 def get_test_link_table():
-    return Markup(r"""<table>
-{trs}
-</table>""".format(trs='\n'.join(["<tr>{tds}</tr>".format(tds="<td><a class=button href='{1}'>{0}</a></td> <td><a class=button href='{2}'>(with desk)</a></td>".format(name, href, href+'?model=test/models/vrDesk.json'))
-                                  for name, href in [(test, TEST_HREFS[test]) for test in TESTS]])))
+    return Markup(r"""
+<table>
+%s
+</table>
+""" % '\n'.join(["<tr> <td><a class=button href='{1}'>{0}</a></td>  <td><a class=button href='{2}'>(with desk)</a></td> </tr>".format(name, href, href+'?model=test/models/vrDesk.json')
+                 for name, href in [('HOME', '/')] + [(test, TEST_HREFS[test]) for test in TESTS]]))
 
 def get_overlay_content():
     return Markup(r"""
@@ -47,8 +49,7 @@ TESTS = ['layers',
          'pool_table',
          'skybox',
          'textgeometry',
-         'points',
-         'aframe']
+         'points']
 
 TEST_HREFS = {name: href
               for name, href in [(name, '/%s' % name) for name in TESTS]}
@@ -111,12 +112,11 @@ STARTING FLASK APP!!!!!!!!!!!!!
         T H R E E . PY
             ------
 """)
-    _logger.info("\nTESTS:\n\n%s" % '\n'.join(TESTS))
     app.run(host='0.0.0.0')
 
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=(logging.DEBUG if ('-v' in sys.argv and app.debug) else logging.INFO),
+    logging.basicConfig(level=(logging.DEBUG if app.debug else logging.INFO),
                         format="%(levelname)s %(name)s %(funcName)s %(lineno)d:  %(message)s")
     main()
