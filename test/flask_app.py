@@ -2,6 +2,7 @@ import logging
 import json
 import os.path
 import sys
+import imp
 
 from flask import Flask, render_template, Markup, request
 
@@ -27,32 +28,38 @@ def get_test_link_table():
 %s
 </table>
 """ % '\n'.join(["<tr> <td><a class=button href='{1}'>{0}</a></td>  <td><a class=button href='{2}'>(with desk)</a></td> </tr>".format(name, href, href+'?model=test/models/vrDesk.json')
-                 for name, href in [('HOME', '/')] + [(test, TEST_HREFS[test]) for test in TESTS]]))
+                 for name, href in [(test, TEST_HREFS[test]) for test in TESTS]]))
 
 def get_overlay_content():
     return Markup(r"""
+<a class=button href="/">HOME</a> | <a class=button href="/?model=test/models/vrDesk.json">(with desk)</a>
+<hr>
 <h2>Tests:</h2>
 """) + get_test_link_table()
 
-import layers
-import heightfield
-import cannon
-import pool_table
-import skybox
-import textgeometry
-import points
-import aframe
 
-TESTS = ['layers',
-         'heightfield',
-         'cannon',
-         'pool_table',
-         'skybox',
-         'textgeometry',
-         'points']
 
+TESTS = []
+TESTS_MODULES = {}
+for test in ['layers',
+             'heightfield',
+             'cannon',
+             'pool_table',
+             'skybox',
+             'textgeometry',
+             'points',
+             'points_billboards']:
+    try:
+        triple = imp.find_module(test, [os.path.abspath(os.path.split(__file__)[0])])
+        module = imp.load_module(test, *triple)
+        TESTS.append(test)
+        TESTS_MODULES[test] = module
+    except ImportError as err:
+        _logger.error(err)
 TEST_HREFS = {name: href
               for name, href in [(name, '/%s' % name) for name in TESTS]}
+
+
 
 app = Flask(__name__,
             static_folder=STATIC_FOLDER,
@@ -90,14 +97,8 @@ var THREEPY_SCENE = %s;
 
 def main():
     _logger = logging.getLogger(__name__);
-    app.register_blueprint(cannon.blueprint)
-    app.register_blueprint(heightfield.blueprint)
-    app.register_blueprint(layers.blueprint)
-    app.register_blueprint(skybox.blueprint)
-    app.register_blueprint(textgeometry.blueprint)
-    app.register_blueprint(pool_table.blueprint)
-    app.register_blueprint(points.blueprint)
-    app.register_blueprint(aframe.blueprint)
+    for module in TESTS_MODULES.values():
+        app.register_blueprint(getattr(module, 'blueprint'))
     _logger.debug("app.config:\n%s" % '\n'.join(['%s: %s' % (k, str(v))
                                                  for k, v in sorted(app.config.items(),
                                                                     key=lambda i: i[0])]))
