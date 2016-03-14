@@ -28,6 +28,10 @@ class MeshPhongMaterial(Material):
     pass
 
 
+class MeshStandardMaterial(Material):
+    pass
+
+
 class PointsMaterial(Material):
     pass
 

@@ -48,6 +48,19 @@ function isMobile() {
 
 function onLoad() {
     "use strict";
+    var testLinks = document.getElementsByClassName('testLink');
+
+    var deskCheckbox = document.getElementById('deskCheckbox');
+    deskCheckbox.addEventListener('change', function () {
+        var append = "?model=test/models/vrDesk.json";
+        var checked = deskCheckbox.checked;
+        for (var i = 0; i < testLinks.length; i++) {
+            var testLink = testLinks[i];
+            if (checked) testLink.href = testLink.href + append;
+            else testLink.href = testLink.href.slice(0, -append.length);
+        }
+    }, false);
+
     var rS;
     if (URL_PARAMS.rstats) {
         rS = new rStats({CSSPath: 'rstats/'});
@@ -108,6 +121,19 @@ function onLoad() {
     function onSceneReady(scene) {
         scene.add(avatar);
 
+        if (URL_PARAMS.model) {
+            var url = URL_PARAMS.model;
+            var objectLoader = new THREE.ObjectLoader();
+            objectLoader.load(url, function (object) {
+                object.scale.set(0.01, 0.01, 0.01);
+                object.position.z -= 1.41;
+                object.position.y = avatar.position.y - 0.73;
+                scene.add(object);
+            }, undefined, function (error) {
+                console.error(url + ' could not be loaded: ' + JSON.stringify(error, undefined, 2));
+            });
+        }
+
         app = new WebVRApp(scene, {
             rendererOptions: {
                 canvas: document.getElementById('webgl-canvas'),
@@ -115,25 +141,27 @@ function onLoad() {
             }
         });
 
+        var shadowMapCheckbox = document.getElementById('shadowMapCheckbox');
+        shadowMapCheckbox.addEventListener('change', function () {
+            app.renderer.shadowMap.enabled = shadowMapCheckbox.checked;
+            if (app.renderer.shadowMap.enabled) {
+                app.renderer.shadowMap.needsUpdate = true;
+            }
+        }, false);
+
+        if (shadowMapCheckbox.checked) {
+            if (!app.renderer.shadowMap.enabled) {
+                app.renderer.shadowMap.enabled = true;
+                app.renderer.shadowMap.needsUpdate = true;
+            }
+        }
+
         app.camera.layers.enable(1);
         app.camera.layers.enable(2);
 
         avatar.add(app.camera);
 
         THREE.py.CANNONize(scene, world);
-
-        if (URL_PARAMS.model) {
-            var url = URL_PARAMS.model
-            var objectLoader = new THREE.ObjectLoader();
-            objectLoader.load(url, function (object) {
-                object.scale.set(0.01, 0.01, 0.01);
-                object.position.z -= 1.41;
-                object.position.y = avatar.position.y - 0.73;
-                scene.add(object);
-            }, undefined, function (err) {
-                console.error(url + ' could not be loaded: ' + JSON.stringify(err, undefined, 2));
-            });
-        }
 
         requestAnimationFrame(animate());
     }

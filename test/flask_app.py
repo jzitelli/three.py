@@ -27,15 +27,20 @@ def get_test_link_table():
 <table>
 %s
 </table>
-""" % '\n'.join(["<tr> <td><a class=button href='{1}'>{0}</a></td>  <td><a class=button href='{2}'>(with desk)</a></td> </tr>".format(name, href, href+'?model=test/models/vrDesk.json')
+""" % '\n'.join(["<tr> <td><a class='testLink' href='{1}'>{0}</a></td> </tr>".format(name, href)
                  for name, href in [(test, TEST_HREFS[test]) for test in TESTS]]))
 
 def get_overlay_content():
     return Markup(r"""
-<a class=button href="/">HOME</a> | <a class=button href="/?model=test/models/vrDesk.json">(with desk)</a>
+<a class='testLink' href="/">HOME</a>
 <hr>
 <h2>Tests:</h2>
-""") + get_test_link_table()
+""") + get_test_link_table() + Markup(r"""
+<hr>
+<h2>Options:</h2>
+<label style='color: #aaee77; padding: 1vh;'>shadow maps<input id="shadowMapCheckbox" type="checkbox"/></label>
+<label style='color: #aaee77; padding: 1vh;'>desk<input id="deskCheckbox" type="checkbox"/></label>
+""")
 
 
 
@@ -48,7 +53,8 @@ for test in ['layers',
              'skybox',
              'textgeometry',
              'points',
-             'points_billboards']:
+             'points_billboards',
+             'materials']:
     try:
         triple = imp.find_module(test, [os.path.abspath(os.path.split(__file__)[0])])
         module = imp.load_module(test, *triple)
