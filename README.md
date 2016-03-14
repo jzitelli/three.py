@@ -9,14 +9,12 @@ The Python package `three` defines classes mirroring those in three.js.  They ca
 ## Acknowledgements
 
 JavaScript libraries:
-  - [three.js](http://threejs.org)
-  - [Cannon.js](http://www.cannonjs.org)
-  - [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate)
+  - [three.js](https://github.com/mrdoob/three.js)
+  - [Cannon.js](https://github.com/schteppe/cannon.js)
+  - [WebVR-Polyfill](https://github.com/borismus/webvr-polyfill)
   - [rStats](https://github.com/spite/rstats)
 
 Python packages:
   - [Flask](http://flask.pocoo.org/)
   - [NumPy](http://www.numpy.org)
   - [SciPy](http://www.scipy.org)
-  - nose
-  - [Needle](https://github.com/bfirsh/needle)
