@@ -28,7 +28,7 @@ TEMPLATE_FOLDER = os.path.abspath(os.path.split(__file__)[0])
 def get_overlay_content():
     return Markup(r"""<table>
 {trs}
-</table>""".format(trs='\n'.join(["<tr>{tds}</tr>".format(tds="<td><a href='{1}'>{0}</a></td> <td><a href='{2}'>(with desk)</a></td>".format(href, name, href+'?model=test/models/vrDesk.json'))
+</table>""".format(trs='\n'.join(["<tr>{tds}</tr>".format(tds="<td><a class=button href='{1}'>{0}</a></td> <td><a class=button href='{2}'>(with desk)</a></td>".format(name, href, href+'?model=test/models/vrDesk.json'))
                                   for name, href in [(test, TEST_HREFS[test]) for test in TESTS]])))
 
 import layers
