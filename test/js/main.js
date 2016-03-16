@@ -144,8 +144,8 @@ function onLoad() {
         var shadowMapCheckbox = document.getElementById('shadowMapCheckbox');
         shadowMapCheckbox.addEventListener('change', function () {
             app.renderer.shadowMap.enabled = shadowMapCheckbox.checked;
-            if (app.renderer.shadowMap.enabled) {
-                app.renderer.shadowMap.needsUpdate = true;
+            if (window.confirm('This change requires a page reload to take effect - reload now?')) {
+                document.location.reload();
             }
         }, false);
 
