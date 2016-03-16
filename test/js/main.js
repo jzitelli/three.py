@@ -152,7 +152,6 @@ function onLoad() {
         if (shadowMapCheckbox.checked) {
             if (!app.renderer.shadowMap.enabled) {
                 app.renderer.shadowMap.enabled = true;
-                app.renderer.shadowMap.needsUpdate = true;
             }
         }
 

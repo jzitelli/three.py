@@ -54,7 +54,8 @@ for test in ['layers',
              'textgeometry',
              'points',
              'points_billboards',
-             'materials']:
+             'materials',
+             'lights']:
     try:
         triple = imp.find_module(test, [os.path.abspath(os.path.split(__file__)[0])])
         module = imp.load_module(test, *triple)
