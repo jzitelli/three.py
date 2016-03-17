@@ -61,6 +61,18 @@ function onLoad() {
         }
     }, false);
 
+    var shadowMapEnabled = (localStorage.getItem('shadowMapEnabled') === 'true');
+    var shadowMapCheckbox = document.getElementById('shadowMapCheckbox');
+    if (shadowMapEnabled) {
+        shadowMapCheckbox.checked = true;
+    }
+    shadowMapCheckbox.addEventListener('change', function () {
+        localStorage.setItem('shadowMapEnabled', shadowMapCheckbox.checked);
+        if (window.confirm('This change requires a page reload to take effect - reload now?')) {
+            document.location.reload();
+        }
+    }, false);
+
     var rS;
     if (URL_PARAMS.rstats) {
         rS = new rStats({CSSPath: 'rstats/'});
@@ -118,6 +130,20 @@ function onLoad() {
         return animate;
     };
 
+    if (window.THREEPY_SCENE) {
+
+        THREE.py.parse(window.THREEPY_SCENE).then( function (scene) {
+
+            onSceneReady(scene);
+
+        } );
+
+    } else {
+
+        onSceneReady(new THREE.Scene());
+
+    }
+
     function onSceneReady(scene) {
         scene.add(avatar);
 
@@ -135,24 +161,11 @@ function onLoad() {
         }
 
         app = new WebVRApp(scene, {
-            rendererOptions: {
-                canvas: document.getElementById('webgl-canvas'),
-                antialias: !isMobile()
-            }
+            useShadowMap: shadowMapCheckbox.checked
+        }, {
+            canvas: document.getElementById('webgl-canvas'),
+            antialias: !isMobile()
         });
-
-        var shadowMapEnabled = (localStorage.getItem('shadowMapEnabled') === 'true');
-        var shadowMapCheckbox = document.getElementById('shadowMapCheckbox');
-        shadowMapCheckbox.addEventListener('change', function () {
-            localStorage.setItem('shadowMapEnabled', shadowMapCheckbox.checked);
-            if (window.confirm('This change requires a page reload to take effect - reload now?')) {
-                document.location.reload();
-            }
-        }, false);
-        if (shadowMapEnabled) {
-            shadowMapCheckbox.checked = true;
-            app.renderer.shadowMap.enabled = true;
-        }
 
         app.camera.layers.enable(1);
         app.camera.layers.enable(2);
@@ -164,11 +177,4 @@ function onLoad() {
         requestAnimationFrame(animate());
     }
 
-    if (window.THREEPY_SCENE) {
-        THREE.py.parse(window.THREEPY_SCENE).then( function (scene) {
-            onSceneReady(scene);
-        } );
-    } else {
-        onSceneReady(new THREE.Scene());
-    }
 }
