@@ -141,18 +141,17 @@ function onLoad() {
             }
         });
 
+        var shadowMapEnabled = (localStorage.getItem('shadowMapEnabled') === 'true');
         var shadowMapCheckbox = document.getElementById('shadowMapCheckbox');
         shadowMapCheckbox.addEventListener('change', function () {
-            app.renderer.shadowMap.enabled = shadowMapCheckbox.checked;
+            localStorage.setItem('shadowMapEnabled', shadowMapCheckbox.checked);
             if (window.confirm('This change requires a page reload to take effect - reload now?')) {
                 document.location.reload();
             }
         }, false);
-
-        if (shadowMapCheckbox.checked) {
-            if (!app.renderer.shadowMap.enabled) {
-                app.renderer.shadowMap.enabled = true;
-            }
+        if (shadowMapEnabled) {
+            shadowMapCheckbox.checked = true;
+            app.renderer.shadowMap.enabled = true;
         }
 
         app.camera.layers.enable(1);

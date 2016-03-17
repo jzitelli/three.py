@@ -13,24 +13,29 @@ blueprint = Blueprint(__name__, __name__)
 @blueprint.route('/%s' % __name__)
 def cannon():
     scene = Scene()
-    scene.add(PointLight(color=0xffffff, intensity=1, distance=100,
-                         position=[-2, 20, 4]))
+    scene.add(DirectionalLight(color=0xffffff, castShadow=True,
+                               userData={'shadowCamera': {'left': -7, 'right': 7, 'top': 7, 'bottom': -7}},
+                               position=[4, 20, 3]))
     scene.add(Mesh(geometry=SphereBufferGeometry(radius=0.25),
                    material=MeshPhongMaterial(color=0xff0000, shading=FlatShading),
                    cannonData={'mass': 1, 'shapes': ['Sphere']},
-                   position=[0, 4, -4]))
+                   castShadow=True,
+                   position=[0, 4, -2]))
     scene.add(Mesh(geometry=BoxBufferGeometry(width=1, height=1, depth=1),
                    material=MeshPhongMaterial(color=0x00ff00, shading=FlatShading),
                    cannonData={'mass': 1, 'shapes': ['Box']},
-                   position=[-2, 4, -4]))
+                   castShadow=True,
+                   position=[-2, 4, -3]))
     scene.add(Mesh(geometry=CylinderGeometry(radiusTop=0.5, radiusBottom=0.5, height=1, radialSegments=8),
                    material=MeshPhongMaterial(color=0x0000ff, shading=FlatShading),
-                   position=[2, 8, -6],
-                   cannonData={'mass': 1, 'shapes': ['Cylinder']}))
+                   castShadow=True,
+                   cannonData={'mass': 1, 'shapes': ['Cylinder']},
+                   position=[2, 8, -4]))
     scene.add(Mesh(geometry=PlaneBufferGeometry(width=8, height=8),
-                   material=MeshBasicMaterial(color=0x5555ff),
+                   material=MeshLambertMaterial(color=0x5555ff),
                    position=[0, -1, -4],
-                   rotation=[-np.pi/2, 0, 0],
+                   rotation=[-0.5*np.pi, 0, 0],
+                   receiveShadow=True,
                    cannonData={'mass': 0, 'shapes': ['Plane']}))
     return render_template('template.html',
                            title='three.py  -  %s test' % __name__,

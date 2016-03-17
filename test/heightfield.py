@@ -15,25 +15,25 @@ def heightfield():
     url = request.args.get('url', 'images/terrain128.png')
     heightfieldImage = Image(url=url)
     scene = Scene()
-    scene.add(DirectionalLight(color=0xef965f,
-                               intensity=0.7,
-                               position=[23, 100, 56],
-                               castShadow=True))
+    scene.add(DirectionalLight(color=0xffffff,
+                               position=[8, 24, 4],
+                               castShadow=True,
+                               userData={'shadowCamera': {'left': -16, 'right': 16, 'top': 16, 'bottom': -16}}))
     scene.add(HeightfieldMesh(heightfieldImage=heightfieldImage,
                               heightfieldScale=32,
                               material=MeshLambertMaterial(color=0x8b6545),
                               rotation=[-0.33*np.pi, 0, 0],
-                              position=[0, -20, -32],
+                              position=[0, -18, 0],
                               cannonData={'mass': 0, 'shapes': ['Heightfield']},
                               receiveShadow=True))
-    scene.add(Mesh(geometry=SphereBufferGeometry(radius=4.5),
+    scene.add(Mesh(geometry=SphereBufferGeometry(radius=2),
                    material=MeshPhongMaterial(color=0xffff00, shading=FlatShading),
-                   position=[0, 14, -45],
+                   position=[0, 20, -14],
                    cannonData={'mass': 1, 'shapes': ['Sphere']},
                    castShadow=True))
-    scene.add(Mesh(geometry=BoxBufferGeometry(width=4, height=4, depth=5),
+    scene.add(Mesh(geometry=BoxBufferGeometry(width=2, height=2, depth=2),
                    material=MeshPhongMaterial(color=0xff00ff, shading=FlatShading),
-                   position=[4, 13, -45],
+                   position=[4, 20, -14],
                    cannonData={'mass': 1, 'shapes': ['Box']},
                    castShadow=True))
     return render_template('template.html',
