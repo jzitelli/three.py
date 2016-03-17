@@ -34,6 +34,7 @@
   },
   "scripts": {
     "extractShaderLib": "node ./node_scripts/extractShaderLib.js",
+    "postinstall": "npm run extractShaderLib",
     "test": "echo 'go to the test page (http://localhost:5000)' && cd test && python flask_app.py"
   }
 }
