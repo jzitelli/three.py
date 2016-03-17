@@ -88,8 +88,6 @@ THREE.py = ( function () {
                 function onLoadB(obj) {
                     obj.traverse( function (node) {
 
-                        node.updateMatrix();
-
                         if (node.userData) {
                             if (node.userData.layers) {
                                 node.userData.layers.forEach( function (channel) {
@@ -104,7 +102,24 @@ THREE.py = ( function () {
                             if (node.material.shading === THREE.FlatShading) {
                                 node.geometry.computeFaceNormals();
                             }
+                        } else if (node instanceof THREE.DirectionalLight || node instanceof THREE.SpotLight) {
+                            // set target / shadow parameters if they are specified via userData
+                            if (node.userData) {
+                                if (node.userData.shadowCamera) {
+                                    var shadowCamera = node.userData.shadowCamera;
+                                    for (var k in shadowCamera) {
+                                        node.shadow.camera[k] = shadowCamera[k];
+                                    }
+                                    node.shadow.camera.updateProjectionMatrix();
+                                }
+                                if (node.userData.targetPosition) {
+                                    node.target.position.fromArray(node.userData.targetPosition);
+                                    node.target.updateMatrix();
+                                }
+                            }
                         }
+
+                        node.updateMatrix();
 
                     } );
 
