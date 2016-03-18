@@ -1,5 +1,28 @@
 from . import *
 
+from execjs import get
+
+runtime = execjs.get('Node')
+context = runtime.compile('''
+    module.paths.push('%s');
+    var THREE = require('three');
+
+    function getGeometryAttribute(type, attribute) {
+        var params = Array.apply(null, arguments).slice(1);
+        params[0] = null;
+        var geom = new ( Function.prototype.bind.apply(THREE[type], params) );
+        return geom.getAttribute(attribute).array;
+    }
+
+    function getGeometryIndex(type) {
+        var params = Array.apply(null, arguments).slice(1);
+        params[0] = null;
+        var geom = new ( Function.prototype.bind.apply(THREE[type], params) );
+        return geom.getIndex().array;
+    }
+''' % os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'node_modules')))
+
+
 class BufferGeometry(Three):
     def __init__(self, name=None, vertices=None, indices=None, normals=None, uvs=None):
         Three.__init__(self, name)
