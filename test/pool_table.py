@@ -217,6 +217,51 @@ def pool_table(L_table=2.3368, W_table=None, H_table=0.74295,
     return poolTable
 
 
+def billiard_balls(ball_diameter):
+    """
+    """
+    ball_colors = []
+    ball_colors.append(0xddddde); white  = ball_colors[-1]
+    ball_colors.append(0xeeee00); yellow = ball_colors[-1]
+    ball_colors.append(0x0000ee); blue   = ball_colors[-1]
+    ball_colors.append(0xee0000); red    = ball_colors[-1]
+    ball_colors.append(0xee00ee); purple = ball_colors[-1]
+    ball_colors.append(0xee7700); orange = ball_colors[-1]
+    ball_colors.append(0x00ee00); green  = ball_colors[-1]
+    ball_colors.append(0xbb2244); maroon = ball_colors[-1]
+    ball_colors.append(0x111111); black  = ball_colors[-1]
+    ball_colors = ball_colors + ball_colors[1:-1]
+    num_balls = len(ball_colors)
+    ball_radius = ball_diameter / 2
+    sphere = SphereBufferGeometry(radius=ball_radius,
+                                  widthSegments=16,
+                                  heightSegments=12)
+    stripeGeom = SphereBufferGeometry(radius=1.012*ball_radius,
+                                      widthSegments=16,
+                                      heightSegments=8,
+                                      thetaStart=np.pi/3,
+                                      thetaLength=np.pi/3)
+    ball_materials = [MeshPhongMaterial(name='ballMaterial %d' % i,
+                                        color=color,
+                                        shading=SmoothShading)
+                      for i, color in enumerate(ball_colors)]
+    ballData = {'cannonData': {'mass': 0.17, 'shapes': ['Sphere'],
+                               'linearDamping': 0.25, 'angularDamping': 0.32}}
+    ballMeshes = []
+    for i, material in enumerate(ball_materials[:9] + 7*[ball_materials[0]]):
+        ballMesh = Mesh(name="ballMesh %d" % i,
+                        geometry=sphere,
+                        material=material,
+                        userData=ballData,
+                        castShadow=True)
+        if i > 8:
+            stripeMesh = Mesh(name="ballStripeMesh %d" % i,
+                              material=ball_materials[i-8],
+                              geometry=stripeGeom)
+            ballMesh.add(stripeMesh)
+        ballMeshes.append(ballMesh)
+    return ballMeshes
+
 
 def pool_hall(useSkybox=False,
               L_table=2.3368,
@@ -248,41 +293,11 @@ def pool_hall(useSkybox=False,
                            **kwargs)
     scene.add(poolTable)
 
-    # balls:
-    ball_colors = []
-    ball_colors.append(0xddddde); white  = ball_colors[-1]
-    ball_colors.append(0xeeee00); yellow = ball_colors[-1]
-    ball_colors.append(0x0000ee); blue   = ball_colors[-1]
-    ball_colors.append(0xee0000); red    = ball_colors[-1]
-    ball_colors.append(0xee00ee); purple = ball_colors[-1]
-    ball_colors.append(0xee7700); orange = ball_colors[-1]
-    ball_colors.append(0x00ee00); green  = ball_colors[-1]
-    ball_colors.append(0xbb2244); maroon = ball_colors[-1]
-    ball_colors.append(0x111111); black  = ball_colors[-1]
-    ball_colors = ball_colors + ball_colors[1:-1]
-
-    num_balls = len(ball_colors)
-    ball_radius = ball_diameter / 2
-    sphere = SphereBufferGeometry(radius=ball_radius,
-                                  widthSegments=16,
-                                  heightSegments=12)
-    stripeGeom = SphereBufferGeometry(radius=1.012*ball_radius,
-                                      widthSegments=16,
-                                      heightSegments=8,
-                                      thetaStart=np.pi/3,
-                                      thetaLength=np.pi/3)
-
-    ball_materials = [MeshPhongMaterial(name='ballMaterial %d' % i,
-                                        color=color,
-                                        shading=SmoothShading)
-                      for i, color in enumerate(ball_colors)]
-
-    ballData = {'cannonData': {'mass': 0.17, 'shapes': ['Sphere'],
-                               'linearDamping': 0.25, 'angularDamping': 0.32}}
-
-    y_position = H_table + ball_radius + 0.0001 # epsilon distance which the ball will fall from initial position
+    ballMeshes = billiard_balls(ball_diameter)
 
     # triangle racked:
+    ball_radius = ball_diameter / 2
+    y_position = H_table + ball_radius + 0.0001 # epsilon distance which the ball will fall from initial position
     d = 0.04*ball_radius # separation between racked balls
     side_length = 4 * (ball_diameter + d)
     x_positions = np.concatenate([np.linspace(0,                        0.5 * side_length,                         5),
@@ -302,18 +317,8 @@ def pool_hall(useSkybox=False,
     x_positions = [0] + list(x_positions)
     z_positions = [L_table / 4] + list(z_positions)
 
-    for i, material in enumerate(ball_materials[:9] + 7*[ball_materials[0]]):
-        ballMesh = Mesh(name="ballMesh %d" % i,
-                        geometry=sphere,
-                        position=[x_positions[i], y_position, z_positions[i]],
-                        material=material,
-                        userData=ballData,
-                        castShadow=True)
+    for i, ballMesh in enumerate(ballMeshes):
+        ballMesh.position[:] = [x_positions[i], y_position, z_positions[i]]
         scene.add(ballMesh)
-        if i > 8:
-            stripeMesh = Mesh(name="ballStripeMesh %d" % i,
-                              material=ball_materials[i-8],
-                              geometry=stripeGeom)
-            ballMesh.add(stripeMesh)
 
     return scene

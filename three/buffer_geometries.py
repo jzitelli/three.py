@@ -1,6 +1,8 @@
 from . import *
 
-from execjs import get
+import os.path
+
+import execjs
 
 runtime = execjs.get('Node')
 context = runtime.compile('''
@@ -15,7 +17,7 @@ context = runtime.compile('''
     }
 
     function getGeometryIndex(type) {
-        var params = Array.apply(null, arguments).slice(1);
+        var params = Array.apply(null, arguments);
         params[0] = null;
         var geom = new ( Function.prototype.bind.apply(THREE[type], params) );
         return geom.getIndex().array;
@@ -36,7 +38,7 @@ class BufferGeometry(Three):
                          [vertices[:,0].max(), vertices[:,1].max(), vertices[:,2].max()]])
     def json(self):
         d = Three.json(self)
-        d['type'] = "BufferGeometry"
+        d['type'] = 'BufferGeometry' # to enforce the type when invoked from subclasses
         d.update({"data": {
                     "attributes": {
                       "position": {
