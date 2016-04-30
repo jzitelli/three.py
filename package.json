@@ -26,7 +26,7 @@
     "Flask"
   ],
   "dependencies": {
-    "three": "git://github.com/jzitelli/three.js.git#dev"
+    "three.js": "git://github.com/jzitelli/three.js.git#dev"
   },
   "devDependencies": {
     "cannon": "git://github.com/jzitelli/cannon.js.git",

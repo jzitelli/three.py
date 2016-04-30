@@ -1,5 +1,5 @@
 var fs = require('fs');
-var THREE = require('three');
+var THREE = require('three.js');
 fs.writeFile("three/shaderlib/ShaderLib.json", JSON.stringify(THREE.ShaderLib, undefined, 2), function (err) {
     if (err) {
         return console.log(err);
