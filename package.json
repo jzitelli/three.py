@@ -1,7 +1,7 @@
 {
   "name": "three.py",
   "description": "Utilities for interfacing Python with three.js",
-  "version": "0.75.0",
+  "version": "0.76.0",
   "author": "Jeffrey Zitelli <jeffrey.zitelli@gmail.com> (https://github.com/jzitelli)",
   "license": "MIT",
   "homepage": "https://github.com/jzitelli/three.py",
