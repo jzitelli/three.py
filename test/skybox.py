@@ -13,7 +13,7 @@ blueprint = Blueprint(__name__, __name__)
 @blueprint.route('/%s' % __name__)
 def skybox():
     scene = Scene()
-    cube_images = ['node_modules/three/examples/textures/cube/SwedishRoyalCastle/%s.jpg' % side
+    cube_images = ['node_modules/three.js/examples/textures/cube/SwedishRoyalCastle/%s.jpg' % side
                    for side in ('px', 'nx', 'py', 'ny', 'pz', 'nz')]
     scene.add(Skybox(cube_images=cube_images))
     return render_template('template.html',
