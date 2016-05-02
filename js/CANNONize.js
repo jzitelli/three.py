@@ -32,7 +32,7 @@ THREE.py.CANNONize = function (obj, world) {
             }
             body = new CANNON.Body(params);
             body.mesh = node;
-            cannonData.shapes.forEach(function(e) {
+            cannonData.shapes.forEach( function(e) {
                 var shape,
                     quaternion,
                     position;

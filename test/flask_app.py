@@ -11,8 +11,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.split(__file__)[0], os.p
 from three import *
 
 WebVRConfig = {
-    #"FORCE_ENABLE_VR":            True,
-    "K_FILTER":                   0.98,
+    "FORCE_ENABLE_VR":            False,
     "PREDICTION_TIME_S":          0.020,
     "KEYBOARD_CONTROLS_DISABLED": True,
     "ENABLE_LEAP_MOTION": True,
