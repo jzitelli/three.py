@@ -14,13 +14,13 @@ blueprint = Blueprint(__name__, __name__)
 def layers():
     scene = Scene()
     scene.add(Mesh(geometry=TextGeometry(text='LAYER 1',
-                                         font_url='node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js',
+                                         font_url='node_modules/three.js/examples/fonts/helvetiker_regular.typeface.json',
                                          size=0.14, height=0),
                    material=MeshBasicMaterial(color=0xff0000),
                    position=[-2, 0, -3],
                    layers=[1]))
     scene.add(Mesh(geometry=TextGeometry(text='LAYER 2',
-                                         font_url='node_modules/three.js/examples/fonts/helvetiker_regular.typeface.js',
+                                         font_url='node_modules/three.js/examples/fonts/helvetiker_regular.typeface.json',
                                          size=0.14, height=0),
                    material=MeshBasicMaterial(color=0x0000ff),
                    position=[1.6, 0, -3],
