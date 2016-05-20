@@ -41,6 +41,8 @@ def get_overlay_content():
 <h2>Options:</h2>
 <label style='color: #aaee77; padding: 1vh;'>shadow maps<input id="shadowMapCheckbox" type="checkbox"/></label>
 <label style='color: #aaee77; padding: 1vh;'>desk<input id="deskCheckbox" type="checkbox"/></label>
+<hr>
+<button id='vrButton'>toggle VR</button>
 """)
 
 
