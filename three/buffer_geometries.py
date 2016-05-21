@@ -1,6 +1,8 @@
 from . import *
 
 import os.path
+import logging
+_logger = logging.getLogger(__name__)
 
 try:
     import execjs
@@ -24,7 +26,7 @@ try:
         }
     ''' % os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'node_modules')))
 except ImportError as err:
-    print(err)
+    _logger.warn("%s - to install the missing package, try:\n  pip install pyexecjs" % str(err))
 
 class BufferGeometry(Three):
     def __init__(self, name=None, vertices=None, indices=None, normals=None, uvs=None):
