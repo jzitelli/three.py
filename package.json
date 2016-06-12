@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "cannon": "git://github.com/jzitelli/cannon.js.git",
-    "yawvrb": "git://github.com/jzitelli/yawvrb.js.git"
+    "yawvrb": "git://github.com/jzitelli/yawvrb.js.git#dev"
   },
   "scripts": {
     "extractShaderLib": "node ./node_scripts/extractShaderLib.js",
