@@ -103,7 +103,7 @@ class HexaBufferGeometry(BufferGeometry):
         self.quads = quads
     @property
     def cannonData(self):
-        return {'shapes': [{'shapeType': 'ConvexPolyhedron',
+        return {'shapes': [{'type': 'ConvexPolyhedron',
                             'faces': np.array(self.quads).tolist()}]}
 
 

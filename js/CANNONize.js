@@ -32,13 +32,12 @@ THREE.py.CANNONize = function (obj, world) {
             }
             body = new CANNON.Body(params);
             body.mesh = node;
-            cannonData.shapes.forEach( function (shapeData) {
+            cannonData.shapes.forEach( function(e) {
                 var shape,
                     quaternion,
                     position;
                 var array, face, i;
-                var shapeType = (typeof(shapeData) === 'string' ? shapeData : shapeData.type);
-                switch (shapeType) {
+                switch (e) {
                     case 'Plane':
                         shape = new CANNON.Plane();
                         break;
@@ -56,22 +55,19 @@ THREE.py.CANNONize = function (obj, world) {
                         break;
                     case 'ConvexPolyhedron':
                         var points = [];
-                        var faces = shapeData.faces || [];
+                        var faces = [];
                         if (node.geometry instanceof THREE.BufferGeometry) {
                             array = node.geometry.getAttribute('position').array;
                             for (i = 0; i < array.length; i += 3) {
                                 points.push(new CANNON.Vec3(array[i], array[i+1], array[i+2]));
                             }
-                            if (!shapeData.faces) {
-                                array = node.geometry.index.array;
-                                for (i = 0; i < array.length; i) {
-                                    face = [array[i], array[i+1], array[i+2]];
-                                    faces.push(face);
-                                }
+                            array = node.geometry.index.array;
+                            for (i = 0; i < array.length; i += 3) {
+                                face = [array[i], array[i+1], array[i+2]];
+                                faces.push(face);
                             }
                         } else if (node.geometry instanceof THREE.Geometry) {
                             // TODO
-                            console.error('TODO');
                         }
                         shape = new CANNON.ConvexPolyhedron(points, faces);
                         break;
@@ -82,13 +78,6 @@ THREE.py.CANNONize = function (obj, world) {
                             node.geometry.parameters.radialSegments);
                         quaternion = new CANNON.Quaternion();
                         quaternion.setFromEuler(-Math.PI/2, 0, 0, 'XYZ');
-                        break;
-                    case 'ImplicitCylinder':
-                        if (node.geometry.parameters.radiusTop !== node.geometry.parameters.radiusBottom) {
-                            console.error('ImplicitCylinder currently only supports constant radius');
-                            break;
-                        }
-                        shape = new CANNON.ImplicitCylinder(node.geometry.parameters.radiusTop, node.geometry.parameters.height);
                         break;
                     case 'Heightfield':
                         array = node.geometry.getAttribute('position').array;
@@ -138,7 +127,7 @@ THREE.py.CANNONize = function (obj, world) {
                         console.warn('TODO');
                         break;
                     default:
-                        console.error("unknown shape type: " + shapeType);
+                        console.error("unknown shape type: " + e);
                         break;
                 }
                 body.addShape(shape, position, quaternion);
