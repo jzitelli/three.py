@@ -45,17 +45,18 @@ class Three(object):
             Three.instance_num[type] += 1
         self.name = name
         self.uuid = uuid.uuid4()
+    def get_type(self):
+        return self.__class__.__name__
     def json(self):
         """Returns a dict which can be JSON serialized (by json.dumps)"""
         try:
-            return {"type": self.__class__.__name__,
+            return {"type": self.get_type(),
                     "uuid": unicode(self.uuid),
                     "name": self.name}
         except NameError:
-            return {"type": self.__class__.__name__,
+            return {"type": self.get_type(),
                     "uuid": str(self.uuid),
                     "name": self.name}
-
 
 class Image(Three):
     def __init__(self, name=None, url=None):
