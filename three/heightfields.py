@@ -3,6 +3,7 @@ from . import *
 
 
 class HeightfieldMesh(Mesh):
+    """A heightfield which is constructed by modifying the z-components of the vertices defined by PlaneBufferGeometry during the three.py.js postprocessing step."""
     def __init__(self, heightfieldImage=None, heightfieldScale=1, width=None, height=None, **kwargs):
         image = ndimage.imread(heightfieldImage.url)
         if width is None:

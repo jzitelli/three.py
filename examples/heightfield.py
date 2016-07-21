@@ -20,14 +20,14 @@ def heightfield():
                                castShadow=True,
                                userData={'shadowCamera': {'left': -16, 'right': 16, 'top': 16, 'bottom': -16}}))
     scene.add(HeightfieldMesh(heightfieldImage=heightfieldImage,
-                              heightfieldScale=32,
+                              heightfieldScale=64,
                               material=MeshLambertMaterial(color=0x8b6545),
-                              rotation=[-0.33*np.pi, 0, 0],
+                              rotation=[-0.4*np.pi, 0, 0],
                               position=[0, -18, 0],
                               scale=[0.5, 0.5, 0.5],
                               cannonData={'mass': 0, 'shapes': ['Heightfield']},
                               receiveShadow=True))
-    scene.add(Mesh(geometry=SphereBufferGeometry(radius=2),
+    scene.add(Mesh(geometry=SphereBufferGeometry(radius=2, widthSegments=16, heightSegments=12),
                    material=MeshPhongMaterial(color=0xffff00, shading=FlatShading),
                    position=[0, 20, -14],
                    cannonData={'mass': 1, 'shapes': ['Sphere']},
