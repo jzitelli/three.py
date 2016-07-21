@@ -20,7 +20,7 @@ def heightfield():
                                castShadow=True,
                                userData={'shadowCamera': {'left': -16, 'right': 16, 'top': 16, 'bottom': -16}}))
     scene.add(HeightfieldMesh(heightfieldImage=heightfieldImage,
-                              heightfieldScale=16,
+                              heightfieldScale=32,
                               material=MeshLambertMaterial(color=0x8b6545),
                               rotation=[-0.33*np.pi, 0, 0],
                               position=[0, -18, 0],
@@ -44,4 +44,4 @@ def heightfield():
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
 </script>""" % (json.dumps(WebVRConfig, indent=2),
-                json.dumps(scene.export(url_prefix="test/"), indent=2))))
+                json.dumps(scene.export(url_prefix="examples/"), indent=2))))

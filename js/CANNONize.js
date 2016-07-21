@@ -1,3 +1,4 @@
+/* global THREE, CANNON */
 THREE.py.CANNONize = function (obj, world) {
     "use strict";
     obj.updateMatrixWorld();

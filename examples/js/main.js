@@ -1,10 +1,11 @@
-function onLoad() {
+/* global THREE, CANNON, YAWVRB */
+window.onLoad = function () {
     "use strict";
     var testLinks = document.getElementsByClassName('testLink');
 
     var deskCheckbox = document.getElementById('deskCheckbox');
     deskCheckbox.addEventListener('change', function () {
-        var append = "?model=test/models/vrDesk.json";
+        var append = "?model=examples/models/vrDesk.json";
         var checked = deskCheckbox.checked;
         for (var i = 0; i < testLinks.length; i++) {
             var testLink = testLinks[i];
@@ -41,7 +42,7 @@ function onLoad() {
     world.solver.iterations = 10;
 
     var avatar = new THREE.Object3D();
-    avatar.position.y = 3.5*12*0.0254
+    avatar.position.y = 3.5*12*0.0254;
 
     var app;
 
@@ -113,4 +114,4 @@ function onLoad() {
         requestAnimationFrame(animate());
     }
 
-}
+};

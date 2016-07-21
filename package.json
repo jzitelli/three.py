@@ -1,7 +1,7 @@
 {
   "name": "three.py",
   "description": "Utilities for interfacing Python with three.js",
-  "version": "0.77.0",
+  "version": "0.79.0",
   "author": "Jeffrey Zitelli <jeffrey.zitelli@gmail.com> (https://github.com/jzitelli)",
   "license": "MIT",
   "homepage": "https://github.com/jzitelli/three.py",
@@ -11,32 +11,29 @@
   },
   "bugs": "https://github.com/jzitelli/three.py/issues",
   "files": [
+    "examples/",
     "js/",
     "node_scripts/",
-    "test/",
     "three/",
+    ".eslintrc.json",
+    "favicon.ico",
     "LICENSE",
     "README.md"
-  ],
-  "keywords": [
-    "three.js",
-    "cannon.js",
-    "WebGL",
-    "Python",
-    "NumPy",
-    "Flask"
   ],
   "dependencies": {
     "three.js": "git://github.com/jzitelli/three.js.git#dev"
   },
   "devDependencies": {
+    "eslint": "*",
     "cannon": "git://github.com/jzitelli/cannon.js.git",
-    "yawvrb": "git://github.com/jzitelli/yawvrb.js.git#dev"
+    "yawvrb": "git://github.com/jzitelli/yawvrb.js.git#dev",
+    "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git"
   },
   "scripts": {
     "extractShaderLib": "node ./node_scripts/extractShaderLib.js",
     "postinstall": "npm run extractShaderLib",
-    "test": "cd test && python flask_app.py",
+    "lint": "eslint js/*.js && eslint examples/js/*.js",
+    "test": "npm run lint && cd examples && python flask_app.py",
     "start": "npm run test"
   }
 }

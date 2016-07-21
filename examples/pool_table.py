@@ -1,43 +1,40 @@
 """
 three.js/Cannon.js pool table definition
 """
+import sys
+import os.path
 import json
+from copy import deepcopy
 
 import numpy as np
-
-from flask import Blueprint, Markup, render_template
+from flask import Blueprint, Markup, render_template, request
 
 from flask_app import WebVRConfig, get_overlay_content
-
 from three import *
 
-
+INCH2METER = 0.0254
+FT2METER = INCH2METER / 12
 
 blueprint = Blueprint(__name__, __name__)
 
+
 @blueprint.route('/%s' % __name__)
-def pool_table():
+def pool_table_example():
     scene = pool_hall()
-    scene.add(PointLight(intensity=0.5, position=[2, 4, -1]))
     return render_template('template.html',
+                           title='three.py  -  %s test' % __name__,
                            overlay_content=get_overlay_content(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
 </script>""" % (json.dumps(WebVRConfig, indent=2),
-                json.dumps(scene.export(url_prefix="test/")))))
-
-
-
-IN2METER = 0.0254
-FT2METER = IN2METER / 12
-
+                json.dumps(scene.export(), indent=2))))
 
 
 def pool_table(L_table=2.3368, W_table=None, H_table=0.74295,
                L_playable=None, W_playable=None,
-               ball_diameter=2.25*IN2METER,
-               W_cushion=2*IN2METER, H_cushion=None, W_rail=None,
+               ball_diameter=2.25*INCH2METER,
+               W_cushion=2*INCH2METER, H_cushion=None, W_rail=None,
                **kwargs):
     """
     Creates parameterized three.js pool table
@@ -64,12 +61,16 @@ def pool_table(L_table=2.3368, W_table=None, H_table=0.74295,
 
     poolTable = Object3D(name="poolTable")
 
-    headSpotMaterial = MeshLambertMaterial(name="headSpotMaterial", color=0xcccccc)
-    surfaceMaterial = MeshPhongMaterial(name="surfaceMaterial", color=0x00aa00, shininess=5, shading=FlatShading)
-    cushionMaterial = MeshPhongMaterial(name="cushionMaterial", color=0x028844, shininess=5, shading=FlatShading)
-    railMaterial = MeshPhongMaterial(name="railMaterial", color=0xdda400, shininess=10, shading=FlatShading)
+    # headSpotMaterial = MeshPhongMaterial(name="headSpotMaterial", color=0x777777, shading=FlatShading)
+    # surfaceMaterial = MeshPhongMaterial(name="surfaceMaterial", color=0x00aa00, shininess=5, shading=FlatShading)
+    # cushionMaterial = MeshPhongMaterial(name="cushionMaterial", color=0x028844, shininess=5, shading=FlatShading)
+    # railMaterial = MeshPhongMaterial(name="railMaterial", color=0xdda400, shininess=10, shading=FlatShading)
+    headSpotMaterial = MeshBasicMaterial(name="headSpotMaterial", color=0x777777)
+    surfaceMaterial = MeshBasicMaterial(name="surfaceMaterial", color=0x00aa00)
+    cushionMaterial = MeshBasicMaterial(name="cushionMaterial", color=0x028844)
+    railMaterial = MeshBasicMaterial(name="railMaterial", color=0xdda400)
 
-    thickness = IN2METER
+    thickness = INCH2METER
     playableSurfaceGeom = BoxBufferGeometry(W_playable, thickness, L_playable)
     playableSurfaceMesh = Mesh(name='playableSurfaceMesh',
                                geometry=playableSurfaceGeom,
@@ -85,7 +86,7 @@ def pool_table(L_table=2.3368, W_table=None, H_table=0.74295,
     headSpotMesh = Mesh(geometry=spotGeom,
                         material=headSpotMaterial,
                         position=[0, H_table + 0.0002, 0.25*L_table],
-                        rotation=[-np.pi/2, 0, 0],
+                        rotation=[-np.pi/2, 0, np.pi/10],
                         receiveShadow=True)
     poolTable.add(headSpotMesh)
 
@@ -217,9 +218,43 @@ def pool_table(L_table=2.3368, W_table=None, H_table=0.74295,
     return poolTable
 
 
-def billiard_balls(ball_diameter):
+
+def pool_hall(useSkybox=False,
+              L_table=2.168,
+              H_table=0.76295,
+              ball_diameter=2.25*INCH2METER,
+              L_room=4,
+              W_room = 4,
+              url_prefix="",
+              **kwargs):
     """
+    Defines a three.js scene containing a pool table + billiard balls.
     """
+    scene = Scene()
+    if useSkybox:
+        scene.add(Skybox(cube_images=[url_prefix + "images/%s.png" % pos
+                                      for pos in ('px', 'nx', 'py', 'ny', 'pz', 'nz')]))
+    poolTable = pool_table(L_table=L_table, H_table=H_table, ball_diameter=ball_diameter, **kwargs)
+    scene.add(poolTable)
+    # floorMaterial = MeshPhongMaterial(name='floorMaterial',
+    #                                   color=0xffffff,
+    #                                   map=Texture(image=Image(url=url_prefix+"node_modules/three.js/examples/textures/hardwood2_diffuse.jpg"),
+    #                                               repeat=[L_room, W_room], wrap=[RepeatWrapping, RepeatWrapping]),
+    #                                   bumpMap=Texture(image=Image(url=url_prefix+"node_modules/three.js/examples/textures/hardwood2_bump.jpg"),
+    #                                                   repeat=[L_room, W_room], wrap=[RepeatWrapping, RepeatWrapping]), bumpScale=0.06)
+    floorMaterial = MeshBasicMaterial(name='floorMaterial',
+                                      color=0xffffff,
+                                      map=Texture(image=Image(url=url_prefix+"node_modules/three.js/examples/textures/hardwood2_diffuse.jpg"),
+                                                  repeat=[L_room, W_room], wrap=[RepeatWrapping, RepeatWrapping]))
+    floorMesh = Mesh(name="floorMesh",
+                     geometry=PlaneBufferGeometry(width=W_room, height=L_room),
+                     material=floorMaterial,
+                     position=[0, 0, 0],
+                     rotation=[-np.pi/2, 0, 0],
+                     userData={'cannonData': {'mass': 0,
+                                              'shapes': ['Plane']}})
+    scene.add(floorMesh)
+    # balls:
     ball_colors = []
     ball_colors.append(0xddddde); white  = ball_colors[-1]
     ball_colors.append(0xeeee00); yellow = ball_colors[-1]
@@ -241,63 +276,24 @@ def billiard_balls(ball_diameter):
                                       heightSegments=8,
                                       thetaStart=np.pi/3,
                                       thetaLength=np.pi/3)
-    ball_materials = [MeshPhongMaterial(name='ballMaterial %d' % i,
-                                        color=color,
-                                        shading=SmoothShading)
+    # TODO: use InstancedBufferGeometry to model the whole set of balls
+    # TODO: shader profiling/performance modeling tools
+    # ball_materials = [MeshPhongMaterial(name='ballMaterial %d' % i,
+    #                                     color=color,
+    #                                     shading=SmoothShading)
+    #                   for i, color in enumerate(ball_colors)]
+    ball_materials = [MeshBasicMaterial(name='ballMaterial %d' % i,
+                                        color=color)
                       for i, color in enumerate(ball_colors)]
     ballData = {'cannonData': {'mass': 0.17, 'shapes': ['Sphere'],
-                               'linearDamping': 0.25, 'angularDamping': 0.32}}
-    ballMeshes = []
-    for i, material in enumerate(ball_materials[:9] + 7*[ball_materials[0]]):
-        ballMesh = Mesh(name="ballMesh %d" % i,
-                        geometry=sphere,
-                        material=material,
-                        userData=ballData,
-                        castShadow=True)
-        if i > 8:
-            stripeMesh = Mesh(name="ballStripeMesh %d" % i,
-                              material=ball_materials[i-8],
-                              geometry=stripeGeom)
-            ballMesh.add(stripeMesh)
-        ballMeshes.append(ballMesh)
-    return ballMeshes
-
-
-def pool_hall(useSkybox=False,
-              L_table=2.3368,
-              H_table=0.74295,
-              ball_diameter=2.25*IN2METER,
-              url_prefix="",
-              **kwargs):
-    """
-    Defines a three.js scene containing a pool table + billiard balls.
-    """
-    scene = Scene()
-    L_room, W_room = 10, 10
-    floorMesh = Mesh(name="floorMesh",
-                     geometry=PlaneBufferGeometry(width=W_room, height=L_room),
-                     material=MeshBasicMaterial(color=0xffffff,
-                                                map=Texture(image=Image(url=url_prefix+"images/marble.png"),
-                                                            repeat=[2.5, 2.5], wrap=[RepeatWrapping, RepeatWrapping])),
-                     position=[0, 0, 0],
-                     rotation=[-np.pi/2, 0, 0],
-                     userData={'cannonData': {'mass': 0,
-                                              'shapes': ['Plane']}})
-    scene.add(floorMesh)
-
-    if useSkybox:
-        scene.add(Skybox(cube_images=[url_prefix + "images/%s.png" % pos
-                                      for pos in ('px', 'nx', 'py', 'ny', 'pz', 'nz')]))
-
-    poolTable = pool_table(L_table=L_table, H_table=H_table, ball_diameter=ball_diameter,
-                           **kwargs)
-    scene.add(poolTable)
-
-    ballMeshes = billiard_balls(ball_diameter)
-
+                               'linearDamping': 0.27, 'angularDamping': 0.34}}
+    y_position = H_table + ball_radius + 0.0001 # epsilon distance that the ball will fall from initial position
+    # diagonal line:
+    # z_positions = 0.8 * np.linspace(-L_table / 2, L_table / 2, num_balls - 1)
+    # x_positions = 0.5 * z_positions
+    # x_positions = [0] + list(x_positions)
+    # z_positions = [L_table / 4] + list(z_positions)
     # triangle racked:
-    ball_radius = ball_diameter / 2
-    y_position = H_table + ball_radius + 0.0001 # epsilon distance which the ball will fall from initial position
     d = 0.04*ball_radius # separation between racked balls
     side_length = 4 * (ball_diameter + d)
     x_positions = np.concatenate([np.linspace(0,                        0.5 * side_length,                         5),
@@ -317,8 +313,19 @@ def pool_hall(useSkybox=False,
     x_positions = [0] + list(x_positions)
     z_positions = [L_table / 4] + list(z_positions)
 
-    for i, ballMesh in enumerate(ballMeshes):
-        ballMesh.position[:] = [x_positions[i], y_position, z_positions[i]]
+    for i, material in enumerate(ball_materials[:9] + 7*[ball_materials[0]]):
+        ballMesh = Mesh(name="ballMesh %d" % i,
+                        geometry=sphere,
+                        position=[x_positions[i], y_position, z_positions[i]],
+                        material=material,
+                        userData=ballData,
+                        castShadow=True,
+                        receiveShadow=True)
         scene.add(ballMesh)
+        if i > 8:
+            stripeMesh = Mesh(name="ballStripeMesh %d" % i,
+                              material=ball_materials[i-8],
+                              geometry=stripeGeom)
+            ballMesh.add(stripeMesh)
 
     return scene

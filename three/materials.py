@@ -2,7 +2,7 @@ from . import *
 
 class Material(Three):
     def __init__(self, name=None, **kwargs):
-        Three.__init__(self, name)
+        Three.__init__(self, name=name)
         self.__dict__.update(kwargs)
     def json(self):
         d = Three.json(self)
@@ -12,7 +12,7 @@ class Material(Three):
                     d[k] = unicode(self.__dict__[k].uuid)
                 except NameError:
                     d[k] = str(self.__dict__[k].uuid)
-        d.update({k: v for k, v in self.__dict__.items() if k not in d})
+        d.update({k: v for k, v in self.__dict__.items() if k not in d and v is not None})
         return d
 
 

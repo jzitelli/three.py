@@ -39,7 +39,8 @@ class Object3D(Three):
         if hasattr(self, 'material'):
             materials[self.material.uuid] = self.material
         for c in self.children:
-            c.find_materials(materials)
+            if isinstance(c, Object3D):
+                c.find_materials(materials)
         return materials
     def find_textures(self):
         textures = {}
