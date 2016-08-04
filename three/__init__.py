@@ -67,15 +67,11 @@ class Image(Three):
         return d
 
 
-# from . import objects
 from .objects import *
 from .lights import *
 from .materials import *
 from .geometries import *
 from .buffer_geometries import *
 
-from .shaderlib import ShaderLib, UniformsLib, ShaderChunk
-
 from .text import *
 from .heightfields import *
-from .skybox import *

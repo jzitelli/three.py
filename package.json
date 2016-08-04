@@ -13,7 +13,6 @@
   "files": [
     "examples/",
     "js/",
-    "node_scripts/",
     "three/",
     ".eslintrc.json",
     "favicon.ico",
@@ -21,7 +20,7 @@
     "README.md"
   ],
   "dependencies": {
-    "three.js": "git://github.com/jzitelli/three.js.git#dev"
+    "three.js": "../three.js/"
   },
   "devDependencies": {
     "eslint": "*",
@@ -30,8 +29,6 @@
     "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git"
   },
   "scripts": {
-    "extractShaderLib": "node ./node_scripts/extractShaderLib.js",
-    "postinstall": "npm run extractShaderLib",
     "lint": "eslint js/*.js && eslint examples/js/*.js",
     "test": "npm run lint && cd examples && python flask_app.py",
     "start": "npm run test"

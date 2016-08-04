@@ -14,8 +14,8 @@ WebVRConfig = {
     "FORCE_ENABLE_VR":            False,
     "PREDICTION_TIME_S":          0.020,
     "KEYBOARD_CONTROLS_DISABLED": True,
-    "ENABLE_LEAP_MOTION": True,
-    "LEAP_MOTION_HOST": '192.168.1.201'
+    "ENABLE_LEAP_MOTION": False,
+    "LEAP_MOTION_HOST": '192.168.1.42'
 }
 
 DEBUG           = True
@@ -52,9 +52,8 @@ TESTS_MODULES = {}
 for test in ['layers',
              'heightfield',
              'cannon',
-             'pool_table',
-             'skybox',
              'textgeometry',
+             'pool_table',
              'points',
              'points_billboards',
              'materials',
