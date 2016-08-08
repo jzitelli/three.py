@@ -12,8 +12,8 @@ blueprint = Blueprint(__name__, __name__)
 
 @blueprint.route('/%s' % __name__)
 def points():
-    ballImage = Image(url='node_modules/three.js/examples/textures/sprites/ball.png')
-    otherImage = Image(url='node_modules/three.js/examples/textures/sprite0.png')
+    ballImage = Image(url='node_modules/three/examples/textures/sprites/ball.png')
+    otherImage = Image(url='node_modules/three/examples/textures/sprite0.png')
     scene = Scene()
     position = [0, 1.3, -2]
     geometry = SphereBufferGeometry(radius=3.2, widthSegments=32, heightSegments=24)

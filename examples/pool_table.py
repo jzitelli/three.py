@@ -1,6 +1,3 @@
-"""
-three.js/Cannon.js pool table definition
-"""
 import sys
 import os.path
 import json
@@ -238,13 +235,13 @@ def pool_hall(useSkybox=False,
     scene.add(poolTable)
     # floorMaterial = MeshPhongMaterial(name='floorMaterial',
     #                                   color=0xffffff,
-    #                                   map=Texture(image=Image(url=url_prefix+"node_modules/three.js/examples/textures/hardwood2_diffuse.jpg"),
+    #                                   map=Texture(image=Image(url=url_prefix+"node_modules/three/examples/textures/hardwood2_diffuse.jpg"),
     #                                               repeat=[L_room, W_room], wrap=[RepeatWrapping, RepeatWrapping]),
-    #                                   bumpMap=Texture(image=Image(url=url_prefix+"node_modules/three.js/examples/textures/hardwood2_bump.jpg"),
+    #                                   bumpMap=Texture(image=Image(url=url_prefix+"node_modules/three/examples/textures/hardwood2_bump.jpg"),
     #                                                   repeat=[L_room, W_room], wrap=[RepeatWrapping, RepeatWrapping]), bumpScale=0.06)
     floorMaterial = MeshBasicMaterial(name='floorMaterial',
                                       color=0xffffff,
-                                      map=Texture(image=Image(url=url_prefix+"node_modules/three.js/examples/textures/hardwood2_diffuse.jpg"),
+                                      map=Texture(image=Image(url=url_prefix+"node_modules/three/examples/textures/hardwood2_diffuse.jpg"),
                                                   repeat=[L_room, W_room], wrap=[RepeatWrapping, RepeatWrapping]))
     floorMesh = Mesh(name="floorMesh",
                      geometry=PlaneBufferGeometry(width=W_room, height=L_room),

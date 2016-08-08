@@ -15,7 +15,7 @@ def textgeometry():
     scene = Scene()
     scene.add(DirectionalLight(color=0xffffff, intensity=1, position=(-2,1,1)))
     scene.add(Mesh(geometry=TextGeometry(text='textgeometry',
-                                         font_url="node_modules/three.js/examples/fonts/helvetiker_regular.typeface.json",
+                                         font_url="node_modules/three/examples/fonts/helvetiker_regular.typeface.json",
                                          size=0.3, height=0.02),
                    material=MeshLambertMaterial(color=0xff00ff),
                    position=[0, 0, -2]))

@@ -13,20 +13,17 @@
   "files": [
     "examples/",
     "js/",
-    "three/",
     ".eslintrc.json",
     "favicon.ico",
     "LICENSE",
     "README.md"
   ],
-  "dependencies": {
-    "three": "0.79.0"
-  },
   "devDependencies": {
     "eslint": "*",
     "cannon": "git://github.com/jzitelli/cannon.js.git",
     "yawvrb": "git://github.com/jzitelli/yawvrb.js.git#dev",
-    "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git"
+    "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git",
+    "three": "git://github.com/jzitelli/three.js.git#dev"
   },
   "scripts": {
     "lint": "eslint js/*.js && eslint examples/js/*.js",
