@@ -1,32 +1,31 @@
 from . import *
 
 import os.path
-import logging
-_logger = logging.getLogger(__name__)
 
-try:
-    import execjs
-    runtime = execjs.get('Node')
-    context = runtime.compile('''
-        module.paths.push('%s');
-        var THREE = require('three');
+import execjs
+runtime = execjs.get('Node')
+# TODO: some mechanism to indicate location of three.js
+context = runtime.compile("""
 
-        function getGeometryAttribute(type, attribute) {
-            var params = Array.apply(null, arguments).slice(1);
-            params[0] = null;
-            var geom = new ( Function.prototype.bind.apply(THREE[type], params) );
-            return geom.getAttribute(attribute).array;
-        }
+module.paths.push('%s');
+var THREE = require('three');
 
-        function getGeometryIndex(type) {
-            var params = Array.apply(null, arguments);
-            params[0] = null;
-            var geom = new ( Function.prototype.bind.apply(THREE[type], params) );
-            return geom.getIndex().array;
-        }
-    ''' % os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'node_modules')))
-except ImportError as err:
-    _logger.warn("%s - to install the missing package, try:\n  pip install pyexecjs" % str(err))
+function getGeometryAttribute(type, attribute) {
+    var params = Array.apply(null, arguments).slice(1);
+    params[0] = null;
+    var geom = new ( Function.prototype.bind.apply(THREE[type], params) );
+    return geom.getAttribute(attribute).array;
+}
+
+function getGeometryIndex(type) {
+    var params = Array.apply(null, arguments);
+    params[0] = null;
+    var geom = new ( Function.prototype.bind.apply(THREE[type], params) );
+    return geom.getIndex().array;
+}
+
+""" % os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'node_modules')))
+
 
 class BufferGeometry(Three):
     def __init__(self, name=None, vertices=None, indices=None, normals=None, uvs=None):

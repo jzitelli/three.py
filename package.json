@@ -20,7 +20,7 @@
     "README.md"
   ],
   "dependencies": {
-    "three.js": "../three.js/"
+    "three": "0.79.0"
   },
   "devDependencies": {
     "eslint": "*",

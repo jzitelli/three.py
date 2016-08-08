@@ -1,12 +1,9 @@
 import logging
 import json
 import os.path
-import sys
 import imp
 
 from flask import Flask, render_template, Markup, request
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir)))
 
 from three import *
 

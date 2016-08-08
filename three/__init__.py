@@ -1,13 +1,11 @@
-"""Define three.js objects from Python with this package.
-
-The Python classes support JSON serializions which can be loaded by THREE.ObjectLoader.
-"""
-
 import json
 import uuid
 from collections import defaultdict
+
 import numpy as np
 
+
+# TODO: use pyexecjs to automatically define all three.js global constants
 FrontSide  = 0
 BackSide   = 1
 DoubleSide = 2
@@ -46,7 +44,7 @@ class Three(object):
         self.name = name
         self.uuid = uuid.uuid4()
     def json(self):
-        """Returns a dict which can be JSON serialized (by json.dumps)"""
+        """Returns a dict which can be JSON-serialized (by json.dumps)"""
         try:
             return {"type": self.__class__.__name__,
                     "uuid": unicode(self.uuid),
@@ -56,6 +54,8 @@ class Three(object):
                     "uuid": str(self.uuid),
                     "name": self.name}
 
+        
+# TODO: refactor url -> uri, add robust URI support
 class Image(Three):
     def __init__(self, name=None, url=None):
         Three.__init__(self, name)
@@ -67,6 +67,7 @@ class Image(Three):
         return d
 
 
+# TODO: reorganize package hierarchy to make explicit separation between three.js "native" classes and which are "derived" / "convenience" classes introduced by three.py
 from .objects import *
 from .lights import *
 from .materials import *
