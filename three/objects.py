@@ -1,6 +1,9 @@
 from copy import deepcopy
 from . import *
 
+from . import gltf
+
+
 class Object3D(Three):
     def __init__(self, name=None, position=(0,0,0), rotation=(0,0,0), scale=(1,1,1),
                  visible=None, castShadow=None, receiveShadow=None,
@@ -71,7 +74,7 @@ class Object3D(Three):
                   if v is not None and k not in d})
         return d
     def export(self, geometries=None, materials=None, textures=None, images=None,
-               url_prefix=""):
+               url_prefix="", format='three'):
         if geometries is None:
             geometries = self.find_geometries()
         if materials is None:
@@ -80,16 +83,19 @@ class Object3D(Three):
             textures = self.find_textures()
         if images is None:
             images = self.find_images()
-        d = {'object': self.json(),
-             "geometries": [g.json() for g in geometries.values()],
-             "materials": [m.json() for m in materials.values()],
-             "textures": [t.json() for t in textures.values()],
-             "images": [i.json() for i in images.values()]}
-        for imagejson in d['images']:
-            imagejson['url'] = url_prefix + imagejson['url']
-        d['metadata'] = {'version': 4.4,
-                         'type': 'Object',
-                         'generator': 'three.py'}
+        if format == 'three':
+            d = {'object': self.json(),
+                 "geometries": [g.json() for g in geometries.values()],
+                 "materials": [m.json() for m in materials.values()],
+                 "textures": [t.json() for t in textures.values()],
+                 "images": [i.json() for i in images.values()]}
+            for imagejson in d['images']:
+                imagejson['url'] = url_prefix + imagejson['url']
+            d['metadata'] = {'version': 4.4,
+                             'type': 'Object',
+                             'generator': 'three.py'}
+        elif format == 'gltf':
+            raise Exception('TODO')
         return d
 
 
