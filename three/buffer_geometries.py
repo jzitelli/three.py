@@ -88,7 +88,7 @@ class QuadBufferGeometry(BufferGeometry):
 
 class HexaBufferGeometry(BufferGeometry):
     # TODO: check if quads are coplanar
-    def __init__(self, vertices, **kwargs):
+    def __init__(self, vertices=None, **kwargs):
         quads = [[0,1,2,3][::-1], # bottom
                  [4,5,6,7], # top
                  [0,1,5,4], # front
