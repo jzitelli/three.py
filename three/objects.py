@@ -5,7 +5,7 @@ class Object3D(Three):
     def __init__(self, name=None, position=(0,0,0), rotation=(0,0,0), scale=(1,1,1),
                  visible=None, castShadow=None, receiveShadow=None,
                  userData=None, layers=None, cannonData=None, **kwargs):
-        Three.__init__(self, name)
+        Three.__init__(self, name=name)
         self.position = np.array(position, dtype=np.float64)
         self.rotation = np.array(rotation, dtype=np.float64)
         self.scale    = np.array(scale,    dtype=np.float64)

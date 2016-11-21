@@ -29,7 +29,7 @@ function getGeometryIndex(type) {
 
 class BufferGeometry(Three):
     def __init__(self, name=None, vertices=None, indices=None, normals=None, uvs=None):
-        Three.__init__(self, name)
+        Three.__init__(self, name=name)
         self.vertices = vertices
         self.normals = normals
         self.indices = indices
@@ -88,22 +88,20 @@ class QuadBufferGeometry(BufferGeometry):
 
 class HexaBufferGeometry(BufferGeometry):
     # TODO: check if quads are coplanar
-    def __init__(self, vertices=None, **kwargs):
-        quads = [[0,1,2,3][::-1], # bottom
-                 [4,5,6,7], # top
-                 [0,1,5,4], # front
-                 [1,2,6,5], # right
-                 [2,3,7,6], # rear
-                 [7,3,0,4]] # left
+    faces = [[0,1,2,3][::-1], # bottom
+             [4,5,6,7], # top
+             [0,1,5,4], # front
+             [1,2,6,5], # right
+             [2,3,7,6], # rear
+             [7,3,0,4]] # left
+    def __init__(self, vertices=None):
         BufferGeometry.__init__(self, vertices=vertices,
                                 indices=[_tri_faces(quad)
-                                         for quad in quads],
-                                **kwargs)
-        self.quads = quads
+                                         for quad in HexaBufferGeometry.faces])
     @property
     def cannonData(self):
         return {'shapes': [{'type': 'ConvexPolyhedron',
-                            'faces': np.array(self.quads).tolist()}]}
+                            'faces': HexaBufferGeometry.faces}]}
 
 
 class PrismBufferGeometry(BufferGeometry):
