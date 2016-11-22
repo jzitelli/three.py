@@ -2,31 +2,6 @@ from . import *
 
 import os.path
 
-import execjs
-runtime = execjs.get('Node')
-# TODO: some mechanism to indicate location of three.js
-context = runtime.compile("""
-
-module.paths.push('%s');
-var THREE = require('three');
-
-function getGeometryAttribute(type, attribute) {
-    var params = Array.apply(null, arguments).slice(1);
-    params[0] = null;
-    var geom = new ( Function.prototype.bind.apply(THREE[type], params) );
-    return geom.getAttribute(attribute).array;
-}
-
-function getGeometryIndex(type) {
-    var params = Array.apply(null, arguments);
-    params[0] = null;
-    var geom = new ( Function.prototype.bind.apply(THREE[type], params) );
-    return geom.getIndex().array;
-}
-
-""" % os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'node_modules')))
-
-
 class BufferGeometry(Three):
     def __init__(self, name=None, vertices=None, indices=None, normals=None, uvs=None):
         Three.__init__(self, name=name)
@@ -94,14 +69,11 @@ class HexaBufferGeometry(BufferGeometry):
              [1,2,6,5], # right
              [2,3,7,6], # rear
              [7,3,0,4]] # left
-    def __init__(self, vertices=None):
+    def __init__(self, vertices=None, **kwargs):
         BufferGeometry.__init__(self, vertices=vertices,
                                 indices=[_tri_faces(quad)
-                                         for quad in HexaBufferGeometry.faces])
-    @property
-    def cannonData(self):
-        return {'shapes': [{'type': 'ConvexPolyhedron',
-                            'faces': HexaBufferGeometry.faces}]}
+                                         for quad in HexaBufferGeometry.faces],
+                                **kwargs)
 
 
 class PrismBufferGeometry(BufferGeometry):
