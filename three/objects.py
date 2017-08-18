@@ -1,5 +1,7 @@
 from copy import deepcopy
-from . import *
+import numpy as np
+
+from . import Three
 
 class Object3D(Three):
     def __init__(self, name=None, position=(0,0,0), rotation=(0,0,0), scale=(1,1,1),

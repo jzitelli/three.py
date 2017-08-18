@@ -1,4 +1,4 @@
-from . import *
+from .objects import Object3D
 
 class Light(Object3D):
     def __init__(self, color=0xffffff, intensity=None, distance=None, shadowCameraNear=None, shadowCameraFar=None, shadowCameraFov=None, **kwargs):

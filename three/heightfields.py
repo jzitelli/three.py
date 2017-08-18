@@ -1,6 +1,7 @@
 import PIL.Image
 
-from . import *
+from .buffer_geometries import PlaneBufferGeometry
+from .objects import Mesh
 
 
 class HeightfieldMesh(Mesh):

@@ -1,6 +1,7 @@
-from . import *
+import numpy as np
 
-import os.path
+from . import Three
+from .geometries import BoxGeometry
 
 class BufferGeometry(Three):
     def __init__(self, name=None, vertices=None, indices=None, normals=None, uvs=None):

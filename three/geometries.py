@@ -1,4 +1,6 @@
-from . import *
+import numpy as np
+
+from . import Three
 
 class Geometry(Three):
     def __init__(self, name=None, vertices=None, colors=None, faces=None):

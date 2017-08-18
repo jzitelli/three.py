@@ -1,11 +1,15 @@
 import json
-
+import numpy as np
 from flask import Blueprint, Markup, render_template, request
 
 from flask_app import WebVRConfig, get_overlay_content
 
-from three import *
-
+from three import Image, FlatShading
+from three.lights import DirectionalLight
+from three.buffer_geometries import SphereBufferGeometry, BoxBufferGeometry
+from three.objects import Scene, Mesh
+from three.materials import MeshPhongMaterial, MeshLambertMaterial
+from three.heightfield import HeightfieldMesh
 
 
 blueprint = Blueprint(__name__, __name__)

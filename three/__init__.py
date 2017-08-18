@@ -1,9 +1,5 @@
-import json
 import uuid
 from collections import defaultdict
-
-import numpy as np
-
 
 # TODO: use pyexecjs to automatically define all three.js global constants
 FrontSide  = 0
@@ -45,16 +41,16 @@ class Three(object):
         self.uuid = uuid.uuid4()
     def json(self):
         """Returns a dict which can be JSON-serialized (by json.dumps)"""
-        try:
-            return {"type": self.__class__.__name__,
-                    "uuid": unicode(self.uuid),
-                    "name": self.name}
-        except NameError:
-            return {"type": self.__class__.__name__,
-                    "uuid": str(self.uuid),
-                    "name": self.name}
+        # try:
+        #     return {"type": self.__class__.__name__,
+        #             "uuid": unicode(self.uuid),
+        #             "name": self.name}
+        # except NameError:
+        return {"type": self.__class__.__name__,
+                "uuid": str(self.uuid),
+                "name": self.name}
 
-        
+
 # TODO: refactor url -> uri, add robust URI support
 class Image(Three):
     def __init__(self, name=None, url=None):
@@ -65,14 +61,3 @@ class Image(Three):
         if self.url:
             d['url'] = self.url
         return d
-
-
-# TODO: reorganize package hierarchy to make explicit separation between three.js "native" classes and which are "derived" / "convenience" classes introduced by three.py
-from .objects import *
-from .lights import *
-from .materials import *
-from .geometries import *
-from .buffer_geometries import *
-
-from .text import *
-from .heightfields import *

@@ -1,4 +1,5 @@
-from . import *
+from . import LinearMipMapLinearFilter, LinearFilter, UVMapping
+from . import Three
 
 class Material(Three):
     def __init__(self, name=None, **kwargs):

@@ -2,10 +2,18 @@ import logging
 import json
 import os.path
 import imp
+from flask import Flask, render_template, Markup
 
-from flask import Flask, render_template, Markup, request
+_logger = logging.getLogger(__name__)
 
-from three import *
+from three import FlatShading
+from three.objects import Scene, Mesh
+from three.lights import PointLight
+from three.text import TextGeometry
+from three.materials import MeshBasicMaterial, MeshPhongMaterial, MeshLambertMaterial
+from three.geometries import BoxGeometry
+from three.buffer_geometries import SphereBufferGeometry
+
 
 WebVRConfig = {
     "FORCE_ENABLE_VR":            False,

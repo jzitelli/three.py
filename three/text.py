@@ -1,4 +1,4 @@
-from . import *
+from . import Three
 
 class TextGeometryError(Exception):
     pass
