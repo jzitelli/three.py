@@ -20,9 +20,8 @@
   "devDependencies": {
     "eslint": "*",
     "cannon": "git://github.com/jzitelli/cannon.js.git",
-    "yawvrb": "git://github.com/jzitelli/yawvrb.js.git#dev",
-    "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git",
-    "three": "git://github.com/jzitelli/three.js.git#dev"
+    "three": "git://github.com/jzitelli/three.js.git#dev",
+    "webvr-polyfill": "git://github.com/jzitelli/webvr-polyfill.git"
   },
   "scripts": {
     "lint": "eslint js/*.js && eslint examples/js/*.js",

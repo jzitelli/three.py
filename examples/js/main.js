@@ -1,4 +1,4 @@
-/* global THREE, CANNON, YAWVRB */
+/* global THREE, CANNON, App, Utils */
 window.onLoad = function () {
     "use strict";
     var testLinks = document.getElementsByClassName('testLink');
@@ -26,11 +26,24 @@ window.onLoad = function () {
         }
     }, false);
 
+    var app;
+    var requestID;
+    var animate;
     var vrButton = document.getElementById('vrButton');
     vrButton.addEventListener('click', function () {
-        app.toggleVR();
-        vrButton.blur();
-    });
+      if (app.vrDisplay && !app.vrDisplay.isPresenting) {
+        window.cancelAnimationFrame(requestID);
+        app.vrEffect.requestPresent().then( function () {
+          app.vrEffect.requestAnimationFrame(animate);
+        } );
+      } else {
+        app.vrEffect.cancelAnimationFrame(requestID);
+        app.vrEffect.exitPresent().then( function () {
+          window.requestAnimationFrame(animate);
+        } );
+      }
+      vrButton.blur();
+    }, false);
 
     var world = new CANNON.World();
     world.gravity.set( 0, -9.8, 0 );
@@ -44,9 +57,7 @@ window.onLoad = function () {
     var avatar = new THREE.Object3D();
     avatar.position.y = 3.5*12*0.0254;
 
-    var app;
-
-    var animate = function () {
+    animate = function () {
         var lt = 0;
 
         function animate(t) {
@@ -59,7 +70,10 @@ window.onLoad = function () {
                 body.mesh.quaternion.copy(body.interpolatedQuaternion);
             }
             lt = t;
-            requestAnimationFrame(animate);
+            if (app.vrDisplay && app.vrDisplay.isPresenting)
+              requestID = app.vrEffect.requestAnimationFrame(animate);
+            else
+              requestID = window.requestAnimationFrame(animate);
         }
 
         return animate;
@@ -82,9 +96,10 @@ window.onLoad = function () {
     function onSceneReady(scene) {
         scene.add(avatar);
 
-        if (YAWVRB.Utils.URL_PARAMS.model) {
-            var url = YAWVRB.Utils.URL_PARAMS.model;
+        if (Utils.URL_PARAMS.model) {
+            var url = Utils.URL_PARAMS.model;
             var objectLoader = new THREE.ObjectLoader();
+            //var objectLoader = new THREE.JSONLoader();
             objectLoader.load(url, function (object) {
                 object.scale.set(0.01, 0.01, 0.01);
                 object.position.z -= 1.41;
@@ -95,9 +110,9 @@ window.onLoad = function () {
             });
         }
 
-        app = new YAWVRB.App(scene, undefined, {
+        app = new App(scene, undefined, {
             canvas: document.getElementById('webgl-canvas'),
-            antialias: !YAWVRB.Utils.isMobile()
+            antialias: !Utils.isMobile()
         });
 
         if (shadowMapCheckbox.checked) {

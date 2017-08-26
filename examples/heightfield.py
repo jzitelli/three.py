@@ -9,7 +9,7 @@ from three.lights import DirectionalLight
 from three.buffer_geometries import SphereBufferGeometry, BoxBufferGeometry
 from three.objects import Scene, Mesh
 from three.materials import MeshPhongMaterial, MeshLambertMaterial
-from three.heightfield import HeightfieldMesh
+from three.heightfields import HeightfieldMesh
 
 
 blueprint = Blueprint(__name__, __name__)

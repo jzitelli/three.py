@@ -110,6 +110,9 @@ var THREEPY_SCENE = %s;
 
 
 def main():
+    werkzeug_logger = logging.getLogger('werkzeug')
+    werkzeug_logger.setLevel(logging.WARNING)
+    # werkzeug_logger.disabled = True
     _logger = logging.getLogger(__name__);
     for module in TESTS_MODULES.values():
         app.register_blueprint(getattr(module, 'blueprint'))
