@@ -1,11 +1,11 @@
 import json
-
 from flask import Blueprint, Markup, render_template
 
-from flask_app import WebVRConfig, get_overlay_content
+from flask_app import WebVRConfig, get_overlay_content_markup
 
-from three import *
-
+from three.objects import Scene, Mesh
+from three.text import TextGeometry
+from three.materials import MeshBasicMaterial
 
 
 blueprint = Blueprint(__name__, __name__)
@@ -27,7 +27,7 @@ def layers():
                    layers=[2]))
     return render_template('template.html',
                            title='three.py  -  %s test' % __name__,
-                           overlay_content=get_overlay_content(),
+                           overlay_content=get_overlay_content_markup(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;

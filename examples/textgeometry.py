@@ -2,9 +2,12 @@ import json
 
 from flask import Blueprint, render_template, Markup
 
-from flask_app import WebVRConfig, get_overlay_content
+from flask_app import WebVRConfig, get_overlay_content_markup
 
-from three import *
+from three.objects import Scene, Mesh
+from three.text import TextGeometry
+from three.lights import DirectionalLight
+from three.materials import MeshLambertMaterial
 
 
 
@@ -20,7 +23,7 @@ def textgeometry():
                    material=MeshLambertMaterial(color=0xff00ff),
                    position=[0, 0, -2]))
     return render_template('template.html',
-                           overlay_content=get_overlay_content(),
+                           overlay_content=get_overlay_content_markup(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;

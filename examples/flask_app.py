@@ -17,18 +17,18 @@ from three.buffer_geometries import SphereBufferGeometry
 
 WebVRConfig = {
     "FORCE_ENABLE_VR":            False,
-    "PREDICTION_TIME_S":          0.020,
-    "KEYBOARD_CONTROLS_DISABLED": True,
-    "ENABLE_LEAP_MOTION": False,
-    "LEAP_MOTION_HOST": '192.168.1.42'
+    "PREDICTION_TIME_S":          0.010,
+    "KEYBOARD_CONTROLS_DISABLED": True
 }
 
 DEBUG           = True
 PORT            = 5000
-STATIC_FOLDER   = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.path.pardir))
-TEMPLATE_FOLDER = os.path.abspath(os.path.split(__file__)[0])
+_HERE = os.path.dirname(__file__)
+STATIC_FOLDER   = os.path.abspath(os.path.join(_HERE, os.path.pardir))
+TEMPLATE_FOLDER = os.path.abspath(_HERE)
 
-def get_test_link_table():
+
+def get_test_link_table_markup():
     return Markup(r"""
 <table>
 %s
@@ -36,12 +36,13 @@ def get_test_link_table():
 """ % '\n'.join(["<tr> <td><a class='testLink' href='{1}'>{0}</a></td> </tr>".format(name, href)
                  for name, href in [(test, TEST_HREFS[test]) for test in TESTS]]))
 
-def get_overlay_content():
+
+def get_overlay_content_markup():
     return Markup(r"""
 <a class='testLink' href="/">HOME</a>
 <hr>
 <h2>Tests:</h2>
-""") + get_test_link_table() + Markup(r"""
+""") + get_test_link_table_markup() + Markup(r"""
 <hr>
 <h2>Options:</h2>
 <label style='color: #aaee77; padding: 1vh;'>shadow maps<input id="shadowMapCheckbox" type="checkbox"/></label>
@@ -105,7 +106,7 @@ def main_page():
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
 </script>""" % (json.dumps(WebVRConfig, indent=2), json.dumps(scene.export()))),
-                           overlay_content=get_overlay_content())
+                           overlay_content=get_overlay_content_markup())
 
 
 

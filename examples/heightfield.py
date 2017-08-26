@@ -2,7 +2,7 @@ import json
 import numpy as np
 from flask import Blueprint, Markup, render_template, request
 
-from flask_app import WebVRConfig, get_overlay_content
+from flask_app import WebVRConfig, get_overlay_content_markup
 
 from three import Image, FlatShading
 from three.lights import DirectionalLight
@@ -43,7 +43,7 @@ def heightfield():
                    castShadow=True))
     return render_template('template.html',
                            title='three.py  -  %s test' % __name__,
-                           overlay_content=get_overlay_content(),
+                           overlay_content=get_overlay_content_markup(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;

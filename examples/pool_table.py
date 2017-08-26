@@ -1,13 +1,14 @@
-import sys
-import os.path
 import json
-from copy import deepcopy
-
 import numpy as np
-from flask import Blueprint, Markup, render_template, request
+from flask import Blueprint, Markup, render_template
 
-from flask_app import WebVRConfig, get_overlay_content
-from three import *
+from flask_app import WebVRConfig, get_overlay_content_markup
+
+from three import RepeatWrapping, Image
+from three.objects import Object3D, Scene, Mesh
+from three.materials import Texture, MeshBasicMaterial
+from three.buffer_geometries import BoxBufferGeometry, CircleBufferGeometry, HexaBufferGeometry, PlaneBufferGeometry, SphereBufferGeometry
+# from three.skybox import Skybox
 
 INCH2METER = 0.0254
 FT2METER = INCH2METER / 12
@@ -20,7 +21,7 @@ def pool_table_example():
     scene = pool_hall()
     return render_template('template.html',
                            title='three.py  -  %s test' % __name__,
-                           overlay_content=get_overlay_content(),
+                           overlay_content=get_overlay_content_markup(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
@@ -228,9 +229,9 @@ def pool_hall(useSkybox=False,
     Defines a three.js scene containing a pool table + billiard balls.
     """
     scene = Scene()
-    if useSkybox:
-        scene.add(Skybox(cube_images=[url_prefix + "images/%s.png" % pos
-                                      for pos in ('px', 'nx', 'py', 'ny', 'pz', 'nz')]))
+    # if useSkybox:
+    #     scene.add(Skybox(cube_images=[url_prefix + "images/%s.png" % pos
+    #                                   for pos in ('px', 'nx', 'py', 'ny', 'pz', 'nz')]))
     poolTable = pool_table(L_table=L_table, H_table=H_table, ball_diameter=ball_diameter, **kwargs)
     scene.add(poolTable)
     # floorMaterial = MeshPhongMaterial(name='floorMaterial',
@@ -253,17 +254,17 @@ def pool_hall(useSkybox=False,
     scene.add(floorMesh)
     # balls:
     ball_colors = []
-    ball_colors.append(0xddddde); white  = ball_colors[-1]
-    ball_colors.append(0xeeee00); yellow = ball_colors[-1]
-    ball_colors.append(0x0000ee); blue   = ball_colors[-1]
-    ball_colors.append(0xee0000); red    = ball_colors[-1]
-    ball_colors.append(0xee00ee); purple = ball_colors[-1]
-    ball_colors.append(0xee7700); orange = ball_colors[-1]
-    ball_colors.append(0x00ee00); green  = ball_colors[-1]
-    ball_colors.append(0xbb2244); maroon = ball_colors[-1]
-    ball_colors.append(0x111111); black  = ball_colors[-1]
+    ball_colors.append(0xddddde); #white  = ball_colors[-1]
+    ball_colors.append(0xeeee00); #yellow = ball_colors[-1]
+    ball_colors.append(0x0000ee); #blue   = ball_colors[-1]
+    ball_colors.append(0xee0000); #red    = ball_colors[-1]
+    ball_colors.append(0xee00ee); #purple = ball_colors[-1]
+    ball_colors.append(0xee7700); #orange = ball_colors[-1]
+    ball_colors.append(0x00ee00); #green  = ball_colors[-1]
+    ball_colors.append(0xbb2244); #maroon = ball_colors[-1]
+    ball_colors.append(0x111111); #black  = ball_colors[-1]
     ball_colors = ball_colors + ball_colors[1:-1]
-    num_balls = len(ball_colors)
+    #num_balls = len(ball_colors)
     ball_radius = ball_diameter / 2
     sphere = SphereBufferGeometry(radius=ball_radius,
                                   widthSegments=16,

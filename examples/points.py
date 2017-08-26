@@ -2,7 +2,7 @@ import json
 
 from flask import Blueprint, Markup, render_template
 
-from flask_app import WebVRConfig, get_overlay_content
+from flask_app import WebVRConfig, get_overlay_content_markup
 
 from three import FlatShading, BackSide
 from three.objects import Scene, Mesh, Points
@@ -31,7 +31,7 @@ def points():
                    scale=[1.01, 1.03, 1.01]))
     return render_template('template.html',
                            title='three.py  -  %s test' % __name__,
-                           overlay_content=get_overlay_content(),
+                           overlay_content=get_overlay_content_markup(),
                            json_config=Markup(r"""<script>
 var WebVRConfig = %s;
 var THREEPY_SCENE = %s;
