@@ -1,7 +1,6 @@
 import uuid
 from collections import defaultdict
 
-# TODO: use pyexecjs to automatically define all three.js global constants
 FrontSide  = 0
 BackSide   = 1
 DoubleSide = 2
