@@ -9,13 +9,13 @@ import OpenGL.GL as gl
 import cyglfw3 as glfw
 
 
-_logger = logging.getLogger('poolvr')
+_logger = logging.getLogger(__name__)
 
-_HERE = os.path.dirname(__file__)
-sys.path.append(os.path.join(_HERE, os.path.pardir))
+_HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(_HERE, os.path.pardir))
 from gl_rendering import OpenGLRenderer
 try:
-    from pyopenvr_renderer import OpenVRRenderer
+   from pyopenvr_renderer import OpenVRRenderer
 except ImportError as err:
     _logger.warning('could not import pyopenvr_renderer:\n%s', err)
     _logger.warning('\n\n\n**** VR FEATURES ARE NOT AVAILABLE! ****\n\n\n')
