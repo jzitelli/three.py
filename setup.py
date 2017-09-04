@@ -40,10 +40,9 @@ setup(
         'Topic :: Multimedia :: Graphics :: 3D Modeling',
         'Topic :: Multimedia :: Graphics :: 3D Rendering',
         'Topic :: Scientific/Engineering :: Visualization',
-        
+
         'License :: OSI Approved :: MIT License',
 
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5'
     ],
 
@@ -55,7 +54,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['numpy', 'pyexecjs', 'pillow'],
+    install_requires=['numpy', 'pillow'],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,

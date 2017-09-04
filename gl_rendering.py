@@ -82,6 +82,7 @@ class Program(GLRendering):
         else:
             self.uniforms = {}
     def init_gl(self, force=False):
+        """Compile and link the GLSL shaders into a program in the current GL context."""
         if force:
             Program._current = None
         if self.program_id is not None:
@@ -107,6 +108,7 @@ class Program(GLRendering):
         self.program_id = program_id
         _logger.info('%s.init_gl: OK', self.__class__.__name__)
     def use(self):
+        """Activate this program for drawing in the GL."""
         if Program._current is self:
             return
         if self.program_id is None:

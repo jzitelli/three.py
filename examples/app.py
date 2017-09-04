@@ -49,12 +49,28 @@ def setup_glfw(width=800, height=600, double_buffered=False, title="poolvr.py 0.
     return window, renderer
 
 
+def add_heightfield(url='examples/heightfield.png'):
+    from three import Image
+    from three.heightfields import HeightfieldMesh
+    heightfieldImage = Image(url=url)
+    return HeightfieldMesh(heightfieldImage=heightfieldImage,
+                           heightfieldScale=64,
+                           material=MeshLambertMaterial(color=0x8b6545),
+                           rotation=[-0.4*np.pi, 0, 0],
+                           position=[0, -18, 0],
+                           scale=[0.5, 0.5, 0.5],
+                           cannonData={'mass': 0, 'shapes': ['Heightfield']},
+                           receiveShadow=True)
+
+
 def main(window_size=(800,600),
          novr=False,
          use_simple_ball_collisions=False,
          use_ode=False,
          multisample=0,
-         use_bb_particles=False):
+         use_bb_particles=False,
+         meshes=None,
+         controller_meshes=None):
     """
     The main routine.
 
@@ -74,7 +90,10 @@ def main(window_size=(800,600),
     camera_position = camera_world_matrix[3,:3]
     def process_input(dt):
         glfw.PollEvents()
-    meshes = []
+    if controller_meshes is None:
+        controller_meshes = []
+    if meshes is None:
+        meshes = [] + controller_meshes
     for mesh in meshes:
         mesh.init_gl()
     gl.glViewport(0, 0, window_size[0], window_size[1])
@@ -102,8 +121,14 @@ def main(window_size=(800,600),
                 renderer.process_input()
                 hmd_pose = frame_data['hmd_pose']
                 camera_position[:] = hmd_pose[:,3]
-                for i, pose in enumerate(frame_data['controller_poses'][:1]):
-                    pass
+                for i, pose in enumerate(frame_data['controller_poses'][:2]):
+                    if i < len(controller_meshes):
+                        controller_meshes[i].matrix[:3,:3] = pose[:,:3].T
+                        x,y,z = controller_meshes[i].matrix[1,:3]
+                        controller_meshes[i].matrix[1,:3] = controller_meshes[i].matrix[2,:3]
+                        controller_meshes[i].matrix[2,:3] = x,-z,-y
+                        controller_meshes[i].matrix[3,:3] = pose[:,3]
+                        controller_meshes[i].update_world_matrices()
             elif isinstance(renderer, OpenGLRenderer):
                 #########################
                 ##### desktop mode: #####

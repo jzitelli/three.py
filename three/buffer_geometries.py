@@ -1,5 +1,7 @@
 import numpy as np
 
+import gl_rendering
+
 from . import Three
 from .geometries import BoxGeometry
 
@@ -45,6 +47,14 @@ class BufferGeometry(Three):
                 "array": np.array(self.uvs).ravel().tolist()
             }
         return d
+    def as_gl_primitive(self):
+        return gl_rendering.Primitive(gl_rendering.gl.GL_TRIANGLES,
+                                      indices=np.array(self.indices).ravel(),
+                                      name=self.name,
+                                      vertices=self.vertices,
+                                      normals=self.normals,
+                                      uvs=self.uvs)
+
 
 
 def _tri_faces(rect_face, flip_normals=False):
@@ -111,6 +121,16 @@ class PlaneBufferGeometry(Three):
         d = Three.json(self)
         d.update({k: v for k, v in self.__dict__.items() if k not in d})
         return d
+    def as_buffer_geometry(self):
+        vertices = np.array([[x,y,0.0]
+                             for x in np.linspace(-0.5*self.width, 0.5*self.width, self.widthSegments + 1)
+                             for y in np.linspace(-0.5*self.height, 0.5*self.height, self.heightSegments + 1)])
+        indices = None
+        normals = np.array(len(vertices)*[0.0, 0.0, 1.0]).reshape(-1,3)
+        uvs = np.array([[s, t]
+                        for s in np.linspace(0.0, 1.0, self.widthSegments + 1)
+                        for t in np.linspace(0.0, 1.0, self.heightSegments + 1)])
+        return BufferGeometry(name=self.name, vertices=vertices, indices=indices, normals=normals, uvs=uvs)
 
 
 class SphereBufferGeometry(Three):
